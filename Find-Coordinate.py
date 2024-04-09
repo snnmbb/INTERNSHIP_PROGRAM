@@ -29,17 +29,18 @@ for image_dot in Dir_Read('s', path=image_path):
 
     sorted_contours= sorted(contours, key=cv2.contourArea, reverse= False)
     
-    if index < len(sorted_contours):
-        item = sorted_contours[index]
+    try:
+        item = sorted_contours[0]
         R = cv2.moments(item)
         coordinate_center = int(R['m10'] / R['m00'])
         
-        print("center coordinate ", str(coordinate_center))
+        print("center coordinate : ", str(coordinate_center))
         print("")
         
         sorted_contours = 0
         
         plt.imshow(image)
         plt.show()
-    else:
+        
+    except:
         print("Index out of range for file:", image_dot)
