@@ -48,14 +48,13 @@ for image_dot in Dir_Read('s', path=image_path):
         distance = coordinate_center1 - coordinate_center2
 
         print("Distance between dot1 and dot2 : " , str(distance))
-        print("*****************")
-         
+        print("**********************************")         
         plt.imshow(image)
         plt.show()
     except:
         print(image_dot)
         print ("Circles are overlapping")
-        print("*****************")
+        print("**********************************")
         plt.imshow(image)
         plt.show()
 
