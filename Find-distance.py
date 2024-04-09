@@ -4,7 +4,7 @@ from SolExDataCube import Dir_Read
 import os
 import re
 
-image_path= r"C:\Users\Asus\Desktop\Dot"
+image_path= r"C:\Users\Asus\Desktop\Dot\Dot_i"
 os.chdir(image_path)
 
 pattern = re.compile(r'(\d+)\.png')
@@ -17,7 +17,7 @@ for image_dot in Dir_Read('s', path=image_path):
 
     gray= cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
 
-    edges= cv2.Canny(gray, 100,200)
+    edges= cv2.Canny(gray, 40,200)
 
     try:  
         contours, hierarchy= cv2.findContours(edges.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
@@ -48,13 +48,13 @@ for image_dot in Dir_Read('s', path=image_path):
         distance = coordinate_center1 - coordinate_center2
 
         print("Distance between dot1 and dot2 : " , str(distance))
-        print("**********************************")         
+        print("***************************************")         
         plt.imshow(image)
         plt.show()
     except:
         print(image_dot)
         print ("Circles are overlapping")
-        print("**********************************")
+        print("***************************************")
         plt.imshow(image)
         plt.show()
 

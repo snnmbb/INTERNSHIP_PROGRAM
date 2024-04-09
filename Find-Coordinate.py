@@ -4,7 +4,7 @@ from SolExDataCube import Dir_Read
 import os
 import re
 
-image_path = r"C:\Users\Asus\Desktop\Dot"
+image_path = r"C:\Users\Asus\Desktop\Dot\Dot"
 os.chdir(image_path)
 
 pattern = re.compile(r'(\d+)\.png')
@@ -30,7 +30,7 @@ for image_dot in Dir_Read('s', path=image_path):
         
         print(image_dot)
         print("center coordinate : ", str(coordinate_center))
-        print("*****************")
+        print("***************************************")
         
         sorted_contours = 0
         
@@ -40,4 +40,4 @@ for image_dot in Dir_Read('s', path=image_path):
     except:
         print(image_dot)
         print("Index out of range for file:", image_dot)
-        print("*****************")
+        print("***************************************")
