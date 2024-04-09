@@ -2,7 +2,7 @@ import cv2
 import matplotlib.pyplot as plt
 
 
-image= cv2.imread(r"C:\Users\Asus\Desktop\Dot2.png")
+image= cv2.imread(r"C:\Users\Asus\Desktop\Dot3.png")
 original_image= image
 
 gray= cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
