@@ -11,12 +11,6 @@ pattern = re.compile(r'(\d+)\.png')
 
 for image_dot in Dir_Read('s', path=image_path):
     
-    match = pattern.search(image_dot)
-    if match:
-        index = int(match.group(1))
-    else:
-        continue  # Skip this file if the numeric part cannot be extracted
-    
     image= cv2.imread(image_dot)
     
     original_image= image
@@ -34,8 +28,9 @@ for image_dot in Dir_Read('s', path=image_path):
         R = cv2.moments(item)
         coordinate_center = int(R['m10'] / R['m00'])
         
+        print(image_dot)
         print("center coordinate : ", str(coordinate_center))
-        print("")
+        print("*****************")
         
         sorted_contours = 0
         
@@ -43,4 +38,6 @@ for image_dot in Dir_Read('s', path=image_path):
         plt.show()
         
     except:
+        print(image_dot)
         print("Index out of range for file:", image_dot)
+        print("*****************")
