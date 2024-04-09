@@ -17,7 +17,7 @@ for image_dot in Dir_Read('s', path=image_path):
 
     gray= cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
 
-    edges= cv2.Canny(gray, 50,200)
+    edges= cv2.Canny(gray, 100,200)
 
     try:  
         contours, hierarchy= cv2.findContours(edges.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
@@ -56,5 +56,7 @@ for image_dot in Dir_Read('s', path=image_path):
         print(image_dot)
         print ("Circles are overlapping")
         print("*****************")
+        plt.imshow(image)
+        plt.show()
 
     #ใช้กับรูปที่วงกลมซ้อนทับกันกึ่งกลางไม้ได้
