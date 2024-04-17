@@ -8,12 +8,12 @@ arr1 = np.zeros((y.size, x.size))
 arr2 = np.zeros((y.size, x.size))
 
 
-cx1 = 64 # x position
-cy1 = 64  # y position
-r1 = 30   # radius of circle
+cx1 = 140# x position
+cy1 = 140  # y position
+r1 = 40   # radius of circle
 cx2 = 150
 cy2 = 150
-r2 = 30
+r2 = 40
 
 intensity1 = (x[np.newaxis,:]-cx1)**2 + (y[:,np.newaxis]-cy1)**2 < r1**2
 intensity2 = (x[np.newaxis,:]-cx2)**2 + (y[:,np.newaxis]-cy2)**2 < r2**2
@@ -28,8 +28,4 @@ fig2 = plt.figure(2)
 plt.hist(arr_total, bins='auto')
 print(arr1, arr1.max(), arr1.min())
 print(arr2, arr2.max(), arr2.min())
-# print(arr1[intensity1])
-#print(arr2[intensity2])
-#plt.figure(figsize=(5, 5))
-# plt.pcolormesh(x, y, arr1)
 plt.show()
