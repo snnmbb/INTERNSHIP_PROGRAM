@@ -5,18 +5,22 @@ from SolExDataCube import Dir_Read
 import os
 import re
 
-print("File path:", 'C:\\Users\\Asus\\Desktop\\Dot_9.png')
-img = np.asarray(Image.open('C:\\Users\\Asus\\Desktop\\Dot_9.png'))
+print("File path:", 'C:\\Users\\Asus\\Desktop\\Dot\\Dot_i\\Dot_13.png')
+img = np.asarray(Image.open('C:\\Users\\Asus\\Desktop\\Dot\\Dot_i\\Dot_13.png'))
 
 try : 
+    print(img.shape)
     print(repr(img))
     fig = plt.figure(1)
     imgplot = plt.imshow(img)
     fig2 = plt.figure(2)
-    lum_img = img[:, :, 0]
-    plt.hist(lum_img.ravel(), bins='auto')
+    if len(img.shape) == 2:
+        lum_img = img[:, :]
+    else:
+        lum_img = img[:, :, 0]
+    plt.hist(lum_img, bins='auto')
     plt.show()
 
-except :
-    print("ERROR")
+except Exception as e:
+    print("ERROR", e)
         
