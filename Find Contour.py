@@ -10,7 +10,6 @@ image_path2 = r"C:\Users\Asus\Desktop\test_im2_ref.png"
 pattern = re.compile(r'(\d+)\.png')
 
 try :
-    font = cv2.FONT_HERSHEY_COMPLEX 
     #Read file
     dot1 = cv2.imread(image_path1)
     dot2 = cv2.imread(image_path2)
