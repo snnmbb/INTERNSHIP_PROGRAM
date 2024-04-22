@@ -21,7 +21,7 @@ try :
     gray_dot1 = cv2.cvtColor(dot1, cv2.COLOR_BGR2GRAY)
     
     #Find contour
-    ret, thresh = cv2.threshold(gray_dot1, 127, 255, 0)
+    ret, thresh = cv2.threshold(gray_dot1, 100, 255, 0)
     contours1, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
     cnt = contours1[0]
@@ -34,10 +34,10 @@ try :
         mask1 = cv2.rectangle(dot1, (x, y), (x+w, y+h), (0, 255, 0), 2)
         
         # Bitwise AND operation
-        mask_combined = cv2.bitwise_and(gray_dot1, gray_dot1)
+        mask_combined = cv2.bitwise_and(mask1, mask1)
         
         # Generate "exclusive" masks, i.e. masks without the intersection parts
-        mask1_excl = cv2.bitwise_xor(gray_dot1, mask_combined)
+        mask1_excl = cv2.bitwise_xor(mask1, mask_combined)
         
         # Show images
         plt.figure(figsize=(10,6))
