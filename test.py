@@ -4,7 +4,7 @@ import os
 import re
 
 
-image_path = r"C:\Users\Asus\Desktop\test_im2_ref.png"
+image_path = r"C:\Users\Asus\Desktop\test_im2_1.png"
 image_path_new = r"C:\Users\Asus\Desktop\test_im2_w.png"
 pattern = re.compile(r'(\d+)\.png')
 directory = r'C:\Users\Asus\Desktop'
@@ -39,6 +39,6 @@ for c in cnts:
     x, y, w, h = cv2.boundingRect(c)
     cv2.rectangle(image_new, (x, y), (x + w, y + h), (0, 0, 255), 2)
 
-cv2.imshow("image", image)
+cv2.imshow("image", image_new)
 cv2.imshow("Thresh", thresh)
 cv2.waitKey()
