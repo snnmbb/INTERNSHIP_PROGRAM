@@ -3,9 +3,9 @@ import numpy as np
 import os
 import re
 
-image_path2 = r"C:\Users\Asus\Desktop\test_im2_1.png"
+image_path = r"C:\Users\Asus\Desktop\test_im2_ref_1.png"
 pattern = re.compile(r'(\d+)\.png')
-image = cv2.imread(image_path2)
+image = cv2.imread(image_path)
 original = image.copy()
 
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
