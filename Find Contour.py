@@ -5,7 +5,7 @@ import os
 import re
 from matplotlib import pyplot as plt
 
-image_path1 = r"C:\Users\Asus\Desktop\test_im2_ref.png"
+image_path1 = r"C:\Users\Asus\Desktop\test_im2_1.png"
 image_path2 = r"C:\Users\Asus\Desktop\test_im2_ref.png"
 pattern = re.compile(r'(\d+)\.png')
 
@@ -38,11 +38,11 @@ try:
         mask2 = cv2.drawContours(gray_dot2, [cnt2], 0, 255, thickness=cv2.FILLED)
         
         # Bitwise AND operation
-        mask_combined = cv2.bitwise_and(gray_dot1, gray_dot2)
+        mask_combined = cv2.bitwise_and(mask1, mask2)
         
         # Generate "exclusive" masks, i.e. masks without the intersection parts
-        mask1_excl = cv2.bitwise_xor(gray_dot1, mask_combined)
-        mask2_excl = cv2.bitwise_xor(gray_dot2, mask_combined)
+        mask1_excl = cv2.bitwise_xor(mask1, mask_combined)
+        mask2_excl = cv2.bitwise_xor(mask2, mask_combined)
         mask1_excl = cv2.rectangle(mask1_excl, (x1, y1), (x1+w1, y1+h1), (255, 0, 0), 2)
 
         # Show images
@@ -55,7 +55,6 @@ try:
         plt.subplot(3, 3, 6), plt.imshow(mask_combined, cmap='gray'), plt.xlabel('mask_combined')
         plt.subplot(3, 3, 7), plt.imshow(mask1_excl, cmap='gray'), plt.xlabel('mask1_excl')
         plt.subplot(3, 3, 8), plt.imshow(mask2_excl, cmap='gray'), plt.xlabel('mask2_excl')
-        #plt.subplot(3, 3, 9), plt.imshow(mask1_excl, cmap='gray'), plt.xlabel('mask1_excl')
         plt.show()
         
     else:
