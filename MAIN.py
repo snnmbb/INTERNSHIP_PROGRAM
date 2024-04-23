@@ -203,10 +203,6 @@ def main():
                 reference = Decimal(0)
                 
                 while(True) :
-                #val_str = input("Enter value of offset : ")
-                #print("OK")
-                #val = Decimal(val_str)
-                #print("OK")
                     new_position = PID(Decimal(0.07) , Decimal(0.08), Decimal(0.01) , reference , Decimal(distance_x)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
                     print(new_position)
                     if new_position >= Decimal(0.01) :
