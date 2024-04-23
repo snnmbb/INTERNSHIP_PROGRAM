@@ -199,6 +199,7 @@ def main():
                 plt.subplot(3, 3, 8), plt.imshow(mask2_ex, cmap='gray'), plt.xlabel('mask2_excl')
                 plt.show()
                 '''
+                
                 reference = Decimal(0)
                 
                 while(True) :
@@ -224,31 +225,7 @@ def main():
         # Stop polling and close device
         kcube.StopPolling()
         kcube.Disconnect(True)
-            
-
-        '''
-        for i in range (10) :
-            kcube.MoveTo(Decimal(10.0), 60000)
-            print(f'{kcube.Position}') 
-            kcube.MoveTo(Decimal(20.0), 60000)
-            print(f'{kcube.Position}') 
-            kcube.MoveTo(Decimal(30.0), 60000)
-            print(f'{kcube.Position}') 
-            kcube.MoveTo(Decimal(40.0), 60000)
-            print(f'{kcube.Position}') 
-            kcube.MoveTo(Decimal(50.0), 60000)
-            print(f'{kcube.Position}') 
-            kcube.MoveTo(Decimal(60.0), 60000)
-            print(f'{kcube.Position}') 
-            kcube.MoveTo(Decimal(70.0), 60000)
-            print(f'{kcube.Position}') 
-            kcube.MoveTo(Decimal(80.0), 60000)
-            print(f'{kcube.Position}') 
-            kcube.MoveTo(Decimal(90.0), 60000)
-            print(f'{kcube.Position}') 
-            kcube.MoveTo(Decimal(0.0), 60000)
-            print(f'{kcube.Position}') 
-        '''            
+                 
     except Exception as e:
         print("ERROR:", e)   
 
