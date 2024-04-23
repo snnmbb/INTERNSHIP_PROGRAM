@@ -36,8 +36,8 @@ try:
         # Create a mask
         mask1 = cv2.drawContours(gray_dot1, [cnt1], -1, 255, thickness=-1)
         mask2 = cv2.drawContours(gray_dot2, [cnt2], -1, 255, thickness=-1)
-        mask1 = cv2.rectangle(dot1, (x_ref, y_ref), (x_ref+w_ref, y_ref+h_ref), (255, 255, 0), 1)
-        mask2 = cv2.rectangle(dot2, (x, y), (x+w, y+h), (255, 255, 0), 1)
+        #cv2.rectangle(dot1, (x_ref, y_ref), (x_ref+w_ref, y_ref+h_ref), (255, 255, 0), 1)
+        #cv2.rectangle(mask2, (x, y), (x+w, y+h), (255, 255, 0), 1)
         
         # Bitwise AND operation
         mask_and = cv2.bitwise_and(mask1, mask2)
