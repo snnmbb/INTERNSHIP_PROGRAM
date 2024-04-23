@@ -47,6 +47,18 @@ try:
         mask2_excl = cv2.bitwise_xor(mask2, mask_and)
         mask2_ex = cv2.rectangle(mask2_excl, (x, y), (x+w_ref, y+h_ref), (255, 255, 0), 1)
 
+        #Find center coordinates and distance
+        cx_ref = ((x_ref+w_ref)+x_ref)/2   
+        cy_ref = ((y_ref+h_ref)+y_ref)/2      
+        center_x = ((x+w_ref)+x)/2
+        center_y = ((y+h_ref)+y)/2
+        distance_x = cx_ref-center_x
+        distance_y = cy_ref-center_y
+        
+        print('center of ref - x : ' + str(cx_ref) + ' , y : '+ str(cy_ref))
+        print('center of object - x : ' + str(center_x) + ' , y : '+ str(center_y))
+        print("Distance between objects x :" + str(distance_x) + " , y :" + str(distance_y))
+        
         # Show images
         plt.figure(figsize=(10,6))
         plt.subplot(3, 3, 1), plt.imshow(dot1, cmap='gray'), plt.xlabel('dot1')
@@ -58,6 +70,7 @@ try:
         plt.subplot(3, 3, 7), plt.imshow(mask1_excl, cmap='gray'), plt.xlabel('mask1_excl')
         plt.subplot(3, 3, 8), plt.imshow(mask2_ex, cmap='gray'), plt.xlabel('mask2_excl')
         plt.show()
+  
         
     else:
         print("No contours found.")
