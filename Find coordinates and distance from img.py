@@ -5,8 +5,8 @@ import os
 import re
 from matplotlib import pyplot as plt
 
-image_ref = r"C:\Users\Asus\Desktop\test_image_ref.png"
-image_path = r"C:\Users\Asus\Desktop\test_image.png"
+image_ref = r"C:\Users\Asus\Desktop\REF_CAP.png"
+image_path = r"C:\Users\Asus\Desktop\test_im_flip.png"
 pattern = re.compile(r'(\d+)\.png')
 
 try:
