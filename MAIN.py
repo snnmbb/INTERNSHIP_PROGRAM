@@ -5,7 +5,9 @@ import os
 import re
 from matplotlib import pyplot as plt
 import zwoasi as asi
-
+import time
+import sys
+import clr
 
 image_ref = r"C:\Users\Asus\Desktop\test_image_ref.png"
 save_path_mono = r"C:\Users\Asus\Desktop\ASI1600-PRO\img\mono\\"
@@ -83,11 +85,12 @@ def main():
         
         serial_num = str("28251928")  
         kcube = KCubeBrushlessMotor.CreateKCubeBrushlessMotor(serial_num)
+        kcube.Connect(serial_num)
         pos = Decimal(50.0) # ตำแหน่งเริ่มต้นที่มอเตอร์ขยับไปให้แสงตกในกล้อง
 
         #encoder =  ReadoutEncoder.CreatePositionReadoutEncoder(serial_num)
         
-        kcube.Connect(serial_num)
+        
         time.sleep(0.25)
         kcube.StartPolling(250)
         time.sleep(0.25)  
