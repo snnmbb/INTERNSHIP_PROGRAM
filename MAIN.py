@@ -86,7 +86,6 @@ def main():
         pos = Decimal(50.0) # ตำแหน่งเริ่มต้นที่มอเตอร์ขยับไปให้แสงตกในกล้อง
 
         #encoder =  ReadoutEncoder.CreatePositionReadoutEncoder(serial_num)
-        measurement = kcube.Position 
         
         kcube.Connect(serial_num)
         time.sleep(0.25)
