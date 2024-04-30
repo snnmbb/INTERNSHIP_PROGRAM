@@ -52,7 +52,7 @@ except (KeyboardInterrupt, SystemExit):
 
 #for i in range(10) :
 print('Capturing image')
-filename = '11'+'_image_lab.png'
+filename = '15'+'_image_lab.png'
 camera.set_image_type(asi.ASI_IMG_RAW16)
 camera.capture(filename=save_path+filename)
 print('Saved to %s' % filename)

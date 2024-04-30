@@ -6,11 +6,9 @@ import clr
 clr.AddReference("C:\\Program Files\\Thorlabs\\Kinesis\\Thorlabs.MotionControl.DeviceManagerCLI.dll.")
 clr.AddReference("C:\\Program Files\\Thorlabs\\Kinesis\\Thorlabs.MotionControl.GenericMotorCLI.dll.")
 clr.AddReference("C:\\Program Files\\Thorlabs\\Kinesis\\Thorlabs.MotionControl.KCube.BrushlessMotorCLI.dll.")
-#clr.AddReference("C:\\Program Files\\Thorlabs\\Kinesis\\ThorLabs.MotionControl.PositionReadoutEncoderCLI.dll")
 
 from Thorlabs.MotionControl.DeviceManagerCLI import *
 from Thorlabs.MotionControl.GenericMotorCLI import *
-#from Thorlabs.MotionControl.PositionReadoutEncoderCLI import *
 from Thorlabs.MotionControl.KCube.BrushlessMotorCLI import *
 from System import Decimal
 
@@ -21,11 +19,9 @@ def main():
         DeviceManagerCLI.BuildDeviceList()
         
         serial_num = str("28251928")  
-        kcube = KCubeBrushlessMotor.CreateKCubeBrushlessMotor(serial_num)
-        #encoder =  ReadoutEncoder.CreatePositionReadoutEncoder(serial_num)
-        measurement = kcube.Position 
-        
+        kcube = KCubeBrushlessMotor.CreateKCubeBrushlessMotor(serial_num)        
         kcube.Connect(serial_num)
+        
         time.sleep(0.25)
         kcube.StartPolling(250)
         time.sleep(0.25)  
