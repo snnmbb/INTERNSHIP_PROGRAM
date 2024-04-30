@@ -4,7 +4,7 @@ import os
 import re
 
 
-save_path = r"C:\Users\Asus\Desktop\LAB_TEST"
+save_path = r"C:\\Users\\Asus\\Desktop\LAB_TEST\\"
 asi.init('C:\\Users\\Asus\\AppData\\Local\\Programs\\Python\\Python310\\Lib\\ASI SDK\\lib\\x64\ASICamera2.lib')
 
 num_cameras = asi.get_num_cameras()
@@ -50,10 +50,9 @@ try:
 except (KeyboardInterrupt, SystemExit):
     raise
 
-for i in range(10) :
-    print('Capturing image')
-    filename = str(i)+'_image_mono.png'
-    camera.set_image_type(asi.ASI_IMG_RAW8)
-    camera.capture(filename=save_path+filename)
-    print('Saved to %s' % filename)
-    i += 1
+#for i in range(10) :
+print('Capturing image')
+filename = '11'+'_image_lab.png'
+camera.set_image_type(asi.ASI_IMG_RAW16)
+camera.capture(filename=save_path+filename)
+print('Saved to %s' % filename)
