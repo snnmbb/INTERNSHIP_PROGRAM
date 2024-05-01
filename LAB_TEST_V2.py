@@ -108,7 +108,7 @@ try :
         print('Saved to %s' % filename)
         print("----------------------------------------------")
         i +=1
-        pos +=1
+        pos += Decimal(1.0)
 
 
 except Exception as e:
