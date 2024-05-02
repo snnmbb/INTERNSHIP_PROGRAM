@@ -23,7 +23,7 @@ try:
         wid = dot1.shape[1] 
         hgt = dot1.shape[0] 
         
-        print(str(wid) + "x" + str(hgt))
+        print('image pixels size = ' , str(wid) + " x " + str(hgt))
     
         # Convert color to grayscale
         gray_dot1 = cv2.cvtColor(dot1, cv2.COLOR_BGR2GRAY)
@@ -48,6 +48,7 @@ try:
 
             x_ref,y_ref,w_ref,h_ref = cv2.boundingRect(cnt1)
             x,y,w,h = cv2.boundingRect(cnt2)
+            
             print('w_ref = ',w_ref)
             print('h_ref = ',h_ref)
             print('x_ref = ',x_ref)
@@ -86,7 +87,6 @@ try:
             print('center of ref - x : ' + str(cx_ref) + ' , y : '+ str(cy_ref))
             print('center of object - x : ' + str(center_x) + ' , y : '+ str(center_y))
             print("Distance between objects - x : " + str(distance_x) + " , y : " + str(distance_y))
-            print("-------------------------------------------------")
 
             # Normalized
             CX_ref_nor = cx_ref/4656
