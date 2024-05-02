@@ -106,7 +106,7 @@ try:
             print("-------------------------------------------------")
             
             # Show images
-            plt.figure(figsize=(10,6))
+            plt.figure(figsize=(10,10))
             plt.subplot(3, 3, 1), plt.imshow(gray_dot1, cmap='gray'), plt.xlabel('dot1')
             plt.subplot(3, 3, 2), plt.imshow(gray_dot2, cmap='gray'), plt.xlabel('dot2')
             plt.subplot(3, 3, 3), plt.imshow(combine_dot, cmap='gray'), plt.xlabel('dot1+dot2')
