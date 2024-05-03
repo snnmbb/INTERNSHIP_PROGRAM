@@ -174,7 +174,7 @@ def capture() :
 
 def Draw_Contour() :
     dot1 = cv2.imread(image_ref)
-    dot2 = cv2.imread(image_path)
+    dot2 = cv2.imread(save_path)
         
     wid = dot1.shape[1] 
     hgt = dot1.shape[0] 
