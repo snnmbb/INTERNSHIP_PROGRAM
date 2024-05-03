@@ -135,10 +135,11 @@ def main():
             
             for save_path in Dir_Read('s', path=save_path):
                 Draw_Contour()
+                disX = Draw_Contour()
                 reference = Decimal(0)
                     
                 while(True) :
-                    new_position = PID(Decimal(0.07) , Decimal(0.08), Decimal(0.01) , reference , Decimal(disX_nor)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
+                    new_position = PID(Decimal(0.07) , Decimal(0.08), Decimal(0.01) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
                     print(new_position)
                     if new_position >= Decimal(0.01) :
                         new_pos = pos-new_position
