@@ -114,7 +114,7 @@ def main():
                                                 DeviceConfiguration.DeviceSettingsUseOptionType.UseDeviceSettings)
 
         time.sleep(1)
-        kcube.MaxVelocity = Decimal(30)
+        kcube.MaxVelocity = Decimal(20)
         
         print("Homing Device...")
         kcube.Home(60000)  # 60 second timeout
@@ -148,6 +148,7 @@ def main():
                         print(new_pos)    
                         kcube.MoveTo(new_pos , 5000)
                         print(f'{kcube.Position}')
+            i=+1
                 
         kcube.Home(60000)
         print("Finished")
