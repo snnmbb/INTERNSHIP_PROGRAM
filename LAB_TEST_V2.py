@@ -109,14 +109,17 @@ def main() :
 
     except Exception as e:
         print("ERROR:", e) 
+        
 def capture() :
-    print("----------------------------------------------")
-    print('Capturing image')
-    filename = str(i)+'_image_lab.png'
-    camera.set_image_type(asi.ASI_IMG_RAW16)
-    camera.capture(filename=save_path+filename)
-    print('Saved to %s' % filename)
-    print("----------------------------------------------")
+    for j in range(10):
+        print("----------------------------------------------")
+        print('Capturing image')
+        filename = str(j)+'_image_lab.png'
+        camera.set_image_type(asi.ASI_IMG_RAW16)
+        camera.capture(filename=save_path+filename)
+        print('Saved to %s' % filename)
+        print("----------------------------------------------")
+        j=+1
 
 if __name__=="__main__": 
     main() 
