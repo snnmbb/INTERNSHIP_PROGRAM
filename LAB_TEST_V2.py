@@ -56,60 +56,67 @@ from Thorlabs.MotionControl.GenericMotorCLI import *
 from Thorlabs.MotionControl.KCube.BrushlessMotorCLI import *
 from System import Decimal
 
-DeviceManagerCLI.BuildDeviceList()
-        
-serial_num = str("28251928")  
-kcube = KCubeBrushlessMotor.CreateKCubeBrushlessMotor(serial_num)
-kcube.Connect(serial_num)
+def main() :
     
-time.sleep(0.25)
-kcube.StartPolling(250)
-time.sleep(0.25)  
-
-kcube.EnableDevice()
-time.sleep(0.25)  
-
-       
-device_info = kcube.GetDeviceInfo()
-print(device_info.Description)
-
-if not kcube.IsSettingsInitialized():
-    kcube.WaitForSettingsInitialized(10000)  
-    assert kcube.IsSettingsInitialized() is True
-
-        # Before homing or moving device, ensure the motors configuration is loaded
-m_config = kcube.LoadMotorConfiguration(serial_num,
-                                                DeviceConfiguration.DeviceSettingsUseOptionType.UseDeviceSettings)
-
-time.sleep(1)
-kcube.MaxVelocity = Decimal(30)
+    DeviceManagerCLI.BuildDeviceList()
+            
+    serial_num = str("28251928")  
+    kcube = KCubeBrushlessMotor.CreateKCubeBrushlessMotor(serial_num)
+    kcube.Connect(serial_num)
         
-print("Homing Device...")
-kcube.Home(60000)  # 60 second timeout
-print("Device Homed")
+    time.sleep(0.25)
+    kcube.StartPolling(250)
+    time.sleep(0.25)  
 
-try:
-    # Force any single exposure to be halted
-    camera.stop_video_capture()
-    camera.stop_exposure()
-except (KeyboardInterrupt, SystemExit):
-    raise
+    kcube.EnableDevice()
+    time.sleep(0.25)  
 
-try : 
-    pos = Decimal(52.0)
-    for i in range(10) :
-        kcube.MoveTo(pos, 60000)
-        print(f'{kcube.Position}') 
-        print("----------------------------------------------")
-        print('Capturing image')
-        filename = str(i)+'_image_lab.png'
-        camera.set_image_type(asi.ASI_IMG_RAW16)
-        camera.capture(filename=save_path+filename)
-        print('Saved to %s' % filename)
-        print("----------------------------------------------")
-        i +=1
-        pos += Decimal(1.0)
+        
+    device_info = kcube.GetDeviceInfo()
+    print(device_info.Description)
+
+    if not kcube.IsSettingsInitialized():
+        kcube.WaitForSettingsInitialized(10000)  
+        assert kcube.IsSettingsInitialized() is True
+
+            # Before homing or moving device, ensure the motors configuration is loaded
+    m_config = kcube.LoadMotorConfiguration(serial_num,
+                                                    DeviceConfiguration.DeviceSettingsUseOptionType.UseDeviceSettings)
+
+    time.sleep(1)
+    kcube.MaxVelocity = Decimal(30)
+            
+    print("Homing Device...")
+    kcube.Home(60000)  # 60 second timeout
+    print("Device Homed")
+
+    try:
+        # Force any single exposure to be halted
+        camera.stop_video_capture()
+        camera.stop_exposure()
+    except (KeyboardInterrupt, SystemExit):
+        raise
+
+    try : 
+        pos = Decimal(52.0)
+        for i in range(10) :
+            kcube.MoveTo(pos, 60000)
+            print(f'{kcube.Position}') 
+            capture()
+            i +=1
+            pos += Decimal(1.0)
 
 
-except Exception as e:
-    print("ERROR:", e) 
+    except Exception as e:
+        print("ERROR:", e) 
+def capture() :
+    print("----------------------------------------------")
+    print('Capturing image')
+    filename = str(i)+'_image_lab.png'
+    camera.set_image_type(asi.ASI_IMG_RAW16)
+    camera.capture(filename=save_path+filename)
+    print('Saved to %s' % filename)
+    print("----------------------------------------------")
+
+if __name__=="__main__": 
+    main() 
