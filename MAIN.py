@@ -142,20 +142,17 @@ def main():
             print("----------------------------------------------")
             #capture()
             time.sleep(0.5)
-            for path in Dir_Read('s', path=save_path):
-                disX = Draw_Contour(path)
-                reference = Decimal(52)
-                print("Finished")
+            disX = Draw_Contour(save_path)
+            reference = Decimal(52)
                 
-                new_position = PID(Decimal(0.07) , Decimal(0.08), Decimal(0.01) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
-                print(new_position)
-                if new_position >= pos :
-                    print(new_position)    
+            new_position = PID(Decimal(0.07) , Decimal(0.08), Decimal(0.01) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
+            
+            if new_position >= pos :
+                    print("New_position : " +new_position)    
                     kcube.MoveTo(new_position , 7000)
                     print(f'{kcube.Position}')
-                else :
-                    new_pos = pos+new_position  
-                    print(new_pos)    
+            else : 
+                    print("New_position : " +new_position)    
                     kcube.MoveTo(new_position , 7000)
                     print(f'{kcube.Position}')
             time.sleep(0.5)
@@ -172,18 +169,7 @@ def main():
                  
     except Exception as e:
         print("ERROR:", e)   
-'''       
-def capture() :
-    for j in range(10):
-        print("----------------------------------------------")
-        print('Capturing image')
-        filename = str(j)+'_image_lab.png'
-        camera.set_image_type(asi.ASI_IMG_RAW16)
-        camera.capture(filename=save_path+filename)
-        print('Saved to %s' % filename)
-        print("----------------------------------------------")
-        j=+1
-'''
+        
 def Draw_Contour(path) :
     dot1 = cv2.imread(image_ref)
     dot2 = cv2.imread(path)
