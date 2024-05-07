@@ -10,8 +10,8 @@ import sys
 from SolExDataCube import Dir_Read
 import clr
 
-image_ref = r"C:\Users\Asus\Desktop\test_image_ref.png"
-save_path = r"C:\Users\Asus\Desktop\LAB_TEST\REAL_DATA"
+image_ref = r"C:\Users\Asus\Desktop\LAB_TEST\REF\REF.png"
+save_path = r"C:\\Users\\Asus\\Desktop\LAB_TEST\DATA2\\"
 asi.init('C:\\Users\\Asus\\AppData\\Local\\Programs\\Python\\Python310\\Lib\\ASI SDK\\lib\\x64\ASICamera2.lib')
 pattern = re.compile(r'(\d+)\.png')
 os.chdir(save_path)
@@ -45,15 +45,14 @@ camera.set_control_value(asi.ASI_BANDWIDTHOVERLOAD, camera.get_controls()['BandW
 camera.disable_dark_subtract()
 
 camera.set_control_value(asi.ASI_GAIN, 95) #ปรับค่าความละเอียด
-camera.set_control_value(asi.ASI_EXPOSURE, 1165) #microseconds #ปรับค่าการรับแสง
+camera.set_control_value(asi.ASI_EXPOSURE, 293000) #microseconds #ปรับค่าการรับแสง
 camera.set_control_value(asi.ASI_WB_B, 0)  #ปรับค่าblue component of white balance
 camera.set_control_value(asi.ASI_WB_R, 0) #ปรับค่าred component of white balance
 camera.set_control_value(asi.ASI_GAMMA, 0) #ปรับค่าการเปลี่ยนสีจากสีดำเป็นสีขาว gamma with range 1 to 100 (nomnally 50)
 camera.set_control_value(asi.ASI_BRIGHTNESS, 10)
 camera.set_control_value(asi.ASI_FLIP, 0) #ปรับการหมุนรูป
 
-e_prev = Decimal(0)
-   
+  
 clr.AddReference("C:\\Program Files\\Thorlabs\\Kinesis\\Thorlabs.MotionControl.DeviceManagerCLI.dll.")
 clr.AddReference("C:\\Program Files\\Thorlabs\\Kinesis\\Thorlabs.MotionControl.GenericMotorCLI.dll.")
 clr.AddReference("C:\\Program Files\\Thorlabs\\Kinesis\\Thorlabs.MotionControl.KCube.BrushlessMotorCLI.dll.")
@@ -64,6 +63,8 @@ from Thorlabs.MotionControl.GenericMotorCLI import *
 #from Thorlabs.MotionControl.PositionReadoutEncoderCLI import *
 from Thorlabs.MotionControl.KCube.BrushlessMotorCLI import *
 from System import Decimal
+
+e_prev = Decimal(0)
 
 def PID(Kp , Ki , Kd , setpoint , measurement ): # measurement เป็นตำแหน่งที่จุด offset จากจุดศูนย์กลาง รับค่าจากกล้อง/เซนเซอร์....
     global time, e_prev# Value of offset - when the error is equal zero
@@ -128,26 +129,36 @@ def main():
             camera.stop_exposure()
         except (KeyboardInterrupt, SystemExit):
             raise
+        
+        kcube.MoveTo(Decimal(52), 7000)
 
         for i in range(20) :
-            
-            capture()
-            
-            for save_path in Dir_Read('s', path=save_path):
-                Draw_Contour()
-                disX = Draw_Contour()
-                reference = Decimal(0)
-                    
-                while(True) :
-                    new_position = PID(Decimal(0.07) , Decimal(0.08), Decimal(0.01) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
-                    print(new_position)
-                    if new_position >= Decimal(0.01) :
-                        new_pos = pos-new_position
-                    else :
-                        new_pos = pos+new_position  
-                        print(new_pos)    
-                        kcube.MoveTo(new_pos , 5000)
-                        print(f'{kcube.Position}')
+            print("----------------------------------------------")
+            print('Capturing image')
+            filename = str(i)+'_image_lab.png'
+            camera.set_image_type(asi.ASI_IMG_RAW16)
+            camera.capture(filename=save_path+filename)
+            print('Saved to %s' % filename)
+            print("----------------------------------------------")
+            #capture()
+            time.sleep(0.5)
+            for path in Dir_Read('s', path=save_path):
+                disX = Draw_Contour(path)
+                reference = Decimal(52)
+                print("Finished")
+                
+                new_position = PID(Decimal(0.07) , Decimal(0.08), Decimal(0.01) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
+                print(new_position)
+                if new_position >= pos :
+                    print(new_position)    
+                    kcube.MoveTo(new_position , 7000)
+                    print(f'{kcube.Position}')
+                else :
+                    new_pos = pos+new_position  
+                    print(new_pos)    
+                    kcube.MoveTo(new_position , 7000)
+                    print(f'{kcube.Position}')
+            time.sleep(0.5)
             i=+1
                 
         kcube.Home(60000)
@@ -161,7 +172,7 @@ def main():
                  
     except Exception as e:
         print("ERROR:", e)   
-        
+'''       
 def capture() :
     for j in range(10):
         print("----------------------------------------------")
@@ -172,10 +183,10 @@ def capture() :
         print('Saved to %s' % filename)
         print("----------------------------------------------")
         j=+1
-
-def Draw_Contour() :
+'''
+def Draw_Contour(path) :
     dot1 = cv2.imread(image_ref)
-    dot2 = cv2.imread(save_path)
+    dot2 = cv2.imread(path)
         
     wid = dot1.shape[1] 
     hgt = dot1.shape[0] 
