@@ -7,6 +7,7 @@ from matplotlib import pyplot as plt
 import time
 import sys
 from SolExDataCube import Dir_Read
+import csv
 
 
 image_ref = r"C:\Users\Asus\Desktop\LAB_TEST\REF\REF.png"
@@ -89,18 +90,17 @@ def Draw_Contour(path) :
         distance_y = cy_ref-center_y
                         
         print("-------------------------------------------------")
-        print(save_path)
         print('center of ref - x : ' + str(cx_ref) + ' , y : '+ str(cy_ref))
         print('center of object - x : ' + str(center_x) + ' , y : '+ str(center_y))
         print("Distance between objects - x : " + str(distance_x) + " , y : " + str(distance_y))
 
         # Normalized
-        CX_ref_nor = cx_ref/4656
-        CY_ref_nor = cy_ref/3520
-        center_x_nor = center_x/4656
-        center_y_nor = center_y/3520
-        disX_nor = distance_x/4656
-        disY_nor = distance_y/3520
+        CX_ref_nor = (cx_ref/4656)*0.0038
+        CY_ref_nor = (cy_ref/3520)*0.0038
+        center_x_nor = (center_x/4656)*0.0038
+        center_y_nor = (center_y/3520)*0.0038
+        disX_nor = (distance_x/4656)*0.0038
+        disY_nor = (distance_y/3520)*0.0038
             
         print("--------------------Normalize--------------------")
         print('CX_ref = ' , CX_ref_nor)
@@ -128,6 +128,9 @@ def Draw_Contour(path) :
         return disX_nor
     else:
          print("No contours found.")  
+
+position=[]
+
 def main() :
     try :
         pos = 50
@@ -137,7 +140,7 @@ def main() :
             print("----------------------------------------------")
             time.sleep(0.5)
             disX = Draw_Contour(path)
-            reference = 52
+            reference = 40
                 
             new_position = PID(0.32 , 0.08 , 0.02 , reference , disX) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
             
@@ -146,6 +149,11 @@ def main() :
             else : 
                     print("New_position : " + str(new_position)    )
             time.sleep(0.5)
+            position.append(new_position)
+            
+            plt.plot(position)
+            plt.show()
+            
             i=+1
     except Exception as e:
         print("ERROR:", e)
