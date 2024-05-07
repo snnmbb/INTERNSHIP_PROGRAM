@@ -9,6 +9,15 @@ import time
 import sys
 import clr
 
+clr.AddReference("C:\\Program Files\\Thorlabs\\Kinesis\\Thorlabs.MotionControl.DeviceManagerCLI.dll.")
+clr.AddReference("C:\\Program Files\\Thorlabs\\Kinesis\\Thorlabs.MotionControl.GenericMotorCLI.dll.")
+clr.AddReference("C:\\Program Files\\Thorlabs\\Kinesis\\Thorlabs.MotionControl.KCube.BrushlessMotorCLI.dll.")
+
+from Thorlabs.MotionControl.DeviceManagerCLI import *
+from Thorlabs.MotionControl.GenericMotorCLI import *
+#from Thorlabs.MotionControl.PositionReadoutEncoderCLI import *
+from Thorlabs.MotionControl.KCube.BrushlessMotorCLI import *
+from System import Decimal
 
 save_path = r"C:\\Users\\Asus\\Desktop\LAB_TEST\DATA2\\"
 asi.init('C:\\Users\\Asus\\AppData\\Local\\Programs\\Python\\Python310\\Lib\\ASI SDK\\lib\\x64\ASICamera2.lib')
@@ -41,20 +50,16 @@ camera.set_control_value(asi.ASI_BANDWIDTHOVERLOAD, camera.get_controls()['BandW
 camera.disable_dark_subtract()
 
 camera.set_control_value(asi.ASI_GAIN, 95) #ปรับค่าความละเอียด
-camera.set_control_value(asi.ASI_EXPOSURE, 1165) #microseconds #ปรับค่าการรับแสง
+camera.set_control_value(asi.ASI_EXPOSURE, 295) #microseconds #ปรับค่าการรับแสง
 camera.set_control_value(asi.ASI_WB_B, 0)  #ปรับค่าblue component of white balance
 camera.set_control_value(asi.ASI_WB_R, 0) #ปรับค่าred component of white balance
-camera.set_control_value(asi.ASI_GAMMA, 0) #ปรับค่าการเปลี่ยนสีจากสีดำเป็นสีขาว gamma with range 1 to 100 (nomnally 50)
+camera.set_control_value(asi.ASI_GAMMA, 0) #ปรับค่าการเปลี่ยนสีจากสีดำเป็นสีขาว gamma with range 1 to 100 (normally 50)
 camera.set_control_value(asi.ASI_BRIGHTNESS, 10)
 camera.set_control_value(asi.ASI_FLIP, 0) #ปรับการหมุนรูป
 
 print('Enabling stills mode')
 
-from Thorlabs.MotionControl.DeviceManagerCLI import *
-from Thorlabs.MotionControl.GenericMotorCLI import *
-#from Thorlabs.MotionControl.PositionReadoutEncoderCLI import *
-from Thorlabs.MotionControl.KCube.BrushlessMotorCLI import *
-from System import Decimal
+
 
 def main() :
     
@@ -95,31 +100,29 @@ def main() :
         camera.stop_video_capture()
         camera.stop_exposure()
     except (KeyboardInterrupt, SystemExit):
+        print('err1')
         raise
 
     try : 
-        pos = Decimal(45)
+        pos = Decimal(51)
         for i in range(10) :
             kcube.MoveTo(pos, 60000)
             print(f'{kcube.Position}') 
-            capture()
+            print("----------------------------------------------")
+            print('Capturing image')
+            filename = str(i)+'_image_lab.png'
+            camera.set_image_type(asi.ASI_IMG_RAW16)
+            camera.capture(filename=save_path+filename)
+            print('Saved to %s' % filename)
+            print("----------------------------------------------")
             i +=1
             pos += Decimal(0.2)
 
 
     except Exception as e:
         print("ERROR:", e) 
+
         
-def capture() :
-    for j in range(10):
-        print("----------------------------------------------")
-        print('Capturing image')
-        filename = str(j)+'_image_lab.png'
-        camera.set_image_type(asi.ASI_IMG_RAW16)
-        camera.capture(filename=save_path+filename)
-        print('Saved to %s' % filename)
-        print("----------------------------------------------")
-        j=+1
 
 if __name__=="__main__": 
     main() 
