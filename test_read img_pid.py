@@ -95,12 +95,12 @@ def Draw_Contour(path) :
         print("Distance between objects - x : " + str(distance_x) + " , y : " + str(distance_y))
 
         # Normalized
-        CX_ref_nor = (cx_ref/4656)*0.0038
-        CY_ref_nor = (cy_ref/3520)*0.0038
-        center_x_nor = (center_x/4656)*0.0038
-        center_y_nor = (center_y/3520)*0.0038
-        disX_nor = (distance_x/4656)*0.0038
-        disY_nor = (distance_y/3520)*0.0038
+        CX_ref_nor = cx_ref*0.0038
+        CY_ref_nor = cy_ref*0.0038
+        center_x_nor = center_x*0.0038
+        center_y_nor = center_y*0.0038
+        disX_nor = distance_x*0.0038
+        disY_nor = distance_y*0.0038
             
         print("--------------------Normalize--------------------")
         print('CX_ref = ' , CX_ref_nor)
