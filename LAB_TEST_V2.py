@@ -10,7 +10,7 @@ import sys
 import clr
 
 
-save_path = r"C:\\Users\\Asus\\Desktop\LAB_TEST\\"
+save_path = r"C:\\Users\\Asus\\Desktop\LAB_TEST\DATA2\\"
 asi.init('C:\\Users\\Asus\\AppData\\Local\\Programs\\Python\\Python310\\Lib\\ASI SDK\\lib\\x64\ASICamera2.lib')
 
 num_cameras = asi.get_num_cameras()
@@ -98,13 +98,13 @@ def main() :
         raise
 
     try : 
-        pos = Decimal(52.0)
+        pos = Decimal(45)
         for i in range(10) :
             kcube.MoveTo(pos, 60000)
             print(f'{kcube.Position}') 
             capture()
             i +=1
-            pos += Decimal(1.0)
+            pos += Decimal(0.2)
 
 
     except Exception as e:
