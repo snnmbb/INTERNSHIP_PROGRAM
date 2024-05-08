@@ -142,7 +142,7 @@ def main() :
             disX = Draw_Contour(path)
             reference = 0 #จุดที่แสงอยู่จุดศูนย์กลาง               
             err = PID(0.32 , 0.08, 0.02, reference , disX) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
-            print("Error : " + err)
+            print("Error : " + str(err))
             if err> reference :
                 new_position = pos-err
                 print("New_position : " + str(new_position)   ) 
