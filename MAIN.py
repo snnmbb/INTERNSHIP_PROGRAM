@@ -148,15 +148,13 @@ def main():
             new_position = PID(Decimal(0.07) , Decimal(0.08), Decimal(0.01) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
             
             if new_position > reference :
-                    new_position = pos-new_position
-                    print("New_position : " +new_position)    
-                    kcube.MoveTo(new_position , 7000)
-                    print(f'{kcube.Position}')
-            else : 
-                    new_position = pos+new_position
-                    print("New_position : " +new_position)    
-                    kcube.MoveTo(new_position , 7000)
-                    print(f'{kcube.Position}')
+                new_position = pos-new_position
+                print("New_position : " + str(new_position)   ) 
+            elif new_position < reference: 
+                new_position = pos+new_position
+                print("New_position : " + str(new_position)    )
+            else :
+                break
             time.sleep(0.5)
             i=+1
                 
