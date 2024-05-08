@@ -140,17 +140,17 @@ def main() :
             print("----------------------------------------------")
             time.sleep(0.5)
             disX = Draw_Contour(path)
-            reference = 0 #จุดที่แสงอยู่จุดศูนย์กลาง
-                
+            reference = 0 #จุดที่แสงอยู่จุดศูนย์กลาง               
             new_position = PID(0.32 , 0.08, 0.02, reference , disX) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
             print(new_position)
-            while(new_position!=reference):
-                if new_position > reference :
-                        new_position = pos-new_position
-                        print("New_position : " + str(new_position)   ) 
-                else : 
-                        new_position = pos+new_position
-                        print("New_position : " + str(new_position)    )
+            if new_position > reference :
+                new_position = pos-new_position
+                print("New_position : " + str(new_position)   ) 
+            elif new_position < reference: 
+                new_position = pos+new_position
+                print("New_position : " + str(new_position)    )
+            else :
+                break
             time.sleep(0.5)
             #disx.append(disX)
             
