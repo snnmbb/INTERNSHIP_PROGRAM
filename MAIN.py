@@ -45,7 +45,7 @@ camera.set_control_value(asi.ASI_BANDWIDTHOVERLOAD, camera.get_controls()['BandW
 camera.disable_dark_subtract()
 
 camera.set_control_value(asi.ASI_GAIN, 95) #ปรับค่าความละเอียด
-camera.set_control_value(asi.ASI_EXPOSURE, 293000) #microseconds #ปรับค่าการรับแสง
+camera.set_control_value(asi.ASI_EXPOSURE, 295) #microseconds #ปรับค่าการรับแสง
 camera.set_control_value(asi.ASI_WB_B, 0)  #ปรับค่าblue component of white balance
 camera.set_control_value(asi.ASI_WB_R, 0) #ปรับค่าred component of white balance
 camera.set_control_value(asi.ASI_GAMMA, 0) #ปรับค่าการเปลี่ยนสีจากสีดำเป็นสีขาว gamma with range 1 to 100 (nomnally 50)
@@ -132,7 +132,9 @@ def main():
         
         kcube.MoveTo(Decimal(52), 7000)
 
-        for i in range(20) :
+        # for i in range(20) :
+        i = 1
+        for path in Dir_Read('s'):
             print("----------------------------------------------")
             print('Capturing image')
             filename = str(i)+'_image_lab.png'
@@ -142,16 +144,17 @@ def main():
             print("----------------------------------------------")
             #capture()
             time.sleep(0.5)
-            disX = Draw_Contour(save_path)
+            disX = Draw_Contour(path)
             reference = Decimal(0)
                 
-            new_position = PID(Decimal(0.07) , Decimal(0.08), Decimal(0.01) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
-            
-            if new_position > reference :
-                new_position = pos-new_position
+            err = PID(Decimal(0.07) , Decimal(0.08), Decimal(0.01) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
+            new_position = Decimal(0)
+            print("Error : " + str(err))
+            if err> reference :
+                new_position = pos-err
                 print("New_position : " + str(new_position)   ) 
             elif new_position < reference: 
-                new_position = pos+new_position
+                new_position = pos+err
                 print("New_position : " + str(new_position)    )
             else :
                 break
@@ -232,7 +235,6 @@ def Draw_Contour(path) :
             #print('sum', len(np.argwhere(mask_or == np.amax(mask_or))))
             
         print("-------------------------------------------------")
-        print(save_path)
         print('center of ref - x : ' + str(cx_ref) + ' , y : '+ str(cy_ref))
         print('center of object - x : ' + str(center_x) + ' , y : '+ str(center_y))
         print("Distance between objects - x : " + str(distance_x) + " , y : " + str(distance_y))

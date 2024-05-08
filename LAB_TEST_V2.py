@@ -105,7 +105,7 @@ def main() :
 
     try : 
         pos = Decimal(51)
-        for i in range(10) :
+        for i in range(20) :
             kcube.MoveTo(pos, 60000)
             print(f'{kcube.Position}') 
             print("----------------------------------------------")
