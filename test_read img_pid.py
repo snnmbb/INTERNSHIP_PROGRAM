@@ -95,12 +95,12 @@ def Draw_Contour(path) :
         print("Distance between objects - x : " + str(distance_x) + " , y : " + str(distance_y))
 
         # Normalized
-        CX_ref_nor = cx_ref*0.0038
-        CY_ref_nor = cy_ref*0.0038
-        center_x_nor = center_x*0.0038
-        center_y_nor = center_y*0.0038
-        disX_nor = distance_x*0.0038
-        disY_nor = distance_y*0.0038
+        CX_ref_nor = cx_ref*0.00038
+        CY_ref_nor = cy_ref*0.00038
+        center_x_nor = center_x*0.00038
+        center_y_nor = center_y*0.00038
+        disX_nor = distance_x*0.00038
+        disY_nor = distance_y*0.00038
             
         print("--------------------Normalize--------------------")
         print('CX_ref = ' , CX_ref_nor)
@@ -129,30 +129,33 @@ def Draw_Contour(path) :
     else:
          print("No contours found.")  
 
-position=[]
+disx=[]
 
 def main() :
     try :
-        pos = 50
+        pos = 52 #ตำแหน่งที่ทำให้แสงอยู่ใกล้เคียงกับRefที่สุด
         for path in Dir_Read('s', path=save_path):
             print("----------------------------------------------")
             print('Capturing image')
             print("----------------------------------------------")
             time.sleep(0.5)
             disX = Draw_Contour(path)
-            reference = 40
+            reference = 0 #จุดที่แสงอยู่จุดศูนย์กลาง
                 
-            new_position = PID(0.32 , 0.08 , 0.02 , reference , disX) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
-            
-            if new_position >= pos :
-                    print("New_position : " + str(new_position)   ) 
-            else : 
-                    print("New_position : " + str(new_position)    )
+            new_position = PID(0.32 , 0.08, 0.02, reference , disX) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
+            print(new_position)
+            while(new_position!=reference):
+                if new_position > reference :
+                        new_position = pos-new_position
+                        print("New_position : " + str(new_position)   ) 
+                else : 
+                        new_position = pos+new_position
+                        print("New_position : " + str(new_position)    )
             time.sleep(0.5)
-            position.append(new_position)
+            #disx.append(disX)
             
-            plt.plot(position)
-            plt.show()
+            #plt.plot(disx)
+            #plt.show()
             
             i=+1
     except Exception as e:
