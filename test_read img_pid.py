@@ -129,7 +129,7 @@ def Draw_Contour(path) :
     else:
          print("No contours found.")  
 
-disx=[]
+error=[]
 
 def main() :
     try :
@@ -141,21 +141,22 @@ def main() :
             time.sleep(0.5)
             disX = Draw_Contour(path)
             reference = 0 #จุดที่แสงอยู่จุดศูนย์กลาง               
-            new_position = PID(0.32 , 0.08, 0.02, reference , disX) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
-            print(new_position)
-            if new_position > reference :
-                new_position = pos-new_position
+            err = PID(0.32 , 0.08, 0.02, reference , disX) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
+            print("Error : " + err)
+            if err> reference :
+                new_position = pos-err
                 print("New_position : " + str(new_position)   ) 
             elif new_position < reference: 
-                new_position = pos+new_position
+                new_position = pos+err
                 print("New_position : " + str(new_position)    )
             else :
                 break
             time.sleep(0.5)
-            #disx.append(disX)
+            error.append(disX)
             
-            #plt.plot(disx)
-            #plt.show()
+            plt.plot(error)
+            plt.gca().invert_yaxis()
+            plt.show()
             
             i=+1
     except Exception as e:
