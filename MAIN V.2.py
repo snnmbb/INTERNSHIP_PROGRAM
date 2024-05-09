@@ -271,18 +271,18 @@ def main():
                 err_pos = PID(Decimal(1) , Decimal(0.08), Decimal(0.01) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
                 print("Error : " + str(err_pos))
                 
-                if err > reference :
+                if err_pos > reference :
                     new_position = pos-err_pos
                     kcube.MoveTo(new_position, 7000)
                     print("New_position : " + str(new_position)   ) 
-                elif err < reference: 
+                elif err_pos < reference: 
                     new_position = pos+err_pos
                     kcube.MoveTo(new_position, 7000)
                     print("New_position : " + str(new_position)    )
-                elif  err == reference: 
+                elif  err_pos == reference: 
                     break
             time.sleep(0.5)
-            error.append(err)
+            error.append(err_pos)
             
             plt.plot(error)
             plt.gca().invert_yaxis()
