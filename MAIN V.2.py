@@ -63,7 +63,8 @@ from System import Decimal
 e_prev = Decimal(0)
 error = []
 i = 0
-new_position = Decimal(0)
+pos = Decimal(60.0) # ตำแหน่งเริ่มต้นที่มอเตอร์ขยับไปให้แสงตกในกล้อง
+new_position = pos
 reference = Decimal(0)
 image_ref = r"C:\Users\Asus\Desktop\LAB_TEST\REF\REF.png"
 save_path = r"C:\\Users\\Asus\\Desktop\LAB_TEST\DATA2\\"
@@ -215,7 +216,7 @@ def main():
         serial_num = str("28251928")  
         kcube = KCubeBrushlessMotor.CreateKCubeBrushlessMotor(serial_num)
         kcube.Connect(serial_num)
-        pos = Decimal(60.0) # ตำแหน่งเริ่มต้นที่มอเตอร์ขยับไปให้แสงตกในกล้อง
+
 
         #encoder =  ReadoutEncoder.CreatePositionReadoutEncoder(serial_num)
         
