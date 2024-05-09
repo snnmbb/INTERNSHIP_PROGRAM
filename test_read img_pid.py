@@ -136,6 +136,7 @@ def main() :
     try :
         pos = 52 #ตำแหน่งที่ทำให้แสงอยู่ใกล้เคียงกับRefที่สุด
         new_position = pos
+        new_pos = []
         
         for path in Dir_Read('s', path=save_path):
             print("----------------------------------------------")
@@ -144,7 +145,7 @@ def main() :
             time.sleep(0.5)
             disX = Draw_Contour(path)
             reference = 0 #จุดที่แสงอยู่จุดศูนย์กลาง               
-            err = PID(0.32 , 0.08, 0.02, reference , disX) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
+            err = PID(1, 0.1, 1, reference , disX) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
             print("Error : " + str(err))
             if err> reference :
                 new_position = pos-err
@@ -156,8 +157,19 @@ def main() :
                 break
             time.sleep(0.5)
             error.append(err)
+            new_pos.append(new_position)
             
+            plt.subplot(1, 2, 1)
             plt.plot(error)
+            plt.xlabel('Index')
+            plt.ylabel('ERR')
+            
+            plt.subplot(1, 2, 2)
+            plt.plot(new_pos)
+            plt.xlabel('Index')
+            plt.ylabel('NEW_POSITION')
+            
+            plt.tight_layout()
             plt.gca().invert_yaxis()
             plt.show()
             

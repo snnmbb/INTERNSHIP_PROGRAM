@@ -81,11 +81,11 @@ def PID(Kp , Ki , Kd , setpoint , measurement ): # measurement เป็นต�
     P = Kp*e
     I = Ki+e
     D = Kd*(e-e_prev) 
-    pid = P + I + D
+    new_pos = P + I + D
     # update stored data for next iteration
     e_prev = e
     time_prev = time
-    return pid
+    return new_pos
 
 #-----------------------------------------------DRAW CONTOUR FUNCTION--------------------------------------------------------------------
 def Draw_Contour(path) :
@@ -268,15 +268,15 @@ def main():
                 time.sleep(0.5)
                 disX = Draw_Contour(path)
                 
-                err = PID(Decimal(1) , Decimal(0.08), Decimal(0.01) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
+                err_pos = PID(Decimal(1) , Decimal(0.08), Decimal(0.01) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
                 print("Error : " + str(err))
                 
                 if err > reference :
-                    new_position = pos-err
+                    new_position = pos-err_pos
                     kcube.MoveTo(new_position, 7000)
                     print("New_position : " + str(new_position)   ) 
                 elif err < reference: 
-                    new_position = pos+err
+                    new_position = pos+err_pos
                     kcube.MoveTo(new_position, 7000)
                     print("New_position : " + str(new_position)    )
                 elif  err == reference: 
