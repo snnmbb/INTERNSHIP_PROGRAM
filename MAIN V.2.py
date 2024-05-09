@@ -282,7 +282,7 @@ def main():
                 elif  err == reference: 
                     break
             time.sleep(0.5)
-            error.append(disX)
+            error.append(err)
             
             plt.plot(error)
             plt.gca().invert_yaxis()
