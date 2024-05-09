@@ -67,7 +67,7 @@ pos = Decimal(60.0) # ตำแหน่งเริ่มต้นที่ม�
 new_position = pos
 reference = Decimal(0)
 image_ref = r"C:\Users\Asus\Desktop\LAB_TEST\REF\REF.png"
-save_path = r"C:\\Users\\Asus\\Desktop\LAB_TEST\DATA2\\"
+save_path = r"C:\\Users\\Asus\\Desktop\LAB_TEST\DATA3\\"
 asi.init('C:\\Users\\Asus\\AppData\\Local\\Programs\\Python\\Python310\\Lib\\ASI SDK\\lib\\x64\ASICamera2.lib')
 pattern = re.compile(r'(\d+)\.png')
 os.chdir(save_path)
