@@ -262,10 +262,10 @@ def main():
             
             capture()
             
-            for save_path in Dir_Read('s', path=save_path):
+            for path in Dir_Read('s', path=save_path):
 
                 time.sleep(0.5)
-                disX = Draw_Contour(save_path)
+                disX = Draw_Contour(path)
                 
                 err = PID(Decimal(1) , Decimal(0.08), Decimal(0.01) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
                 print("Error : " + str(err))
