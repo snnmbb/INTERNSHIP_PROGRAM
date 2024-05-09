@@ -131,9 +131,12 @@ def Draw_Contour(path) :
 
 error=[]
 
+
 def main() :
     try :
         pos = 52 #ตำแหน่งที่ทำให้แสงอยู่ใกล้เคียงกับRefที่สุด
+        new_position = pos
+        
         for path in Dir_Read('s', path=save_path):
             print("----------------------------------------------")
             print('Capturing image')
@@ -152,13 +155,12 @@ def main() :
             else :
                 break
             time.sleep(0.5)
-            error.append(disX)
+            error.append(err)
             
             plt.plot(error)
             plt.gca().invert_yaxis()
             plt.show()
             
-            i=+1
     except Exception as e:
         print("ERROR:", e)
 
