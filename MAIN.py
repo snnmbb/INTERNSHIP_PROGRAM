@@ -45,7 +45,7 @@ camera.set_control_value(asi.ASI_BANDWIDTHOVERLOAD, camera.get_controls()['BandW
 camera.disable_dark_subtract()
 
 camera.set_control_value(asi.ASI_GAIN, 95) #ปรับค่าความละเอียด
-camera.set_control_value(asi.ASI_EXPOSURE, 295) #microseconds #ปรับค่าการรับแสง
+camera.set_control_value(asi.ASI_EXPOSURE, 3353) #microseconds #ปรับค่าการรับแสง
 camera.set_control_value(asi.ASI_WB_B, 0)  #ปรับค่าblue component of white balance
 camera.set_control_value(asi.ASI_WB_R, 0) #ปรับค่าred component of white balance
 camera.set_control_value(asi.ASI_GAMMA, 0) #ปรับค่าการเปลี่ยนสีจากสีดำเป็นสีขาว gamma with range 1 to 100 (nomnally 50)
@@ -89,7 +89,7 @@ def main():
         serial_num = str("28251928")  
         kcube = KCubeBrushlessMotor.CreateKCubeBrushlessMotor(serial_num)
         kcube.Connect(serial_num)
-        pos = Decimal(50.0) # ตำแหน่งเริ่มต้นที่มอเตอร์ขยับไปให้แสงตกในกล้อง
+        pos = Decimal(60.0) # ตำแหน่งเริ่มต้นที่มอเตอร์ขยับไปให้แสงตกในกล้อง
 
         #encoder =  ReadoutEncoder.CreatePositionReadoutEncoder(serial_num)
         
@@ -130,14 +130,20 @@ def main():
         except (KeyboardInterrupt, SystemExit):
             raise
         
-        kcube.MoveTo(Decimal(52), 7000)
+        kcube.MoveTo(pos, 7000)
 
-        # for i in range(20) :
-        i = 1
+        error = []
+        i = 0
+        new_position = Decimal(0)
+        reference = Decimal(0)
         for path in Dir_Read('s'):
             print("----------------------------------------------")
             print('Capturing image')
-            filename = str(i)+'_image_lab.png'
+            
+            if i < 10:
+                filename = '00'+ str(i)+'_image_lab.png'
+            else:
+                filename = '0'+ str(i)+'_image_lab.png'
             camera.set_image_type(asi.ASI_IMG_RAW16)
             camera.capture(filename=save_path+filename)
             print('Saved to %s' % filename)
@@ -145,22 +151,28 @@ def main():
             #capture()
             time.sleep(0.5)
             disX = Draw_Contour(path)
-            reference = Decimal(0)
                 
-            err = PID(Decimal(0.07) , Decimal(0.08), Decimal(0.01) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
-            new_position = Decimal(0)
+            err = PID(Decimal(1) , Decimal(0.08), Decimal(0.01) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
+            
             print("Error : " + str(err))
-            if err> reference :
+            if err > reference :
                 new_position = pos-err
+                kcube.MoveTo(new_position, 7000)
                 print("New_position : " + str(new_position)   ) 
-            elif new_position < reference: 
+            elif err < reference: 
                 new_position = pos+err
+                kcube.MoveTo(new_position, 7000)
                 print("New_position : " + str(new_position)    )
-            else :
+            elif  err == reference: 
                 break
             time.sleep(0.5)
-            i=+1
-                
+            error.append(disX)
+            
+            plt.plot(error)
+            plt.gca().invert_yaxis()
+            plt.show()
+            i = i+1
+            
         kcube.Home(60000)
         print("Finished")
 
@@ -176,10 +188,13 @@ def main():
 def Draw_Contour(path) :
     dot1 = cv2.imread(image_ref)
     dot2 = cv2.imread(path)
+    print('/n/nTest', path, 'Test/n/n')
+    if dot2 is None:
+        print(f"Error: Unable to load image at {path}")
         
     wid = dot1.shape[1] 
     hgt = dot1.shape[0] 
-        
+    
     print('image pixels size = ' , str(wid) + " x " + str(hgt))
     
     # Convert color to grayscale
