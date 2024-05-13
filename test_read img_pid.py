@@ -145,7 +145,7 @@ def main() :
             time.sleep(0.5)
             disX = Draw_Contour(path)
             reference = 0 #จุดที่แสงอยู่จุดศูนย์กลาง               
-            err = PID(1, 0.1, 1, reference , disX) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
+            err = PID(0.5, 0.04, 0.8, reference , disX) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
             print("Error : " + str(err))
             if err> reference :
                 new_position = pos-err
@@ -163,8 +163,10 @@ def main() :
                 writer = csv.writer(f)
                 for err_value in error:
                     writer.writerow([err_value])
+                '''
                 for newpos_value in new_pos:
                     writer.writerow([newpos_value])
+                '''
             
             '''
             plt.subplot(1, 2, 1)
