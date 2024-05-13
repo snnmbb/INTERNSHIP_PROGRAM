@@ -159,6 +159,14 @@ def main() :
             error.append(err)
             new_pos.append(new_position)
             
+            with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', encoding='UTF8', newline='') as f:  
+                writer = csv.writer(f)
+                for err_value in error:
+                    writer.writerow([err_value])
+                for newpos_value in new_pos:
+                    writer.writerow([newpos_value])
+            
+            '''
             plt.subplot(1, 2, 1)
             plt.plot(error)
             plt.xlabel('Index')
@@ -172,6 +180,7 @@ def main() :
             plt.tight_layout()
             plt.gca().invert_yaxis()
             plt.show()
+            '''
             
     except Exception as e:
         print("ERROR:", e)
