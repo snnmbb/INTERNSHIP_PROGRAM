@@ -268,9 +268,9 @@ def main():
                 time.sleep(0.5)
                 disX = Draw_Contour(path)
                 
-                err_pos = PID(Decimal(1) , Decimal(0.08), Decimal(0.01) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
+                err_pos = PID(Decimal(0.5) , Decimal(0.04), Decimal(0.8) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
                 print("Error : " + str(err_pos))
-                
+
                 if err_pos > reference :
                     new_position = pos-err_pos
                     kcube.MoveTo(new_position, 7000)
