@@ -18,11 +18,11 @@ os.chdir(save_path)
 e_prev = 0
 
 def PID(Kp , Ki , Kd , setpoint , measurement ): # measurement เป็นตำแหน่งที่จุด offset จากจุดศูนย์กลาง รับค่าจากกล้อง/เซนเซอร์....
-    global time, e_prev# Value of offset - when the error is equal zero
+    global time_prev, e_prev# Value of offset - when the error is equal zero
     # PID calculations
     e = setpoint - measurement
     P = Kp*e
-    I = Ki+e
+    I = Ki*(e+e_prev)
     D = Kd*(e-e_prev) 
     pid = P + I + D
     # update stored data for next iteration
@@ -147,10 +147,10 @@ def main() :
             reference = 0 #จุดที่แสงอยู่จุดศูนย์กลาง               
             err = PID(0.5, 0.04, 0.8, reference , disX) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
             print("Error : " + str(err))
-            if err> reference :
+            if err > reference :
                 new_position = pos-err
                 print("New_position : " + str(new_position)   ) 
-            elif new_position < reference: 
+            elif err < reference: 
                 new_position = pos+err
                 print("New_position : " + str(new_position)    )
             else :
@@ -158,17 +158,17 @@ def main() :
             time.sleep(0.5)
             error.append(err)
             new_pos.append(new_position)
-            
+            '''
             with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', encoding='UTF8', newline='') as f:  
                 writer = csv.writer(f)
                 for err_value in error:
                     writer.writerow([err_value])
-                '''
+                
                 for newpos_value in new_pos:
                     writer.writerow([newpos_value])
-                '''
-            
+                
             '''
+            
             plt.subplot(1, 2, 1)
             plt.plot(error)
             plt.xlabel('Index')
@@ -182,7 +182,7 @@ def main() :
             plt.tight_layout()
             plt.gca().invert_yaxis()
             plt.show()
-            '''
+            
             
     except Exception as e:
         print("ERROR:", e)

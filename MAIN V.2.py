@@ -79,7 +79,7 @@ def PID(Kp , Ki , Kd , setpoint , measurement ): # measurement เป็นต�
     # PID calculations
     e = setpoint - measurement
     P = Kp*e
-    I = Ki+e
+    I = Ki*(e+e_prev)
     D = Kd*(e-e_prev) 
     new_pos = P + I + D
     # update stored data for next iteration
