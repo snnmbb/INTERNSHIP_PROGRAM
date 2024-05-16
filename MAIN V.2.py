@@ -198,10 +198,12 @@ def capture() :
     print('Capturing image')
     if i < 10:
         filename = '00'+ str(i)+'_image_lab.png'
+        i+=1
     else:
         filename = '0'+ str(i)+'_image_lab.png'
         camera.set_image_type(asi.ASI_IMG_RAW16)
         camera.capture(filename=save_path+filename)
+        i+=1
         print('Saved to %s' % filename)
         print("----------------------------------------------")
         
@@ -217,10 +219,8 @@ def main():
         kcube = KCubeBrushlessMotor.CreateKCubeBrushlessMotor(serial_num)
         kcube.Connect(serial_num)
 
-
         #encoder =  ReadoutEncoder.CreatePositionReadoutEncoder(serial_num)
-        
-        
+                
         time.sleep(0.25)
         kcube.StartPolling(250)
         time.sleep(0.25)  
