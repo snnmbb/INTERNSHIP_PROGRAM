@@ -9,6 +9,7 @@ import time
 import sys
 from SolExDataCube import Dir_Read
 import clr
+import csv
 
 #-----------------------------------------------SETUP CAMERA--------------------------------------------------------------------
 num_cameras = asi.get_num_cameras()
@@ -62,6 +63,7 @@ from System import Decimal
 #-----------------------------------------------INITIALIZE--------------------------------------------------------------------
 e_prev = Decimal(0)
 error = []
+new_pos = []
 i = 0
 pos = Decimal(55.0) # ตำแหน่งเริ่มต้นที่มอเตอร์ขยับไปให้แสงตกในกล้อง
 new_position = pos
@@ -261,7 +263,8 @@ def main():
         kcube.MoveTo(pos, 7000)
 
         i = 0
-        
+        new_position = Decimal(55)
+            
         while(True ) :
             
             print("----------------------------------------------")
@@ -281,40 +284,52 @@ def main():
                 print('Saved to %s' % filename)
                 print("----------------------------------------------")
             
+            
             for path in Dir_Read('s', path=save_path):
 
                 time.sleep(0.5)
                 disX = Draw_Contour(path)
                 
-                err_pos = PID(Decimal(35) , Decimal(2.4), Decimal(0) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
+                err_pos = PID(Decimal(35) , Decimal(2.5), Decimal(0.10) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
                 print("Error : " + str(err_pos))
 
-                if err_pos > reference :
-                    new_position = pos-err_pos
+                if new_position <= Decimal(52.05 ) and new_position >= Decimal(52) :
+                    print("New_position : " + str(new_position)    )
                     kcube.MoveTo(new_position, 7000)
-                    print("New_position : " + str(new_position)   ) 
+                    return
                 elif err_pos < reference: 
                     new_position = pos+err_pos
-                    kcube.MoveTo(new_position, 7000)
                     print("New_position : " + str(new_position)    )
-                elif  err_pos == reference: 
-                    break
-            time.sleep(0.5)
+                    kcube.MoveTo(new_position, 7000)
+                elif  err_pos > reference: 
+                    new_position = pos-err_pos
+                    print("New_position : " + str(new_position)   )
+                    kcube.MoveTo(new_position, 7000)
+                time.sleep(0.1)
             
-            #error.append(err_pos)
-            #plt.plot(error)
-            #plt.gca().invert_yaxis()
-            #plt.show()
+                error.append(err_pos)
+                new_pos.append(new_position)
+                with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', encoding='UTF8', newline='') as f:  
+                    writer = csv.writer(f)
+                    for err_value in error:
+                        writer.writerow([err_value])
+                
+                    for newpos_value in new_pos:
+                        writer.writerow([newpos_value])
+                #plt.plot(error)
+                #plt.gca().invert_yaxis()
+                #plt.show()
 
-        '''  
-        kcube.Home(60000)
-        print("Finished")
+            '''
+            kcube.Home(60000)
+            print("Finished")
 
         # Stop polling and close device
-        kcube.StopPolling()
-        kcube.Disconnect(True)
-        '''
-                 
+            kcube.StopPolling()
+            kcube.Disconnect(True)
+            '''
+
+                    
     except Exception as e:
         print("ERROR:", e)   
 
