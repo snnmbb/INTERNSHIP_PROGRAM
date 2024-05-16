@@ -39,7 +39,7 @@ camera.set_control_value(asi.ASI_BANDWIDTHOVERLOAD, camera.get_controls()['BandW
 camera.disable_dark_subtract()
 
 camera.set_control_value(asi.ASI_GAIN, 95) #ปรับค่าความละเอียด
-camera.set_control_value(asi.ASI_EXPOSURE, 3353) #microseconds #ปรับค่าการรับแสง
+camera.set_control_value(asi.ASI_EXPOSURE, 5100) #microseconds #ปรับค่าการรับแสง
 camera.set_control_value(asi.ASI_WB_B, 0)  #ปรับค่าblue component of white balance
 camera.set_control_value(asi.ASI_WB_R, 0) #ปรับค่าred component of white balance
 camera.set_control_value(asi.ASI_GAMMA, 0) #ปรับค่าการเปลี่ยนสีจากสีดำเป็นสีขาว gamma with range 1 to 100 (nomnally 50)
@@ -63,10 +63,11 @@ from System import Decimal
 e_prev = Decimal(0)
 error = []
 i = 0
-pos = Decimal(60.0) # ตำแหน่งเริ่มต้นที่มอเตอร์ขยับไปให้แสงตกในกล้อง
+pos = Decimal(55.0) # ตำแหน่งเริ่มต้นที่มอเตอร์ขยับไปให้แสงตกในกล้อง
 new_position = pos
 reference = Decimal(0)
-image_ref = r"C:\Users\Asus\Desktop\LAB_TEST\REF\REF.png"
+
+image_ref = r"C:\Users\Asus\Desktop\LAB_TEST\ref_image_lab.tiff"
 save_path = r"C:\\Users\\Asus\\Desktop\LAB_TEST\DATA3\\"
 asi.init('C:\\Users\\Asus\\AppData\\Local\\Programs\\Python\\Python310\\Lib\\ASI SDK\\lib\\x64\ASICamera2.lib')
 pattern = re.compile(r'(\d+)\.png')
@@ -197,10 +198,10 @@ def capture() :
     print("----------------------------------------------")
     print('Capturing image')
     if i < 10:
-        filename = '00'+ str(i)+'_image_lab.png'
+        filename = '00'+ str(i)+'_image_lab.tiff'
         i+=1
     else:
-        filename = '0'+ str(i)+'_image_lab.png'
+        filename = '0'+ str(i)+'_image_lab.tiff'
         camera.set_image_type(asi.ASI_IMG_RAW16)
         camera.capture(filename=save_path+filename)
         i+=1
@@ -259,16 +260,33 @@ def main():
         
         kcube.MoveTo(pos, 7000)
 
+        i = 0
+        
         while(True ) :
             
-            capture()
+            print("----------------------------------------------")
+            print('Capturing image')
+            if i < 10:
+                filename = '00'+ str(i)+'_image_lab.tiff'
+                camera.set_image_type(asi.ASI_IMG_RAW16)
+                camera.capture(filename=save_path+filename)
+                i+=1
+                print('Saved to %s' % filename)
+                print("----------------------------------------------")
+            else:
+                filename = '0'+ str(i)+'_image_lab.tiff'
+                camera.set_image_type(asi.ASI_IMG_RAW16)
+                camera.capture(filename=save_path+filename)
+                i+=1
+                print('Saved to %s' % filename)
+                print("----------------------------------------------")
             
             for path in Dir_Read('s', path=save_path):
 
                 time.sleep(0.5)
                 disX = Draw_Contour(path)
                 
-                err_pos = PID(Decimal(0.5) , Decimal(0.04), Decimal(0.8) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
+                err_pos = PID(Decimal(35) , Decimal(2.4), Decimal(0) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
                 print("Error : " + str(err_pos))
 
                 if err_pos > reference :
@@ -282,19 +300,20 @@ def main():
                 elif  err_pos == reference: 
                     break
             time.sleep(0.5)
-            error.append(err_pos)
             
-            plt.plot(error)
-            plt.gca().invert_yaxis()
-            plt.show()
-            i = i+1
-            
-            kcube.Home(60000)
-            print("Finished")
+            #error.append(err_pos)
+            #plt.plot(error)
+            #plt.gca().invert_yaxis()
+            #plt.show()
 
-            # Stop polling and close device
-            kcube.StopPolling()
-            kcube.Disconnect(True)
+        '''  
+        kcube.Home(60000)
+        print("Finished")
+
+        # Stop polling and close device
+        kcube.StopPolling()
+        kcube.Disconnect(True)
+        '''
                  
     except Exception as e:
         print("ERROR:", e)   
