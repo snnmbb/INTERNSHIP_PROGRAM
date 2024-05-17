@@ -203,6 +203,11 @@ def capture() :
         
 #-----------------------------------------------MAIN FUNCTION--------------------------------------------------------------------
 def main():
+    
+    kp = Decimal(input("Please enter kp value : "))
+    ki = Decimal(input("Please enter ki value : "))
+    kd = Decimal(input("Please enter kd value : "))
+    pos_1 = Decimal(input("Please enter first position : "))
 
     try:
         
@@ -251,7 +256,7 @@ def main():
         except (KeyboardInterrupt, SystemExit):
             raise
         
-        kcube.MoveTo(pos, 7000)
+        kcube.MoveTo(pos_1, 7000)
 
         i = 0
         new_position = Decimal(55)
@@ -265,7 +270,7 @@ def main():
                 time.sleep(0.5)
                 disX = Draw_Contour(path)
                 
-                err_pos = PID(Decimal(35) , Decimal(2.5), Decimal(0.10) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
+                err_pos = PID(kp , ki, kd , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
                 print("Error : " + str(err_pos))
 
                 if new_position <= Decimal(52.05 ) and new_position >= Decimal(52) :
@@ -282,53 +287,10 @@ def main():
                     kcube.MoveTo(new_position, 7000)
                 time.sleep(0.1)
             i+=1
-            
-            '''
-                error.append(err_pos)
-                new_pos.append(new_position)
-                with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', encoding='UTF8', newline='') as f:  
-                    writer = csv.writer(f)
-                    for err_value in error:
-                        writer.writerow([err_value])
-                
-                    for newpos_value in new_pos:
-                        writer.writerow([newpos_value])
-            '''
 
                     
     except Exception as e:
         print("ERROR:", e)   
-#------------------------------------------------------UI------------------------------------------------------------------        
-class Ui_Dialog(object):
-    def setupUi(self, Dialog):
-        Dialog.setObjectName("Dialog")
-        Dialog.resize(400, 300)
- 
-        self.pushButton = QtWidgets.QPushButton(Dialog)
-        self.pushButton.setGeometry(QtCore.QRect(150, 70, 93, 28))
- 
-        self.label = QtWidgets.QLabel(Dialog)
-        self.label.setGeometry(QtCore.QRect(130, 149, 151, 31))
-        self.label.setText("")
- 
-        self.retranslateUi(Dialog)
-        QtCore.QMetaObject.connectSlotsByName(Dialog)
-        
-        # adding signal and slot
-        self.pushButton.clicked.connect(self.showmsg) 
- 
-    def retranslateUi(self, Dialog):
-        _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
-        self.pushButton.setText(_translate("Dialog", "Click"))
-         
-    def showmsg(self):
-        # slot
-        self.label.setText("You clicked me")
-
-
-
-
         
 #-----------------------------------------------------------------------------------------------------------------------------        
 if __name__ == "__main__":
