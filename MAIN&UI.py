@@ -9,7 +9,9 @@ import time
 import sys
 from SolExDataCube import Dir_Read
 import clr
-import csv
+import sys
+from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 #-----------------------------------------------SETUP CAMERA--------------------------------------------------------------------
 num_cameras = asi.get_num_cameras()
@@ -177,20 +179,6 @@ def Draw_Contour(path) :
         print('disY = ' , disY_nor)
         print("-------------------------------------------------")
                 
-        '''
-        #comment when using linear stage
-        # Show images
-        plt.figure(figsize=(10,6))
-        plt.subplot(3, 3, 1), plt.imshow(dot1, cmap='gray'), plt.xlabel('dot1')
-        plt.subplot(3, 3, 2), plt.imshow(dot2, cmap='gray'), plt.xlabel('dot2')
-        plt.subplot(3, 3, 3), plt.imshow(dot1+dot2, cmap='gray'), plt.xlabel('dot1+dot2')
-        plt.subplot(3, 3, 4), plt.imshow(mask1, cmap='gray'), plt.xlabel('mask1')
-        plt.subplot(3, 3, 5), plt.imshow(mask2, cmap='gray'), plt.xlabel('mask2')
-        plt.subplot(3, 3, 6), plt.imshow(mask_and, cmap='gray'), plt.xlabel('mask_and')
-        plt.subplot(3, 3, 7), plt.imshow(mask1_excl, cmap='gray'), plt.xlabel('mask1_excl')
-        plt.subplot(3, 3, 8), plt.imshow(mask2_ex, cmap='gray'), plt.xlabel('mask2_excl')
-        plt.show()
-        '''
         return disX_nor
     else:
          print("No contours found.")  
@@ -201,14 +189,17 @@ def capture() :
     print('Capturing image')
     if i < 10:
         filename = '00'+ str(i)+'_image_lab.tiff'
-        i+=1
+        camera.set_image_type(asi.ASI_IMG_RAW16)
+        camera.capture(filename=save_path+filename)
+        print('Saved to %s' % filename)
+        print("----------------------------------------------")
     else:
         filename = '0'+ str(i)+'_image_lab.tiff'
         camera.set_image_type(asi.ASI_IMG_RAW16)
         camera.capture(filename=save_path+filename)
-        i+=1
         print('Saved to %s' % filename)
         print("----------------------------------------------")
+            
         
 #-----------------------------------------------MAIN FUNCTION--------------------------------------------------------------------
 def main():
@@ -267,23 +258,7 @@ def main():
             
         while(True ) :
             
-            print("----------------------------------------------")
-            print('Capturing image')
-            if i < 10:
-                filename = '00'+ str(i)+'_image_lab.tiff'
-                camera.set_image_type(asi.ASI_IMG_RAW16)
-                camera.capture(filename=save_path+filename)
-                i+=1
-                print('Saved to %s' % filename)
-                print("----------------------------------------------")
-            else:
-                filename = '0'+ str(i)+'_image_lab.tiff'
-                camera.set_image_type(asi.ASI_IMG_RAW16)
-                camera.capture(filename=save_path+filename)
-                i+=1
-                print('Saved to %s' % filename)
-                print("----------------------------------------------")
-            
+            capture()
             
             for path in Dir_Read('s', path=save_path):
 
@@ -306,7 +281,9 @@ def main():
                     print("New_position : " + str(new_position)   )
                     kcube.MoveTo(new_position, 7000)
                 time.sleep(0.1)
+            i+=1
             
+            '''
                 error.append(err_pos)
                 new_pos.append(new_position)
                 with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', encoding='UTF8', newline='') as f:  
@@ -316,22 +293,41 @@ def main():
                 
                     for newpos_value in new_pos:
                         writer.writerow([newpos_value])
-                #plt.plot(error)
-                #plt.gca().invert_yaxis()
-                #plt.show()
-
-            '''
-            kcube.Home(60000)
-            print("Finished")
-
-        # Stop polling and close device
-            kcube.StopPolling()
-            kcube.Disconnect(True)
             '''
 
                     
     except Exception as e:
         print("ERROR:", e)   
+#------------------------------------------------------UI------------------------------------------------------------------        
+class Ui_Dialog(object):
+    def setupUi(self, Dialog):
+        Dialog.setObjectName("Dialog")
+        Dialog.resize(400, 300)
+ 
+        self.pushButton = QtWidgets.QPushButton(Dialog)
+        self.pushButton.setGeometry(QtCore.QRect(150, 70, 93, 28))
+ 
+        self.label = QtWidgets.QLabel(Dialog)
+        self.label.setGeometry(QtCore.QRect(130, 149, 151, 31))
+        self.label.setText("")
+ 
+        self.retranslateUi(Dialog)
+        QtCore.QMetaObject.connectSlotsByName(Dialog)
+        
+        # adding signal and slot
+        self.pushButton.clicked.connect(self.showmsg) 
+ 
+    def retranslateUi(self, Dialog):
+        _translate = QtCore.QCoreApplication.translate
+        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
+        self.pushButton.setText(_translate("Dialog", "Click"))
+         
+    def showmsg(self):
+        # slot
+        self.label.setText("You clicked me")
+
+
+
 
         
 #-----------------------------------------------------------------------------------------------------------------------------        
