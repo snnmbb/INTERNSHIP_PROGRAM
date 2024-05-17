@@ -134,8 +134,11 @@ error=[]
 
 def main() :
     try :
-        pos = 52 #ตำแหน่งที่ทำให้แสงอยู่ใกล้เคียงกับRefที่สุด
-        new_position = pos
+        kp = float(input("Please enter kp value : "))
+        ki = float(input("Please enter ki value : "))
+        kd = float(input("Please enter kd value : "))
+        pos_1 = float(input("Please enter first position : ")) 
+        new_position = pos_1
         new_pos = []
         
         for path in Dir_Read('s', path=save_path):
@@ -145,13 +148,13 @@ def main() :
             time.sleep(0.5)
             disX = Draw_Contour(path)
             reference = 0 #จุดที่แสงอยู่จุดศูนย์กลาง               
-            err = PID(0.5, 0.04, 0.8, reference , disX) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
+            err = PID(kp, kd, ki, reference , disX) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
             print("Error : " + str(err))
             if err > reference :
-                new_position = pos-err
+                new_position = pos_1-err
                 print("New_position : " + str(new_position)   ) 
             elif err < reference: 
-                new_position = pos+err
+                new_position = pos_1+err
                 print("New_position : " + str(new_position)    )
             else :
                 break
