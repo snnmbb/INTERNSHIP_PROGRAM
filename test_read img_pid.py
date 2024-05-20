@@ -8,6 +8,8 @@ import time
 import sys
 from SolExDataCube import Dir_Read
 import csv
+import tkinter as tk
+from tkinter import ttk
 
 
 image_ref = r"C:\Users\Asus\Desktop\LAB_TEST\REF\REF.png"
@@ -130,10 +132,18 @@ def Draw_Contour(path) :
          print("No contours found.")  
 
 error=[]
+kp = 0
+ki = 0
+kd = 0
+pos = 0
 
 
 def main() :
+    
+    
     try :
+        #-------------------------------COMMAND VERSION----------------------------------------------
+        '''
         answer = input("Do you want to change paramter ? (Y/N) : ")
         if answer == "Y" :
             kp = float(input("Please enter kp value : "))
@@ -151,7 +161,57 @@ def main() :
             new_pos = []
         else :
             print("Please enter the answer (Y/N)")
+        '''
+        #---------------------------------------------------------------------------------------------
+        
+        #-------------------------------WINDOW VERSION----------------------------------------------
+
             
+        
+        # Window setting
+        window = tk.Tk()
+        window.title('PID TUNING')
+        window.geometry('600x400')
+
+        # Title
+        title_label_kp = ttk.Label(master=window, text='Kp = ', font='Calibri 12')
+        title_label_kp.place(x = 50 , y = 100)
+        title_label_ki = ttk.Label(master=window, text='Ki = ', font='Calibri 12')
+        title_label_ki.place(x = 50 , y = 150)
+        title_label_kd = ttk.Label(master=window, text='Kd = ', font='Calibri 12')
+        title_label_kd.place(x = 50 , y = 200)
+        title_label_pos = ttk.Label(master=window, text='First Position = ', font='Calibri 12')
+        title_label_pos.place(x = 50 , y = 250)
+
+        # Input field
+        entry_kp = ttk.Entry(master=window)
+        entry_kp.place(x = 150 , y = 100)
+        entry_ki = ttk.Entry(master=window)
+        entry_ki.place(x = 150 , y = 150)
+        entry_kd = ttk.Entry(master=window)
+        entry_kd.place(x = 150 , y = 200)
+        entry_pos = ttk.Entry(master=window)
+        entry_pos.place(x = 150 , y = 250)
+        
+        def button_func():
+            kp = entry_kp.get()
+            ki  = entry_ki.get()
+            kd = entry_kd.get()
+            pos = entry_pos.get()
+            print("Kp : " + kp)
+            print("Ki : " + kd)
+            print("Kd : " + ki)
+            print("First Position : " + pos)
+            
+        # Button
+        button = ttk.Button(master=window, text='Enter', command=button_func)
+        button.place(x = 400 , y = 100)
+
+        # Run the application
+        window.mainloop()
+        
+        new_pos = []
+         
         for path in Dir_Read('s', path=save_path):
             print("----------------------------------------------")
             print('Capturing image')
