@@ -1,12 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
 
-def button_func():
-    print("Kp : " + entry_kp.get())
-    print("Ki : " + entry_ki.get())
-    print("Kd : " + entry_kd.get())
-    print("First Position : " + entry_pos.get())
-    
+
+
+
 # Window setting
 window = tk.Tk()
 window.title('PID TUNING')
@@ -31,9 +28,29 @@ entry_kd = ttk.Entry(master=window)
 entry_kd.place(x = 150 , y = 200)
 entry_pos = ttk.Entry(master=window)
 entry_pos.place(x = 150 , y = 250)
+
+def button_func():
+    global KP
+    global KI
+    global KD
+    global POS
+    KP = entry_kp.get()
+    KI  = entry_ki.get()
+    KD = entry_kd.get()
+    POS = entry_pos.get()
+    print("Kp : " + entry_kp.get())
+    print("Ki : " + entry_ki.get())
+    print("Kd : " + entry_kd.get())
+    print("First Position : " + entry_pos.get())
+    
 # Button
 button = ttk.Button(master=window, text='Enter', command=button_func)
 button.place(x = 400 , y = 100)
 
 # Run the application
 window.mainloop()
+
+print(KP)
+print(KI)
+print(KD)
+print(POS)
