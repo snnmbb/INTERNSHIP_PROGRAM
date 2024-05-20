@@ -204,10 +204,23 @@ def capture() :
 #-----------------------------------------------MAIN FUNCTION--------------------------------------------------------------------
 def main():
     
-    kp = Decimal(input("Please enter kp value : "))
-    ki = Decimal(input("Please enter ki value : "))
-    kd = Decimal(input("Please enter kd value : "))
-    pos_1 = Decimal(input("Please enter first position : "))
+    answer = input("Do you want to change paramter ? (Y/N) : ")
+    if answer == "Y" :
+        kp = float(input("Please enter kp value : "))
+        ki = float(input("Please enter ki value : "))
+        kd = float(input("Please enter kd value : "))
+        pos = float(input("Please enter first position : ")) 
+        new_position = pos
+        new_position = []
+    elif answer == "N" :
+        kp = 35
+        kd = 2.5
+        ki = 0.1
+        pos = 55
+        new_position = pos
+        new_position = []
+    else :
+        print("Please enter the answer (Y/N)")
 
     try:
         
