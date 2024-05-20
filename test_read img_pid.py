@@ -194,14 +194,18 @@ def main() :
         entry_pos.place(x = 150 , y = 250)
         
         def button_func():
-            kp = entry_kp.get()
-            ki  = entry_ki.get()
-            kd = entry_kd.get()
-            pos = entry_pos.get()
-            print("Kp : " + kp)
-            print("Ki : " + kd)
-            print("Kd : " + ki)
-            print("First Position : " + pos)
+            global KP
+            global KI
+            global KD
+            global POS
+            KP = entry_kp.get()
+            KI  = entry_ki.get()
+            KD = entry_kd.get()
+            POS = entry_pos.get()
+            print("Kp : " + entry_kp.get())
+            print("Ki : " + entry_ki.get())
+            print("Kd : " + entry_kd.get())
+            print("First Position : " + entry_pos.get())
             
         # Button
         button = ttk.Button(master=window, text='Enter', command=button_func)
@@ -210,6 +214,10 @@ def main() :
         # Run the application
         window.mainloop()
         
+        kp = float(KP)
+        ki = float(KI)
+        kd = float(KD)
+        pos = float(POS)
         new_pos = []
          
         for path in Dir_Read('s', path=save_path):
@@ -219,7 +227,7 @@ def main() :
             time.sleep(0.5)
             disX = Draw_Contour(path)
             reference = 0 #จุดที่แสงอยู่จุดศูนย์กลาง               
-            err = PID(kp, kd, ki, reference , disX) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
+            err = PID(kp, ki, kd, reference , disX) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
             print("Error : " + str(err))
             if err > reference :
                 new_position = pos-err
