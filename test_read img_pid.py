@@ -134,13 +134,24 @@ error=[]
 
 def main() :
     try :
-        kp = float(input("Please enter kp value : "))
-        ki = float(input("Please enter ki value : "))
-        kd = float(input("Please enter kd value : "))
-        pos_1 = float(input("Please enter first position : ")) 
-        new_position = pos_1
-        new_pos = []
-        
+        answer = input("Do you want to change paramter ? (Y/N) : ")
+        if answer == "Y" :
+            kp = float(input("Please enter kp value : "))
+            ki = float(input("Please enter ki value : "))
+            kd = float(input("Please enter kd value : "))
+            pos = float(input("Please enter first position : ")) 
+            new_position = pos
+            new_pos = []
+        elif answer == "N" :
+            kp = 35
+            kd = 2.5
+            ki = 0.1
+            pos = 60
+            new_position = pos
+            new_pos = []
+        else :
+            print("Please enter the answer (Y/N)")
+            
         for path in Dir_Read('s', path=save_path):
             print("----------------------------------------------")
             print('Capturing image')
@@ -151,10 +162,10 @@ def main() :
             err = PID(kp, kd, ki, reference , disX) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
             print("Error : " + str(err))
             if err > reference :
-                new_position = pos_1-err
+                new_position = pos-err
                 print("New_position : " + str(new_position)   ) 
             elif err < reference: 
-                new_position = pos_1+err
+                new_position = pos+err
                 print("New_position : " + str(new_position)    )
             else :
                 break

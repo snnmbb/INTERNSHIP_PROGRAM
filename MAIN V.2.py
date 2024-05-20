@@ -262,8 +262,23 @@ def main():
         
         kcube.MoveTo(pos, 7000)
 
-        i = 0
-        new_position = Decimal(55)
+        answer = input("Do you want to change paramter ? (Y/N) : ")
+        if answer == "Y" :
+            kp = float(input("Please enter kp value : "))
+            ki = float(input("Please enter ki value : "))
+            kd = float(input("Please enter kd value : "))
+            pos = float(input("Please enter first position : ")) 
+            new_position = pos
+            new_pos = []
+        elif answer == "N" :
+            kp = 35
+            kd = 2.5
+            ki = 0.1
+            pos = 55
+            new_position = pos
+            new_pos = []
+        else :
+            print("Please enter the answer (Y/N)")
             
         while(True ) :
             
