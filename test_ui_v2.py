@@ -229,13 +229,55 @@ def main() :
                 plt.gca().invert_yaxis()
                 plt.show()
                 
-            #def Reset():
+                
+        def default() :
+
+            new_pos = []
+            pos = 55
+            
+            for path in Dir_Read('s', path=save_path):
+                print("----------------------------------------------")
+                print('Capturing image')
+                print("----------------------------------------------")                    
+                time.sleep(0.5)
+                disX = Draw_Contour(path)
+                reference = 0 #จุดที่แสงอยู่จุดศูนย์กลาง               
+                err = PID(35, 2.5, 0.12, reference , disX) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
+                print("Error : " + str(err))
+                if err > reference :
+                    new_position = pos-err
+                    print("New_position : " + str(new_position)   ) 
+                elif err < reference: 
+                    new_position = pos+err
+                    print("New_position : " + str(new_position)    )
+                else :
+                    break
+                time.sleep(0.5)
+                error.append(err)
+                new_pos.append(new_position)
+                        
+                plt.subplot(1, 2, 1)
+                plt.plot(error)
+                plt.xlabel('Index')
+                plt.ylabel('ERR')
+                        
+                plt.subplot(1, 2, 2)
+                plt.plot(new_pos)
+                plt.xlabel('Index')
+                plt.ylabel('NEW_POSITION')
+                        
+                plt.tight_layout()
+                plt.gca().invert_yaxis()
+                plt.show()
+            
                 
         # Button
+        button_default = ttk.Button(master=window, text='DEFAULT', command=default)
+        button_default.place(x = 400 , y = 100)
         button_enter = ttk.Button(master=window, text='ENTER', command=button_func)
-        button_enter.place(x = 400 , y = 100)
+        button_enter.place(x = 400 , y = 200)
         button_run = ttk.Button(master=window, text='START', command=start)
-        button_run.place(x = 400 , y = 200)
+        button_run.place(x = 400 , y = 300)
         #button_reset = ttk.Button(master=window, text='RESET', command=reset)
         #button_reset.place(x = 400 , y = 200)
 
