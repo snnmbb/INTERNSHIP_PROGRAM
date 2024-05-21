@@ -269,7 +269,7 @@ def main():
         except (KeyboardInterrupt, SystemExit):
             raise
         
-        kcube.MoveTo(pos_1, 7000)
+        kcube.MoveTo(pos, 7000)
 
         i = 0
         new_position = Decimal(55)
@@ -283,19 +283,19 @@ def main():
                 time.sleep(0.5)
                 disX = Draw_Contour(path)
                 
-                err_pos = PID(kp , ki, kd , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
-                print("Error : " + str(err_pos))
+                PID_Out = PID(kp , ki, kd , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
+                print("Error : " + str(PID_Out))
 
                 if new_position <= Decimal(52.05 ) and new_position >= Decimal(52) :
                     print("New_position : " + str(new_position)    )
                     kcube.MoveTo(new_position, 7000)
                     return
-                elif err_pos < reference: 
-                    new_position = pos+err_pos
+                elif PID_Out < reference: 
+                    new_position = pos+PID_Out
                     print("New_position : " + str(new_position)    )
                     kcube.MoveTo(new_position, 7000)
-                elif  err_pos > reference: 
-                    new_position = pos-err_pos
+                elif  PID_Out > reference: 
+                    new_position = pos-PID_Out
                     print("New_position : " + str(new_position)   )
                     kcube.MoveTo(new_position, 7000)
                 time.sleep(0.1)
