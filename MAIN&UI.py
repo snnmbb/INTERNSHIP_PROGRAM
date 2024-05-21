@@ -10,7 +10,8 @@ import sys
 from SolExDataCube import Dir_Read
 import clr
 import sys
-from PyQt5 import QtCore, QtGui, QtWidgets
+import tkinter as tk
+from tkinter import ttk
 
 
 #-----------------------------------------------SETUP CAMERA--------------------------------------------------------------------
@@ -182,24 +183,6 @@ def Draw_Contour(path) :
         return disX_nor
     else:
          print("No contours found.")  
-         
-#-----------------------------------------------CAPTURE FUNCTION--------------------------------------------------------------------
-def capture() :
-    print("----------------------------------------------")
-    print('Capturing image')
-    if i < 10:
-        filename = '00'+ str(i)+'_image_lab.tiff'
-        camera.set_image_type(asi.ASI_IMG_RAW16)
-        camera.capture(filename=save_path+filename)
-        print('Saved to %s' % filename)
-        print("----------------------------------------------")
-    else:
-        filename = '0'+ str(i)+'_image_lab.tiff'
-        camera.set_image_type(asi.ASI_IMG_RAW16)
-        camera.capture(filename=save_path+filename)
-        print('Saved to %s' % filename)
-        print("----------------------------------------------")
-            
         
 #-----------------------------------------------MAIN FUNCTION--------------------------------------------------------------------
 def main():
@@ -251,84 +234,101 @@ def main():
         except (KeyboardInterrupt, SystemExit):
             raise
         
-        kcube.MoveTo(pos, 7000)
+        
+        #-------------------------------WINDOW VERSION----------------------------------------------
+        # Window setting
+        window = tk.Tk()
+        window.title('PID TUNING')
+        window.geometry('600x400')
 
-        i = 0
-        new_position = Decimal(55)
-            
-        while(True ) :
-            
-            capture()
-            
-            for path in Dir_Read('s', path=save_path):
+        # Title
+        title_label_kp = ttk.Label(master=window, text='Kp = ', font='Calibri 12')
+        title_label_kp.place(x = 50 , y = 100)
+        title_label_ki = ttk.Label(master=window, text='Ki = ', font='Calibri 12')
+        title_label_ki.place(x = 50 , y = 150)
+        title_label_kd = ttk.Label(master=window, text='Kd = ', font='Calibri 12')
+        title_label_kd.place(x = 50 , y = 200)
+        title_label_pos = ttk.Label(master=window, text='First Position = ', font='Calibri 12')
+        title_label_pos.place(x = 50 , y = 250)
 
-                time.sleep(0.5)
-                disX = Draw_Contour(path)
+        # Input field
+        entry_kp = ttk.Entry(master=window)
+        entry_kp.place(x = 150 , y = 100)
+        entry_ki = ttk.Entry(master=window)
+        entry_ki.place(x = 150 , y = 150)
+        entry_kd = ttk.Entry(master=window)
+        entry_kd.place(x = 150 , y = 200)
+        entry_pos = ttk.Entry(master=window)
+        entry_pos.place(x = 150 , y = 250)
+        
+        def Enter():
+            global KP
+            global KI
+            global KD
+            global POS
+            KP = entry_kp.get()
+            KI  = entry_ki.get()
+            KD = entry_kd.get()
+            POS = entry_pos.get()
+            print("Kp : " + entry_kp.get())
+            print("Ki : " + entry_ki.get())
+            print("Kd : " + entry_kd.get())
+            print("First Position : " + entry_pos.get())
+            
+        def Start() :
+            kcube.MoveTo(POS, 7000)
+
+            i = 0
+            new_position = POS
                 
-                err_pos = PID(Decimal(35) , Decimal(2.5), Decimal(0.10) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
-                print("Error : " + str(err_pos))
-
-                if new_position <= Decimal(52.05 ) and new_position >= Decimal(52) :
-                    print("New_position : " + str(new_position)    )
-                    kcube.MoveTo(new_position, 7000)
-                    return
-                elif err_pos < reference: 
-                    new_position = pos+err_pos
-                    print("New_position : " + str(new_position)    )
-                    kcube.MoveTo(new_position, 7000)
-                elif  err_pos > reference: 
-                    new_position = pos-err_pos
-                    print("New_position : " + str(new_position)   )
-                    kcube.MoveTo(new_position, 7000)
-                time.sleep(0.1)
-            i+=1
-            
-            '''
-                error.append(err_pos)
-                new_pos.append(new_position)
-                with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', encoding='UTF8', newline='') as f:  
-                    writer = csv.writer(f)
-                    for err_value in error:
-                        writer.writerow([err_value])
+            while(True ) :
                 
-                    for newpos_value in new_pos:
-                        writer.writerow([newpos_value])
-            '''
+                print("----------------------------------------------")
+                print('Capturing image')
+                if i < 10:
+                    filename = '00'+ str(i)+'_image_lab.tiff'
+                    camera.set_image_type(asi.ASI_IMG_RAW16)
+                    camera.capture(filename=save_path+filename)
+                    print('Saved to %s' % filename)
+                    print("----------------------------------------------")
+                else:
+                    filename = '0'+ str(i)+'_image_lab.tiff'
+                    camera.set_image_type(asi.ASI_IMG_RAW16)
+                    camera.capture(filename=save_path+filename)
+                    print('Saved to %s' % filename)
+                    print("----------------------------------------------")
+                
+                for path in Dir_Read('s', path=save_path):
+
+                    time.sleep(0.5)
+                    disX = Draw_Contour(path)
+                    
+                    err_pos = PID(KP , KI, KD , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
+                    print("Error : " + str(err_pos))
+
+                    if new_position <= Decimal(52.05 ) and new_position >= Decimal(52) :
+                        print("New_position : " + str(new_position)    )
+                        kcube.MoveTo(new_position, 7000)
+                        return
+                    elif err_pos < reference: 
+                        new_position = pos+err_pos
+                        print("New_position : " + str(new_position)    )
+                        kcube.MoveTo(new_position, 7000)
+                    elif  err_pos > reference: 
+                        new_position = pos-err_pos
+                        print("New_position : " + str(new_position)   )
+                        kcube.MoveTo(new_position, 7000)
+                    time.sleep(0.1)
+                i+=1
+            
+        button_enter = ttk.Button(master=window, text='ENTER', command=Enter)
+        button_enter.place(x = 400 , y = 100)
+        button_run = ttk.Button(master=window, text='START', command=Start)
+        button_run.place(x = 400 , y = 200)
 
                     
     except Exception as e:
-        print("ERROR:", e)   
-#------------------------------------------------------UI------------------------------------------------------------------        
-class Ui_Dialog(object):
-    def setupUi(self, Dialog):
-        Dialog.setObjectName("Dialog")
-        Dialog.resize(400, 300)
- 
-        self.pushButton = QtWidgets.QPushButton(Dialog)
-        self.pushButton.setGeometry(QtCore.QRect(150, 70, 93, 28))
- 
-        self.label = QtWidgets.QLabel(Dialog)
-        self.label.setGeometry(QtCore.QRect(130, 149, 151, 31))
-        self.label.setText("")
- 
-        self.retranslateUi(Dialog)
-        QtCore.QMetaObject.connectSlotsByName(Dialog)
-        
-        # adding signal and slot
-        self.pushButton.clicked.connect(self.showmsg) 
- 
-    def retranslateUi(self, Dialog):
-        _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
-        self.pushButton.setText(_translate("Dialog", "Click"))
-         
-    def showmsg(self):
-        # slot
-        self.label.setText("You clicked me")
-
-
-
-
+        print("ERROR:", e)    
         
 #-----------------------------------------------------------------------------------------------------------------------------        
 if __name__ == "__main__":
