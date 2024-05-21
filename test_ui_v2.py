@@ -275,9 +275,9 @@ def main() :
         button_default = ttk.Button(master=window, text='DEFAULT', command=default)
         button_default.place(x = 400 , y = 100)
         button_enter = ttk.Button(master=window, text='ENTER', command=button_func)
-        button_enter.place(x = 400 , y = 200)
+        button_enter.place(x = 400 , y = 150)
         button_run = ttk.Button(master=window, text='START', command=start)
-        button_run.place(x = 400 , y = 300)
+        button_run.place(x = 400 , y = 200)
         #button_reset = ttk.Button(master=window, text='RESET', command=reset)
         #button_reset.place(x = 400 , y = 200)
 
