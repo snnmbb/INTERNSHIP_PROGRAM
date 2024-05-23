@@ -75,8 +75,53 @@ button = tk.Button(master=window, text="Click Me",
                    pady=5,
                    width=15,
                    wraplength=100 )
-button.place(x = 400 , y = 100)
+button.place(x = 400 , y = 125)
 
+button = tk.Button(master=window, text="Click Me", 
+                   command=button_func,
+                   activebackground="dodgerblue4", 
+                   activeforeground="white",
+                   anchor="center",
+                   bd=3,
+                   bg="slategray3",
+                   cursor="hand2",
+                   disabledforeground="lightsteelblue1",
+                   fg="black",
+                   font=("CenturyGothic", 12),
+                   height=1,
+                   highlightbackground="white",
+                   highlightcolor="lightgray",
+                   highlightthickness=2,
+                   justify="center",
+                   overrelief="raised",
+                   padx=10,
+                   pady=5,
+                   width=15,
+                   wraplength=100 )
+button.place(x = 400 , y = 185)
+
+button = tk.Button(master=window, text="Click Me", 
+                   command=button_func,
+                   activebackground="dodgerblue4", 
+                   activeforeground="white",
+                   anchor="center",
+                   bd=3,
+                   bg="slategray3",
+                   cursor="hand2",
+                   disabledforeground="lightsteelblue1",
+                   fg="black",
+                   font=("CenturyGothic", 12),
+                   height=1,
+                   highlightbackground="white",
+                   highlightcolor="lightgray",
+                   highlightthickness=2,
+                   justify="center",
+                   overrelief="raised",
+                   padx=10,
+                   pady=5,
+                   width=15,
+                   wraplength=100 )
+button.place(x = 400 , y = 245)
 # Run the application
 window.mainloop()
 
