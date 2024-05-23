@@ -42,7 +42,7 @@ camera.set_control_value(asi.ASI_BANDWIDTHOVERLOAD, camera.get_controls()['BandW
 camera.disable_dark_subtract()
 
 camera.set_control_value(asi.ASI_GAIN, 95) #ปรับค่าความละเอียด
-camera.set_control_value(asi.ASI_EXPOSURE, 5100) #microseconds #ปรับค่าการรับแสง
+camera.set_control_value(asi.ASI_EXPOSURE, 1135) #microseconds #ปรับค่าการรับแสง
 camera.set_control_value(asi.ASI_WB_B, 0)  #ปรับค่าblue component of white balance
 camera.set_control_value(asi.ASI_WB_R, 0) #ปรับค่าred component of white balance
 camera.set_control_value(asi.ASI_GAMMA, 0) #ปรับค่าการเปลี่ยนสีจากสีดำเป็นสีขาว gamma with range 1 to 100 (nomnally 50)
@@ -183,44 +183,11 @@ def Draw_Contour(path) :
     else:
          print("No contours found.")  
          
-#-----------------------------------------------CAPTURE FUNCTION--------------------------------------------------------------------
-def capture() :
-    print("----------------------------------------------")
-    print('Capturing image')
-    if i < 10:
-        filename = '00'+ str(i)+'_image_lab.tiff'
-        camera.set_image_type(asi.ASI_IMG_RAW16)
-        camera.capture(filename=save_path+filename)
-        print('Saved to %s' % filename)
-        print("----------------------------------------------")
-    else:
-        filename = '0'+ str(i)+'_image_lab.tiff'
-        camera.set_image_type(asi.ASI_IMG_RAW16)
-        camera.capture(filename=save_path+filename)
-        print('Saved to %s' % filename)
-        print("----------------------------------------------")
-            
         
 #-----------------------------------------------MAIN FUNCTION--------------------------------------------------------------------
 def main():
     
-    answer = input("Do you want to change paramter ? (Y/N) : ")
-    if answer == "Y" :
-        kp = float(input("Please enter kp value : "))
-        ki = float(input("Please enter ki value : "))
-        kd = float(input("Please enter kd value : "))
-        pos = float(input("Please enter first position : ")) 
-        new_position = pos
-        new_position = []
-    elif answer == "N" :
-        kp = 35
-        kd = 2.5
-        ki = 0.1
-        pos = 55
-        new_position = pos
-        new_position = []
-    else :
-        print("Please enter the answer (Y/N)")
+    
 
     try:
         
@@ -269,21 +236,53 @@ def main():
         except (KeyboardInterrupt, SystemExit):
             raise
         
+        answer = input("Do you want to change paramter ? (Y/N) : ")
+        if answer == "Y" :
+            KP = float(input("Please enter kp value : "))
+            KI = float(input("Please enter ki value : "))
+            KD = float(input("Please enter kd value : "))
+            POS = float(input("Please enter first position : "))
+            kp = Decimal(KP)
+            ki = Decimal(KI)
+            kd = Decimal(KD)
+            pos = Decimal(POS)
+            new_position =pos
+        elif answer == "N" :
+            kp = Decimal(35)
+            kd = Decimal(2.5)
+            ki = Decimal(0.1)
+            pos = Decimal(55)
+            new_position = pos
+        else :
+            print("Please enter the answer (Y/N)")
         kcube.MoveTo(pos, 7000)
 
         i = 0
-        new_position = Decimal(55)
-            
+                    
         while(True ) :
             
-            capture()
+            print("----------------------------------------------")
+            print('Capturing image')
+            if i < 10:
+                filename = '00'+ str(i)+'_image_lab.tiff'
+                camera.set_image_type(asi.ASI_IMG_RAW16)
+                camera.capture(filename=save_path+filename)
+                print('Saved to %s' % filename)
+                print("----------------------------------------------")
+            else:
+                filename = '0'+ str(i)+'_image_lab.tiff'
+                camera.set_image_type(asi.ASI_IMG_RAW16)
+                camera.capture(filename=save_path+filename)
+                print('Saved to %s' % filename)
+                print("----------------------------------------------")
+            i+=1
             
             for path in Dir_Read('s', path=save_path):
 
                 time.sleep(0.5)
                 disX = Draw_Contour(path)
                 
-                PID_Out = PID(kp , ki, kd , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
+                PID_Out = PID(Decimal(35) , Decimal(2.5), Decimal(0.12) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
                 print("Error : " + str(PID_Out))
 
                 if new_position <= Decimal(52.05 ) and new_position >= Decimal(52) :
@@ -299,7 +298,7 @@ def main():
                     print("New_position : " + str(new_position)   )
                     kcube.MoveTo(new_position, 7000)
                 time.sleep(0.1)
-            i+=1
+            
 
                     
     except Exception as e:

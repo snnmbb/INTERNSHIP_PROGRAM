@@ -261,27 +261,12 @@ def main():
             raise
         
         kcube.MoveTo(pos, 7000)
-
-        answer = input("Do you want to change paramter ? (Y/N) : ")
-        if answer == "Y" :
-            kp = float(input("Please enter kp value : "))
-            ki = float(input("Please enter ki value : "))
-            kd = float(input("Please enter kd value : "))
-            pos = float(input("Please enter first position : ")) 
-            new_position = pos
-            new_pos = []
-        elif answer == "N" :
-            kp = 35
-            kd = 2.5
-            ki = 0.1
-            pos = 55
-            new_position = pos
-            new_pos = []
-        else :
-            print("Please enter the answer (Y/N)")
+        
+        new_position = pos
             
         while(True ) :
             
+            i = 0
             print("----------------------------------------------")
             print('Capturing image')
             if i < 10:
@@ -298,7 +283,6 @@ def main():
                 i+=1
                 print('Saved to %s' % filename)
                 print("----------------------------------------------")
-            
             
             for path in Dir_Read('s', path=save_path):
 
@@ -322,6 +306,7 @@ def main():
                     kcube.MoveTo(new_position, 7000)
                 time.sleep(0.1)
             
+            '''
                 error.append(err_pos)
                 new_pos.append(new_position)
                 with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', encoding='UTF8', newline='') as f:  
@@ -335,10 +320,10 @@ def main():
                 #plt.gca().invert_yaxis()
                 #plt.show()
 
-            '''
+        
             kcube.Home(60000)
             print("Finished")
-
+            
         # Stop polling and close device
             kcube.StopPolling()
             kcube.Disconnect(True)
