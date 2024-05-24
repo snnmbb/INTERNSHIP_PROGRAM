@@ -389,6 +389,8 @@ def main():
         def home():
             kcube.Home(6000)
             
+        def Stop():
+            pass
             
         # Button
         button = tk.Button(master=window, text="HOME", 
@@ -412,7 +414,7 @@ def main():
                         pady=5,
                         width=15,
                         wraplength=100 )
-        button.place(x = 400 , y = 80)
+        button.place(x = 400 , y = 90)
         
         button = tk.Button(master=window, text="DEFAULT", 
                         command=Default,
@@ -435,7 +437,7 @@ def main():
                         pady=5,
                         width=15,
                         wraplength=100 )
-        button.place(x = 400 , y = 120)
+        button.place(x = 400 , y = 140)
 
         button = tk.Button(master=window, text="ENTER", 
                         command=Enter,
@@ -458,7 +460,7 @@ def main():
                         pady=5,
                         width=15,
                         wraplength=100 )
-        button.place(x = 400 , y = 160)
+        button.place(x = 400 , y = 190)
 
         button = tk.Button(master=window, text="START", 
                         command=Start,
@@ -481,7 +483,30 @@ def main():
                         pady=5,
                         width=15,
                         wraplength=100 )
-        button.place(x = 400 , y = 200)
+        button.place(x = 400 , y = 240)
+        
+        button = tk.Button(master=window, text="STOP", 
+                        command=Stop,
+                        activebackground="dodgerblue4", 
+                        activeforeground="white",
+                        anchor="center",
+                        bd=3,
+                        bg="slategray3",
+                        cursor="hand2",
+                        disabledforeground="lightsteelblue1",
+                        fg="black",
+                        font=("CenturyGothic", 12),
+                        height=1,
+                        highlightbackground="white",
+                        highlightcolor="lightgray",
+                        highlightthickness=2,
+                        justify="center",
+                        overrelief="raised",
+                        padx=10,
+                        pady=5,
+                        width=15,
+                        wraplength=100 )
+        button.place(x = 400 , y = 240)
 
         window.mainloop()
                     
