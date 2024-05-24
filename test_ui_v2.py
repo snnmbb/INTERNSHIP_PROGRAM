@@ -304,7 +304,7 @@ def main() :
                         pady=5,
                         width=15,
                         wraplength=100 )
-        button.place(x = 400 , y = 125)
+        button.place(x = 400 , y = 90)
 
         button = tk.Button(master=window, text="ENTER", 
                         command=enter,
@@ -327,7 +327,7 @@ def main() :
                         pady=5,
                         width=15,
                         wraplength=100 )
-        button.place(x = 400 , y = 185)
+        button.place(x = 400 , y = 140)
 
         button = tk.Button(master=window, text="START", 
                         command=start,
@@ -350,7 +350,7 @@ def main() :
                         pady=5,
                         width=15,
                         wraplength=100 )
-        button.place(x = 400 , y = 245)
+        button.place(x = 400 , y = 190)
 
         button = tk.Button(master=window, text="STOP", 
                         command=stop,
@@ -373,7 +373,7 @@ def main() :
                         pady=5,
                         width=15,
                         wraplength=100 )
-        button.place(x = 400 , y = 305)
+        button.place(x = 400 , y = 240)
 
 
         # Run the application
