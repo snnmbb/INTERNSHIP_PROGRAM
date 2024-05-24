@@ -385,8 +385,35 @@ def main():
                         kcube.MoveTo(new_position, 7000)
                     time.sleep(0.1)
                 i+=1
-        
+                
+        def home():
+            kcube.Home(6000)
+            
+            
         # Button
+        button = tk.Button(master=window, text="HOME", 
+                        command=home,
+                        activebackground="dodgerblue4", 
+                        activeforeground="white",
+                        anchor="center",
+                        bd=3,
+                        bg="slategray3",
+                        cursor="hand2",
+                        disabledforeground="lightsteelblue1",
+                        fg="black",
+                        font=("CenturyGothic", 12),
+                        height=1,
+                        highlightbackground="white",
+                        highlightcolor="lightgray",
+                        highlightthickness=2,
+                        justify="center",
+                        overrelief="raised",
+                        padx=10,
+                        pady=5,
+                        width=15,
+                        wraplength=100 )
+        button.place(x = 400 , y = 80)
+        
         button = tk.Button(master=window, text="DEFAULT", 
                         command=Default,
                         activebackground="dodgerblue4", 
@@ -408,7 +435,7 @@ def main():
                         pady=5,
                         width=15,
                         wraplength=100 )
-        button.place(x = 400 , y = 125)
+        button.place(x = 400 , y = 120)
 
         button = tk.Button(master=window, text="ENTER", 
                         command=Enter,
@@ -431,7 +458,7 @@ def main():
                         pady=5,
                         width=15,
                         wraplength=100 )
-        button.place(x = 400 , y = 185)
+        button.place(x = 400 , y = 160)
 
         button = tk.Button(master=window, text="START", 
                         command=Start,
@@ -454,7 +481,7 @@ def main():
                         pady=5,
                         width=15,
                         wraplength=100 )
-        button.place(x = 400 , y = 245)
+        button.place(x = 400 , y = 200)
 
         window.mainloop()
                     
