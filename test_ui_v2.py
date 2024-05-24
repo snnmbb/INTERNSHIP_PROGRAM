@@ -262,6 +262,8 @@ def main() :
                 else :
                     break
                 time.sleep(0.5)
+                
+                '''
                 error.append(err)
                 new_pos.append(new_position)
                         
@@ -278,9 +280,10 @@ def main() :
                 plt.tight_layout()
                 plt.gca().invert_yaxis()
                 plt.show()
-            
+                '''
+                
         def stop() :
-            pass
+            return
                    
         # Button
         button = tk.Button(master=window, text="DEFAULT", 
