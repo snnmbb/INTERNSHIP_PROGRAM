@@ -45,7 +45,7 @@ camera.set_control_value(asi.ASI_BANDWIDTHOVERLOAD, camera.get_controls()['BandW
 camera.disable_dark_subtract()
 
 camera.set_control_value(asi.ASI_GAIN, 95) #ปรับค่าความละเอียด
-camera.set_control_value(asi.ASI_EXPOSURE, 5100) #microseconds #ปรับค่าการรับแสง
+camera.set_control_value(asi.ASI_EXPOSURE, 1135) #microseconds #ปรับค่าการรับแสง
 camera.set_control_value(asi.ASI_WB_B, 0)  #ปรับค่าblue component of white balance
 camera.set_control_value(asi.ASI_WB_R, 0) #ปรับค่าred component of white balance
 camera.set_control_value(asi.ASI_GAMMA, 0) #ปรับค่าการเปลี่ยนสีจากสีดำเป็นสีขาว gamma with range 1 to 100 (nomnally 50)
@@ -280,19 +280,27 @@ def main():
             KI  = entry_ki.get()
             KD = entry_kd.get()
             POS = entry_pos.get()
+            KP = float(KP)
+            KI = float(KI)
+            KD = float(KD)
+            POS = float(POS)
             print("Kp : " + entry_kp.get())
             print("Ki : " + entry_ki.get())
             print("Kd : " + entry_kd.get())
             print("First Position : " + entry_pos.get())
             
         def Start() :
-            kcube.MoveTo(POS, 7000)
-
+            
             i = 0
-            new_position = POS
-                
+
+            pos = Decimal(POS)
+            new_position = Decimal(POS)
+
+            
+            kcube.MoveTo(Decimal(POS), 7000)    
             while(True ) :
                 
+
                 print("----------------------------------------------")
                 print('Capturing image')
                 if i < 10:
@@ -313,7 +321,7 @@ def main():
                     time.sleep(0.5)
                     disX = Draw_Contour(path)
                     
-                    PID_Out = PID(KP , KI, KD , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
+                    PID_Out = PID(Decimal(KP) , Decimal(KI), Decimal(KD) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
                     print("Error : " + str(PID_Out))
 
                     if new_position <= Decimal(52.05 ) and new_position >= Decimal(52) :
@@ -333,10 +341,10 @@ def main():
             
         def Default() :
             
-            kcube.MoveTo(60, 7000)
+            kcube.MoveTo(Decimal(60), 7000)
 
             i = 0
-            new_position = 55
+            new_position = Decimal(55)
                 
             while(True ) :
                 
@@ -360,7 +368,7 @@ def main():
                     time.sleep(0.5)
                     disX = Draw_Contour(path)
                     
-                    PID_Out = PID(35 , 2.5, 0.12 , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
+                    PID_Out = PID(Decimal(35) , Decimal(2.5), Decimal(0.12) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
                     print("Error : " + str(PID_Out))
 
                     if new_position <= Decimal(52.05 ) and new_position >= Decimal(52) :
