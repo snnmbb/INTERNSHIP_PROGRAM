@@ -42,7 +42,7 @@ camera.set_control_value(asi.ASI_BANDWIDTHOVERLOAD, camera.get_controls()['BandW
 camera.disable_dark_subtract()
 
 camera.set_control_value(asi.ASI_GAIN, 95) #ปรับค่าความละเอียด
-camera.set_control_value(asi.ASI_EXPOSURE, 1135) #microseconds #ปรับค่าการรับแสง
+camera.set_control_value(asi.ASI_EXPOSURE, 2695) #microseconds #ปรับค่าการรับแสง
 camera.set_control_value(asi.ASI_WB_B, 0)  #ปรับค่าblue component of white balance
 camera.set_control_value(asi.ASI_WB_R, 0) #ปรับค่าred component of white balance
 camera.set_control_value(asi.ASI_GAMMA, 0) #ปรับค่าการเปลี่ยนสีจากสีดำเป็นสีขาว gamma with range 1 to 100 (nomnally 50)
@@ -71,7 +71,7 @@ pos = Decimal(55.0) # ตำแหน่งเริ่มต้นที่ม�
 new_position = pos
 reference = Decimal(0)
 
-image_ref = r"C:\Users\Asus\Desktop\LAB_TEST\ref_image_lab.tiff"
+image_ref = r"C:\Users\Asus\Desktop\LAB_TEST\REF\REF.png"
 save_path = r"C:\\Users\\Asus\\Desktop\LAB_TEST\DATA3\\"
 asi.init('C:\\Users\\Asus\\AppData\\Local\\Programs\\Python\\Python310\\Lib\\ASI SDK\\lib\\x64\ASICamera2.lib')
 pattern = re.compile(r'(\d+)\.png')

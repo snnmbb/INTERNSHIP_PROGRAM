@@ -45,7 +45,7 @@ camera.set_control_value(asi.ASI_BANDWIDTHOVERLOAD, camera.get_controls()['BandW
 camera.disable_dark_subtract()
 
 camera.set_control_value(asi.ASI_GAIN, 95) #ปรับค่าความละเอียด
-camera.set_control_value(asi.ASI_EXPOSURE, 1135) #microseconds #ปรับค่าการรับแสง
+camera.set_control_value(asi.ASI_EXPOSURE, 2695) #microseconds #ปรับค่าการรับแสง
 camera.set_control_value(asi.ASI_WB_B, 0)  #ปรับค่าblue component of white balance
 camera.set_control_value(asi.ASI_WB_R, 0) #ปรับค่าred component of white balance
 camera.set_control_value(asi.ASI_GAMMA, 0) #ปรับค่าการเปลี่ยนสีจากสีดำเป็นสีขาว gamma with range 1 to 100 (nomnally 50)
@@ -74,7 +74,7 @@ pos = Decimal(55.0) # ตำแหน่งเริ่มต้นที่ม�
 new_position = pos
 reference = Decimal(0)
 
-image_ref = r"C:\Users\Asus\Desktop\LAB_TEST\ref_image_lab.tiff"
+image_ref = r"C:\Users\Asus\Desktop\LAB_TEST\REF\REF.png"
 save_path = r"C:\\Users\\Asus\\Desktop\LAB_TEST\DATA3\\"
 asi.init('C:\\Users\\Asus\\AppData\\Local\\Programs\\Python\\Python310\\Lib\\ASI SDK\\lib\\x64\ASICamera2.lib')
 pattern = re.compile(r'(\d+)\.png')
@@ -304,13 +304,13 @@ def main():
                 print("----------------------------------------------")
                 print('Capturing image')
                 if i < 10:
-                    filename = '00'+ str(i)+'_image_lab.tiff'
+                    filename = '00'+ str(i)+'_image_lab.png'
                     camera.set_image_type(asi.ASI_IMG_RAW16)
                     camera.capture(filename=save_path+filename)
                     print('Saved to %s' % filename)
                     print("----------------------------------------------")
                 else:
-                    filename = '0'+ str(i)+'_image_lab.tiff'
+                    filename = '0'+ str(i)+'_image_lab.png'
                     camera.set_image_type(asi.ASI_IMG_RAW16)
                     camera.capture(filename=save_path+filename)
                     print('Saved to %s' % filename)
@@ -324,7 +324,7 @@ def main():
                     PID_Out = PID(Decimal(KP) , Decimal(KI), Decimal(KD) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
                     print("Error : " + str(PID_Out))
 
-                    if new_position <= Decimal(52.05 ) and new_position >= Decimal(52) :
+                    if new_position <= Decimal(54.05 ) and new_position >= Decimal(54) :
                         print("New_position : " + str(new_position)    )
                         kcube.MoveTo(new_position, 7000)
                         return
@@ -351,13 +351,13 @@ def main():
                 print("----------------------------------------------")
                 print('Capturing image')
                 if i < 10:
-                    filename = '00'+ str(i)+'_image_lab.tiff'
+                    filename = '00'+ str(i)+'_image_lab.png'
                     camera.set_image_type(asi.ASI_IMG_RAW16)
                     camera.capture(filename=save_path+filename)
                     print('Saved to %s' % filename)
                     print("----------------------------------------------")
                 else:
-                    filename = '0'+ str(i)+'_image_lab.tiff'
+                    filename = '0'+ str(i)+'_image_lab.png'
                     camera.set_image_type(asi.ASI_IMG_RAW16)
                     camera.capture(filename=save_path+filename)
                     print('Saved to %s' % filename)
@@ -371,7 +371,7 @@ def main():
                     PID_Out = PID(Decimal(35) , Decimal(2.5), Decimal(0.12) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
                     print("Error : " + str(PID_Out))
 
-                    if new_position <= Decimal(52.05 ) and new_position >= Decimal(52) :
+                    if new_position <= Decimal(54.05 ) and new_position >= Decimal(54) :
                         print("New_position : " + str(new_position)    )
                         kcube.MoveTo(new_position, 7000)
                         return
@@ -506,7 +506,7 @@ def main():
                         pady=5,
                         width=15,
                         wraplength=100 )
-        button.place(x = 400 , y = 240)
+        button.place(x = 400 , y = 290)
 
         window.mainloop()
                     
