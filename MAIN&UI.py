@@ -390,10 +390,7 @@ def main():
             kcube.StopPolling(250)
             kcube.StartPolling(250)
             kcube.Home(6000)
-            
-        def Stop():
-            pass
-            
+             
         # Button
         button = tk.Button(master=window, text="HOME", 
                         command=home,
@@ -487,28 +484,6 @@ def main():
                         wraplength=100 )
         button.place(x = 400 , y = 240)
         
-        button = tk.Button(master=window, text="STOP", 
-                        command=Stop,
-                        activebackground="dodgerblue4", 
-                        activeforeground="white",
-                        anchor="center",
-                        bd=3,
-                        bg="slategray3",
-                        cursor="hand2",
-                        disabledforeground="lightsteelblue1",
-                        fg="black",
-                        font=("CenturyGothic", 12),
-                        height=1,
-                        highlightbackground="white",
-                        highlightcolor="lightgray",
-                        highlightthickness=2,
-                        justify="center",
-                        overrelief="raised",
-                        padx=10,
-                        pady=5,
-                        width=15,
-                        wraplength=100 )
-        button.place(x = 400 , y = 290)
 
         window.mainloop()
                     
