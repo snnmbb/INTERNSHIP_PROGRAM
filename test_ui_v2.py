@@ -147,7 +147,7 @@ def main() :
         
         #-------------------------------WINDOW VERSION----------------------------------------------
 
-            
+        run = True    
         
         # Window setting
         window = tk.Tk()
@@ -197,47 +197,8 @@ def main() :
             print("First Position : " + entry_pos.get())
             
         def start() :
-            kp = float(KP)
-            ki = float(KI)
-            kd = float(KD)
-            pos = float(POS)
-            new_pos = []
-            
-            for path in Dir_Read('s', path=save_path):
-                print("----------------------------------------------")
-                print('Capturing image')
-                print("----------------------------------------------")                    
-                time.sleep(0.5)
-                disX = Draw_Contour(path)
-                reference = 0 #จุดที่แสงอยู่จุดศูนย์กลาง               
-                err = PID(kp, ki, kd, reference , disX) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
-                print("Error : " + str(err))
-                if err > reference :
-                    new_position = pos-err
-                    print("New_position : " + str(new_position)   ) 
-                elif err < reference: 
-                    new_position = pos+err
-                    print("New_position : " + str(new_position)    )
-                else :
-                    break
-                time.sleep(0.5)
-                error.append(err)
-                new_pos.append(new_position)
-                    
-                plt.subplot(1, 2, 1)
-                plt.plot(error)
-                plt.xlabel('Index')
-                plt.ylabel('ERR')
-                    
-                plt.subplot(1, 2, 2)
-                plt.plot(new_pos)
-                plt.xlabel('Index')
-                plt.ylabel('NEW_POSITION')
-                    
-                plt.tight_layout()
-                plt.gca().invert_yaxis()
-                plt.show()
-                
+            global run
+            run = True
                 
         def default() :
 
@@ -264,8 +225,51 @@ def main() :
                 time.sleep(0.5)
                 
         def stop() :
-            return
-                   
+            global run
+            run = False
+        
+        def run_program() :
+            if run:
+                kp = float(KP)
+                ki = float(KI)
+                kd = float(KD)
+                pos = float(POS)
+                new_pos = []
+                
+                for path in Dir_Read('s', path=save_path):
+                    print("----------------------------------------------")
+                    print('Capturing image')
+                    print("----------------------------------------------")                    
+                    time.sleep(0.5)
+                    disX = Draw_Contour(path)
+                    reference = 0 #จุดที่แสงอยู่จุดศูนย์กลาง               
+                    err = PID(kp, ki, kd, reference , disX) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
+                    print("Error : " + str(err))
+                    if err > reference :
+                        new_position = pos-err
+                        print("New_position : " + str(new_position)   ) 
+                    elif err < reference: 
+                        new_position = pos+err
+                        print("New_position : " + str(new_position)    )
+                    else :
+                        break
+                    time.sleep(0.5)
+                    error.append(err)
+                    new_pos.append(new_position)
+                        
+                    plt.subplot(1, 2, 1)
+                    plt.plot(error)
+                    plt.xlabel('Index')
+                    plt.ylabel('ERR')
+                        
+                    plt.subplot(1, 2, 2)
+                    plt.plot(new_pos)
+                    plt.xlabel('Index')
+                    plt.ylabel('NEW_POSITION')
+                        
+                    plt.tight_layout()
+                    plt.gca().invert_yaxis()
+                    plt.show()           
         # Button
         button = tk.Button(master=window, text="DEFAULT", 
                         command=default,

@@ -387,6 +387,8 @@ def main():
                 i+=1
                 
         def home():
+            kcube.StopPolling(250)
+            kcube.StartPolling(250)
             kcube.Home(6000)
             
         def Stop():
