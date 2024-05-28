@@ -263,25 +263,6 @@ def main() :
                     break
                 time.sleep(0.5)
                 
-                '''
-                error.append(err)
-                new_pos.append(new_position)
-                        
-                plt.subplot(1, 2, 1)
-                plt.plot(error)
-                plt.xlabel('Index')
-                plt.ylabel('ERR')
-                        
-                plt.subplot(1, 2, 2)
-                plt.plot(new_pos)
-                plt.xlabel('Index')
-                plt.ylabel('NEW_POSITION')
-                        
-                plt.tight_layout()
-                plt.gca().invert_yaxis()
-                plt.show()
-                '''
-                
         def stop() :
             return
                    

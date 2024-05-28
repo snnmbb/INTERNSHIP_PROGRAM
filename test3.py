@@ -1,21 +1,21 @@
-from PIL import Image
-import os
-import re
+import tkinter as tk
 
-image_ref = r"C:\Users\Asus\Desktop\REF_CAP.png"
-pattern = re.compile(r'(\d+)\.png')
-directory = r'C:\Users\Asus\Desktop'
-os.chdir(directory) 
+def on_entry_click(event):
+   if entry.get() == "KP...":
+      entry.delete(0, tk.END)
+      entry.configure(foreground="black")
 
-# Open image using Pillow
-imageObject = Image.open(image_ref)
+def on_focus_out(event):
+   if entry.get() == "":
+      entry.insert(0, "KP...")
+      entry.configure(foreground="gray")
 
-# Horizontally flip the image
-hori_flippedImage = imageObject.transpose(Image.FLIP_LEFT_RIGHT)
+root = tk.Tk()
+entry = tk.Entry(root, foreground="gray")
+entry.insert(0, "KP...")
 
-# Display the original and flipped images
-imageObject.show()
-hori_flippedImage.show()
+entry.bind("<FocusIn>", on_entry_click)
+entry.bind("<FocusOut>", on_focus_out)
+entry.pack()
 
-# Save the flipped image
-hori_flippedImage.save('test_im_flip.png')
+root.mainloop()

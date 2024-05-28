@@ -252,11 +252,11 @@ def main():
         rectangle = canvas1.create_rectangle(50, 270, 350, 320, outline = "gray89", fill = "gray89") #(x1,y1,x2,y2)
 
         # Title
-        title_label_kp = ttk.Label(master=window, text='KP', background ="gray89", font='CenturyGothic 10 bold' , foreground ="gray")
+        title_label_kp = ttk.Label(master=window, text='PROPORTIONAL', background ="gray89", font='CenturyGothic 10 bold' , foreground ="gray")
         title_label_kp.place(x = 60 , y = 90)
-        title_label_ki = ttk.Label(master=window, text='KI',background ="gray89", font='CenturyGothic 10 bold' , foreground ="gray")
+        title_label_ki = ttk.Label(master=window, text='INTEGRAL',background ="gray89", font='CenturyGothic 10 bold' , foreground ="gray")
         title_label_ki.place(x = 60 , y = 150)
-        title_label_kd = ttk.Label(master=window, text='KD',background ="gray89", font='CenturyGothic 10 bold' , foreground ="gray")
+        title_label_kd = ttk.Label(master=window, text='DERIVATIVE',background ="gray89", font='CenturyGothic 10 bold' , foreground ="gray")
         title_label_kd.place(x = 60 , y = 210)
         title_label_pos = ttk.Label(master=window, text='FIRST POSITION',background ="gray89", font='CenturyGothic 10 bold' , foreground ="gray")
         title_label_pos.place(x = 60 , y = 270)
