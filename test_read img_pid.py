@@ -143,31 +143,29 @@ def main() :
     
     try :
         #-------------------------------COMMAND VERSION----------------------------------------------
-        '''
         answer = input("Do you want to change paramter ? (Y/N) : ")
         if answer == "Y" :
-            kp = float(input("Please enter kp value : "))
-            ki = float(input("Please enter ki value : "))
-            kd = float(input("Please enter kd value : "))
-            pos = float(input("Please enter first position : ")) 
-            new_position = pos
+            KP = float(input("Please enter kp value : "))
+            KI = float(input("Please enter ki value : "))
+            KD = float(input("Please enter kd value : "))
+            POS = float(input("Please enter first position : ")) 
+            new_position = POS
             new_pos = []
         elif answer == "N" :
-            kp = 35
-            kd = 2.5
-            ki = 0.1
-            pos = 60
-            new_position = pos
+            KP = 35
+            KD = 0.1
+            KI = 2.5
+            POS = 60
+            new_position = POS
             new_pos = []
         else :
             print("Please enter the answer (Y/N)")
-        '''
         #---------------------------------------------------------------------------------------------
         
         #-------------------------------WINDOW VERSION----------------------------------------------
 
             
-        
+        '''
         # Window setting
         window = tk.Tk()
         window.title('PID TUNING')
@@ -213,7 +211,7 @@ def main() :
 
         # Run the application
         window.mainloop()
-        
+        '''
         kp = float(KP)
         ki = float(KI)
         kd = float(KD)
