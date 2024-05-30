@@ -199,8 +199,46 @@ def main() :
             print("First Position : " + entry_pos.get())
             
         def start() :
-            global run
-            run = True
+            kp = float(KP)
+            ki = float(KI)
+            kd = float(KD)
+            pos = float(POS)
+            new_pos = []
+                
+            for path in Dir_Read('s', path=save_path):
+                print("----------------------------------------------")
+                print('Capturing image')
+                print("----------------------------------------------")                    
+                time.sleep(0.5)
+                disX = Draw_Contour(path)
+                reference = 0 #จุดที่แสงอยู่จุดศูนย์กลาง               
+                err = PID(kp, ki, kd, reference , disX) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
+                print("Error : " + str(err))
+                if err > reference :
+                    new_position = pos-err
+                    print("New_position : " + str(new_position)   ) 
+                elif err < reference: 
+                    new_position = pos+err
+                    print("New_position : " + str(new_position)    )
+                else :
+                    break
+                time.sleep(0.5)
+                error.append(err)
+                new_pos.append(new_position)
+                        
+                plt.subplot(1, 2, 1)
+                plt.plot(error)
+                plt.xlabel('Index')
+                plt.ylabel('ERR')
+                        
+                plt.subplot(1, 2, 2)
+                plt.plot(new_pos)
+                plt.xlabel('Index')
+                plt.ylabel('NEW_POSITION')
+                        
+                plt.tight_layout()
+                plt.gca().invert_yaxis()
+                plt.show()           
                 
         def default() :
 
@@ -226,52 +264,6 @@ def main() :
                     break
                 time.sleep(0.5)
                 
-        def stop() :
-            global run
-            run = False
-        
-        def run_program() :
-            if run:
-                kp = float(KP)
-                ki = float(KI)
-                kd = float(KD)
-                pos = float(POS)
-                new_pos = []
-                
-                for path in Dir_Read('s', path=save_path):
-                    print("----------------------------------------------")
-                    print('Capturing image')
-                    print("----------------------------------------------")                    
-                    time.sleep(0.5)
-                    disX = Draw_Contour(path)
-                    reference = 0 #จุดที่แสงอยู่จุดศูนย์กลาง               
-                    err = PID(kp, ki, kd, reference , disX) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
-                    print("Error : " + str(err))
-                    if err > reference :
-                        new_position = pos-err
-                        print("New_position : " + str(new_position)   ) 
-                    elif err < reference: 
-                        new_position = pos+err
-                        print("New_position : " + str(new_position)    )
-                    else :
-                        break
-                    time.sleep(0.5)
-                    error.append(err)
-                    new_pos.append(new_position)
-                        
-                    plt.subplot(1, 2, 1)
-                    plt.plot(error)
-                    plt.xlabel('Index')
-                    plt.ylabel('ERR')
-                        
-                    plt.subplot(1, 2, 2)
-                    plt.plot(new_pos)
-                    plt.xlabel('Index')
-                    plt.ylabel('NEW_POSITION')
-                        
-                    plt.tight_layout()
-                    plt.gca().invert_yaxis()
-                    plt.show()           
         # Button
         button = tk.Button(master=window, text="DEFAULT", 
                         command=default,
@@ -294,7 +286,7 @@ def main() :
                         pady=5,
                         width=15,
                         wraplength=100 )
-        button.place(x = 400 , y = 90)
+        button.place(x = 400 , y = 125)
 
         button = tk.Button(master=window, text="ENTER", 
                         command=enter,
@@ -317,7 +309,7 @@ def main() :
                         pady=5,
                         width=15,
                         wraplength=100 )
-        button.place(x = 400 , y = 140)
+        button.place(x = 400 , y = 185)
 
         button = tk.Button(master=window, text="START", 
                         command=start,
@@ -340,53 +332,7 @@ def main() :
                         pady=5,
                         width=15,
                         wraplength=100 )
-        button.place(x = 400 , y = 190)
-
-        button = tk.Button(master=window, text="STOP", 
-                        command=stop,
-                        activebackground="dodgerblue4", 
-                        activeforeground="white",
-                        anchor="center",
-                        bd=3,
-                        bg="slategray3",
-                        cursor="hand2",
-                        disabledforeground="lightsteelblue1",
-                        fg="black",
-                        font=("CenturyGothic", 12),
-                        height=1,
-                        highlightbackground="white",
-                        highlightcolor="lightgray",
-                        highlightthickness=2,
-                        justify="center",
-                        overrelief="raised",
-                        padx=10,
-                        pady=5,
-                        width=15,
-                        wraplength=100 )
-        button.place(x = 400 , y = 240)
-        
-        button = tk.Button(master=window, text="STOP", 
-                        command=stop,
-                        activebackground="dodgerblue4", 
-                        activeforeground="white",
-                        anchor="center",
-                        bd=3,
-                        bg="slategray3",
-                        cursor="hand2",
-                        disabledforeground="lightsteelblue1",
-                        fg="black",
-                        font=("CenturyGothic", 12),
-                        height=1,
-                        highlightbackground="white",
-                        highlightcolor="lightgray",
-                        highlightthickness=2,
-                        justify="center",
-                        overrelief="raised",
-                        padx=10,
-                        pady=5,
-                        width=15,
-                        wraplength=100 )
-        button.place(x = 400 , y = 290)
+        button.place(x = 400 , y = 245)
 
 
         # Run the application
