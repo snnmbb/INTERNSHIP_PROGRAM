@@ -371,7 +371,7 @@ def main():
                     PID_Out = PID(Decimal(35) , Decimal(2.5), Decimal(0.12) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
                     print("Error : " + str(PID_Out))
 
-                    if new_position <= Decimal(54.05 ) and new_position >= Decimal(54) :
+                    if new_position <= Decimal(52.05 ) and new_position >= Decimal(52) :
                         print("New_position : " + str(new_position)    )
                         kcube.MoveTo(new_position, 7000)
                         return
