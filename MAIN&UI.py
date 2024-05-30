@@ -74,7 +74,7 @@ pos = Decimal(55.0) # ตำแหน่งเริ่มต้นที่ม�
 new_position = pos
 reference = Decimal(0)
 
-image_ref = r"C:\Users\Asus\Desktop\LAB_TEST\REF\REF.png"
+image_ref = r"C:\Users\Asus\Desktop\LAB_TEST\REF\REF1.png"
 save_path = r"C:\\Users\\Asus\\Desktop\LAB_TEST\DATA3\\"
 asi.init('C:\\Users\\Asus\\AppData\\Local\\Programs\\Python\\Python310\\Lib\\ASI SDK\\lib\\x64\ASICamera2.lib')
 pattern = re.compile(r'(\d+)\.png')
@@ -324,7 +324,7 @@ def main():
                     PID_Out = PID(Decimal(KP) , Decimal(KI), Decimal(KD) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
                     print("Error : " + str(PID_Out))
 
-                    if new_position <= Decimal(54.05 ) and new_position >= Decimal(54) :
+                    if new_position <= Decimal(52.05 ) and new_position >= Decimal(52) :
                         print("New_position : " + str(new_position)    )
                         kcube.MoveTo(new_position, 7000)
                         return
@@ -385,35 +385,8 @@ def main():
                         kcube.MoveTo(new_position, 7000)
                     time.sleep(0.1)
                 i+=1
-                
-        def home():
-            kcube.StopPolling(250)
-            kcube.StartPolling(250)
-            kcube.Home(6000)
              
         # Button
-        button = tk.Button(master=window, text="HOME", 
-                        command=home,
-                        activebackground="dodgerblue4", 
-                        activeforeground="white",
-                        anchor="center",
-                        bd=3,
-                        bg="slategray3",
-                        cursor="hand2",
-                        disabledforeground="lightsteelblue1",
-                        fg="black",
-                        font=("CenturyGothic", 12),
-                        height=1,
-                        highlightbackground="white",
-                        highlightcolor="lightgray",
-                        highlightthickness=2,
-                        justify="center",
-                        overrelief="raised",
-                        padx=10,
-                        pady=5,
-                        width=15,
-                        wraplength=100 )
-        button.place(x = 400 , y = 90)
         
         button = tk.Button(master=window, text="DEFAULT", 
                         command=Default,
