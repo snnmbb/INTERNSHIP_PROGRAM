@@ -483,7 +483,7 @@ def main():
         button.place(x = 400 , y = 190)
 
         button = tk.Button(master=window, text="START", 
-                        command=start_apptart,
+                        command=start_app,
                         activebackground="dodgerblue4", 
                         activeforeground="white",
                         anchor="center",
