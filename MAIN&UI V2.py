@@ -275,7 +275,7 @@ def main():
         entry_pos = ttk.Entry(master=window, background = "lightsteelblue4", foreground ="dodgerblue4" , justify= "center" )
         entry_pos.place(x = 60 , y = 285 , width= 280, height=30)
         
-        
+        #Functions
         def Enter():
             global KP
             global KI
