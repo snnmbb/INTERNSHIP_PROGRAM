@@ -1,0 +1,9 @@
+How to tuning PID parameters ?
+    1. Tuning 'PROPORTIONAL' or 'Kp' First . Tuning it until translation stage move nearly closet to the reference image.
+    2. Then tuning 'INTEGRAL' or 'Ki' for reduce error from 'PROPORTIONAL' or 'Kp'.
+    3. Then tuning 'DERIVATIVE' or 'Kd' for reduce overshoot.
+
+How it effect ?
+'PROPORTIONAL' or 'Kp' effect to the current error ( setpoint - measured output of the system ).
+'INTEGRAL' or 'Ki' effect to the contribution of the accumulated error over time to the control signal .
+'DERIVATIVE' or 'Kd' effect to the stability and responsiveness of the control loop .
