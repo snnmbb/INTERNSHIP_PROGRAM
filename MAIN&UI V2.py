@@ -248,6 +248,7 @@ def main():
         canvas1 = Canvas( window, width = 600, height = 400)  
         canvas1.pack(fill = "both", expand = True) 
         canvas1.create_image( 0, 0, image = bg,anchor = "nw") 
+        window.title("Translation stage control 2024 V.0.2")
 
         rectangle = canvas1.create_rectangle(50, 90, 350, 140, outline = "gray89", fill = "gray89") #(x1,y1,x2,y2)
         rectangle = canvas1.create_rectangle(50, 150, 350, 200, outline = "gray89", fill = "gray89") #(x1,y1,x2,y2)
