@@ -18,6 +18,53 @@ import threading
 
 
 #-----------------------------------------------SETUP CAMERA--------------------------------------------------------------------
+
+window0 = tk.Tk()
+window0.geometry("600x400") 
+bg = PhotoImage(file = 'C://Users//Asus//Desktop//INTERNSHIP_PROGRAM//BG_UI.png')
+canvas1 = Canvas( window0, width = 600, height = 400)  
+canvas1.pack(fill = "both", expand = True) 
+canvas1.create_image( 0, 0, image = bg,anchor = "nw") 
+window0.title("Exposure time setup")
+
+rectangle = canvas1.create_rectangle(50, 90, 350, 140, outline = "gray89", fill = "gray89") #(x1,y1,x2,y2)
+
+title_label_kp = ttk.Label(master=window0, text='PROPORTIONAL', background ="gray89", font='CenturyGothic 10 bold' , foreground ="gray")
+title_label_kp.place(x = 60 , y = 90)
+
+entry_exp = ttk.Entry(master=window0 , background = "lightsteelblue4", foreground ="dodgerblue4" , justify= "center")
+entry_exp.place(x = 60 , y = 105 , width= 280, height=30)
+
+def EnterVal():
+    global exposure
+    exposure = entry_exp
+    print("Exposue : " + entry_exp.get())
+
+button = tk.Button(master=window0, text="HOME", 
+                        command=EnterVal,
+                        activebackground="dodgerblue4", 
+                        activeforeground="white",
+                        anchor="center",
+                        bd=3,
+                        bg="slategray3",
+                        cursor="hand2",
+                        disabledforeground="lightsteelblue1",
+                        fg="black",
+                        font=("CenturyGothic", 12),
+                        height=1,
+                        highlightbackground="white",
+                        highlightcolor="lightgray",
+                        highlightthickness=2,
+                        justify="center",
+                        overrelief="raised",
+                        padx=10,
+                        pady=5,
+                        width=15,
+                        wraplength=100 )
+button.place(x = 400 , y = 90)
+
+window0.mainloop()
+            
 num_cameras = asi.get_num_cameras()
 if num_cameras == 0:
     raise ValueError('No cameras found')
@@ -46,7 +93,7 @@ camera.set_control_value(asi.ASI_BANDWIDTHOVERLOAD, camera.get_controls()['BandW
 camera.disable_dark_subtract()
 
 camera.set_control_value(asi.ASI_GAIN, 95) #ปรับค่าความละเอียด
-camera.set_control_value(asi.ASI_EXPOSURE, 2695) #microseconds #ปรับค่าการรับแสง
+camera.set_control_value(asi.ASI_EXPOSURE, exposure) #microseconds #ปรับค่าการรับแสง
 camera.set_control_value(asi.ASI_WB_B, 0)  #ปรับค่าblue component of white balance
 camera.set_control_value(asi.ASI_WB_R, 0) #ปรับค่าred component of white balance
 camera.set_control_value(asi.ASI_GAMMA, 0) #ปรับค่าการเปลี่ยนสีจากสีดำเป็นสีขาว gamma with range 1 to 100 (nomnally 50)
