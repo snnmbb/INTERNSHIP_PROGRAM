@@ -14,6 +14,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import *
 from tkinter import font
+import threading
 
 
 #-----------------------------------------------SETUP CAMERA--------------------------------------------------------------------
@@ -189,6 +190,8 @@ def Draw_Contour(path) :
 #-----------------------------------------------MAIN FUNCTION--------------------------------------------------------------------
 def main():
 
+    stop_event = threading.Event()
+    
     try:
         
         #SETUP
@@ -271,6 +274,7 @@ def main():
         entry_pos = ttk.Entry(master=window, background = "lightsteelblue4", foreground ="dodgerblue4" , justify= "center" )
         entry_pos.place(x = 60 , y = 285 , width= 280, height=30)
         
+        
         def Enter():
             global KP
             global KI
@@ -290,109 +294,123 @@ def main():
             print("First Position : " + entry_pos.get())
             
         def Start() :
-            
-            i = 0
-
-            pos = Decimal(POS)
-            new_position = Decimal(POS)
-
-            
-            kcube.MoveTo(Decimal(POS), 7000)    
-            while(True ) :
+           
+            stop_event.clear()
+            while not stop_event.is_set():    
                 
+                i = 0
 
-                print("----------------------------------------------")
-                print('Capturing image')
-                if i < 10:
-                    filename = '00'+ str(i)+'_image_lab.png'
-                    camera.set_image_type(asi.ASI_IMG_RAW16)
-                    camera.capture(filename=save_path+filename)
-                    print('Saved to %s' % filename)
-                    print("----------------------------------------------")
-                else:
-                    filename = '0'+ str(i)+'_image_lab.png'
-                    camera.set_image_type(asi.ASI_IMG_RAW16)
-                    camera.capture(filename=save_path+filename)
-                    print('Saved to %s' % filename)
-                    print("----------------------------------------------")
+                pos = Decimal(POS)
+                new_position = Decimal(POS)
+
                 
-                for path in Dir_Read('s', path=save_path):
-
-                    time.sleep(0.5)
-                    disX = Draw_Contour(path)
+                kcube.MoveTo(Decimal(POS), 7000)    
+                while(True ) :
                     
-                    PID_Out = PID(Decimal(KP) , Decimal(KI), Decimal(KD) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
-                    print("Error : " + str(PID_Out))
 
-                    if new_position <= Decimal(54.05 ) and new_position >= Decimal(54) :
-                        print("New_position : " + str(new_position)    )
-                        kcube.MoveTo(new_position, 7000)
-                        return
-                    elif PID_Out < reference: 
-                        new_position = pos+PID_Out
-                        print("New_position : " + str(new_position)    )
-                        kcube.MoveTo(new_position, 7000)
-                    elif  PID_Out > reference: 
-                        new_position = pos-PID_Out
-                        print("New_position : " + str(new_position)   )
-                        kcube.MoveTo(new_position, 7000)
-                    time.sleep(0.1)
-                i+=1
-            
+                    print("----------------------------------------------")
+                    print('Capturing image')
+                    if i < 10:
+                        filename = '00'+ str(i)+'_image_lab.png'
+                        camera.set_image_type(asi.ASI_IMG_RAW16)
+                        camera.capture(filename=save_path+filename)
+                        print('Saved to %s' % filename)
+                        print("----------------------------------------------")
+                    else:
+                        filename = '0'+ str(i)+'_image_lab.png'
+                        camera.set_image_type(asi.ASI_IMG_RAW16)
+                        camera.capture(filename=save_path+filename)
+                        print('Saved to %s' % filename)
+                        print("----------------------------------------------")
+                    
+                    for path in Dir_Read('s', path=save_path):
+
+                        time.sleep(0.5)
+                        disX = Draw_Contour(path)
+                        
+                        PID_Out = PID(Decimal(KP) , Decimal(KI), Decimal(KD) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
+                        print("Error : " + str(PID_Out))
+
+                        if new_position <= Decimal(54.05 ) and new_position >= Decimal(54) :
+                            print("New_position : " + str(new_position)    )
+                            kcube.MoveTo(new_position, 7000)
+                            return
+                        elif PID_Out < reference: 
+                            new_position = pos+PID_Out
+                            print("New_position : " + str(new_position)    )
+                            kcube.MoveTo(new_position, 7000)
+                        elif  PID_Out > reference: 
+                            new_position = pos-PID_Out
+                            print("New_position : " + str(new_position)   )
+                            kcube.MoveTo(new_position, 7000)
+                        time.sleep(0.1)
+                    i+=1
+                    
+        def start_app() :
+            t = threading.Thread(target=Start)
+            t.start()
+                        
         def Default() :
             
-            kcube.MoveTo(Decimal(60), 7000)
+            stop_event.clear()
+            while not stop_event.is_set():
+                kcube.MoveTo(Decimal(60), 7000)
 
-            i = 0
-            new_position = Decimal(55)
-                
-            while(True ) :
-                
-                print("----------------------------------------------")
-                print('Capturing image')
-                if i < 10:
-                    filename = '00'+ str(i)+'_image_lab.png'
-                    camera.set_image_type(asi.ASI_IMG_RAW16)
-                    camera.capture(filename=save_path+filename)
-                    print('Saved to %s' % filename)
-                    print("----------------------------------------------")
-                else:
-                    filename = '0'+ str(i)+'_image_lab.png'
-                    camera.set_image_type(asi.ASI_IMG_RAW16)
-                    camera.capture(filename=save_path+filename)
-                    print('Saved to %s' % filename)
-                    print("----------------------------------------------")
-                
-                for path in Dir_Read('s', path=save_path):
-
-                    time.sleep(0.5)
-                    disX = Draw_Contour(path)
+                i = 0
+                new_position = Decimal(55)
                     
-                    PID_Out = PID(Decimal(35) , Decimal(2.5), Decimal(0.12) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
-                    print("Error : " + str(PID_Out))
+                while(True ) :
+                    
+                    print("----------------------------------------------")
+                    print('Capturing image')
+                    if i < 10:
+                        filename = '00'+ str(i)+'_image_lab.png'
+                        camera.set_image_type(asi.ASI_IMG_RAW16)
+                        camera.capture(filename=save_path+filename)
+                        print('Saved to %s' % filename)
+                        print("----------------------------------------------")
+                    else:
+                        filename = '0'+ str(i)+'_image_lab.png'
+                        camera.set_image_type(asi.ASI_IMG_RAW16)
+                        camera.capture(filename=save_path+filename)
+                        print('Saved to %s' % filename)
+                        print("----------------------------------------------")
+                    
+                    for path in Dir_Read('s', path=save_path):
 
-                    if new_position <= Decimal(54.05 ) and new_position >= Decimal(54) :
-                        print("New_position : " + str(new_position)    )
-                        kcube.MoveTo(new_position, 7000)
-                        return
-                    elif PID_Out < reference: 
-                        new_position = pos+PID_Out
-                        print("New_position : " + str(new_position)    )
-                        kcube.MoveTo(new_position, 7000)
-                    elif  PID_Out > reference: 
-                        new_position = pos-PID_Out
-                        print("New_position : " + str(new_position)   )
-                        kcube.MoveTo(new_position, 7000)
-                    time.sleep(0.1)
-                i+=1
-                
+                        time.sleep(0.5)
+                        disX = Draw_Contour(path)
+                        
+                        PID_Out = PID(Decimal(35) , Decimal(2.5), Decimal(0.12) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
+                        print("Error : " + str(PID_Out))
+
+                        if new_position <= Decimal(54.05 ) and new_position >= Decimal(54) :
+                            print("New_position : " + str(new_position)    )
+                            kcube.MoveTo(new_position, 7000)
+                            return
+                        elif PID_Out < reference: 
+                            new_position = pos+PID_Out
+                            print("New_position : " + str(new_position)    )
+                            kcube.MoveTo(new_position, 7000)
+                        elif  PID_Out > reference: 
+                            new_position = pos-PID_Out
+                            print("New_position : " + str(new_position)   )
+                            kcube.MoveTo(new_position, 7000)
+                        time.sleep(0.1)
+                    i+=1
+                    
+        def default_app():
+            r = threading.Thread(target=Default)
+            r.start()
+                    
         def home():
             kcube.StopPolling(250)
             kcube.StartPolling(250)
             kcube.Home(6000)
             
         def Stop():
-            pass
+            stop_event.set()
+            print("Stop signal sent")
             
         # Button
         button = tk.Button(master=window, text="HOME", 
@@ -419,7 +437,7 @@ def main():
         button.place(x = 400 , y = 90)
         
         button = tk.Button(master=window, text="DEFAULT", 
-                        command=Default,
+                        command=default_app,
                         activebackground="dodgerblue4", 
                         activeforeground="white",
                         anchor="center",
@@ -465,7 +483,7 @@ def main():
         button.place(x = 400 , y = 190)
 
         button = tk.Button(master=window, text="START", 
-                        command=Start,
+                        command=start_apptart,
                         activebackground="dodgerblue4", 
                         activeforeground="white",
                         anchor="center",
