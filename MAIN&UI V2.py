@@ -404,9 +404,15 @@ def main():
             r.start()
                     
         def home():
-            kcube.StopPolling(250)
-            kcube.StartPolling(250)
-            kcube.Home(6000)
+            stop_event.clear()
+            while not stop_event.is_set():
+                kcube.StopPolling(250)
+                kcube.StartPolling(250)
+                kcube.Home(6000)
+                
+        def home_app() :
+            h = threading.Thread(target=home)
+            h.start()
             
         def Stop():
             stop_event.set()
@@ -414,7 +420,7 @@ def main():
             
         # Button
         button = tk.Button(master=window, text="HOME", 
-                        command=home,
+                        command=home_app,
                         activebackground="dodgerblue4", 
                         activeforeground="white",
                         anchor="center",
