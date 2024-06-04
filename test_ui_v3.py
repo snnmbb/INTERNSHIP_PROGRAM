@@ -178,12 +178,19 @@ def main() :
 
         # Input field
         entry_kp = ttk.Entry(master=window , background = "lightsteelblue4", foreground ="dodgerblue4" , justify= "center")
-        entry_kp.place(x = 60 , y = 105 , width= 280, height=30)
+        entry_kp.insert(0,"32")
+        entry_kp.place(x = 60 , y = 105 , width= 280, height=30)      
+        
         entry_ki = ttk.Entry(master=window, background = "lightsteelblue4", foreground ="dodgerblue4" , justify= "center" )
+        entry_ki.insert(0,"0.5")
         entry_ki.place(x = 60 , y = 165, width= 280, height=30)
+        
         entry_kd = ttk.Entry(master=window, background = "lightsteelblue4", foreground ="dodgerblue4" , justify= "center")
+        entry_kd.insert(0,"0.5")
         entry_kd.place(x = 60 , y = 225 , width= 280, height=30)
+        
         entry_pos = ttk.Entry(master=window, background = "lightsteelblue4", foreground ="dodgerblue4" , justify= "center" )
+        entry_pos.insert(0,"60")
         entry_pos.place(x = 60 , y = 285 , width= 280, height=30)
         
         
@@ -203,24 +210,23 @@ def main() :
             t.start()          
                             
         def enter():
-            global KP
-            global KI
-            global KD
-            global POS
-            global new_position
-            KP = float(entry_kp.get())
-            KI  = float(entry_ki.get())
-            KD = float(entry_kd.get())
-            POS = float(entry_pos.get())
+            global KP,KI,KD,POS,new_position
+            Kp = entry_kp.get()
+            Ki  = entry_ki.get()
+            Kd = entry_kd.get()
+            Pos = entry_pos.get()
+            KP = float(Kp)
+            KI = float(Ki)
+            KD = float(Kd)
+            POS = float(Pos)
             
-            if POS > 70 or POS < 40 :
-                print ("Values out of range")
+            if POS > 70 or POS < 40 or KP > 35 or KP < 25 or KI > 1 or KI < 0 or KD > 0.5 or KD < 0  :
                 top= Toplevel(window)
                 top.geometry("400x150")
                 top.title("Warning Window")
                 Label(top, text= "Values out of range!", font=('CenturyGothic 20 bold')).place(x=60,y=60)
                 KP = 0
-                KI  = 0
+                KI  = 0 
                 KD = 0
                 POS = 0
             else :
