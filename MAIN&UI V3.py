@@ -15,7 +15,7 @@ from tkinter import ttk
 from tkinter import *
 from tkinter import font
 import threading
-
+import csv
 
 #-----------------------------------------------SETUP CAMERA--------------------------------------------------------------------
             
@@ -353,8 +353,16 @@ def main():
                             new_position = pos-PID_Out
                             print("New_position : " + str(new_position)   )
                             kcube.MoveTo(new_position, 7000)
+                        
+                        with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', newline='') as csvfile:
+                            fieldnames = ["PID Output", "New position"]
+                            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                            writer.writeheader()
+
+                            for err_value, new_position in zip(error, new_pos):
+                                writer.writerow({"PID Output": err_value, "New position": new_position})                        
                         time.sleep(0.1)
-                i+=1
+                    i+=1
                     
         def start_app() :
             t = threading.Thread(target=Start)
@@ -367,48 +375,58 @@ def main():
             while not stop_event.is_set():
                 kcube.MoveTo(Decimal(60), 7000)
 
-                
-                new_position = Decimal(55)
-                    
-                
-                    
-                print("----------------------------------------------")
-                print('Capturing image')
-                if i < 10:
-                    filename = '00'+ str(i)+'_image_lab.png'
-                    camera.set_image_type(asi.ASI_IMG_RAW16)
-                    camera.capture(filename=save_path+filename)
-                    print('Saved to %s' % filename)
+                if stop_event.is_set() :
+                    break
+                else :
+                    new_position = Decimal(55)
+                      
                     print("----------------------------------------------")
-                else:
-                    filename = '0'+ str(i)+'_image_lab.png'
-                    camera.set_image_type(asi.ASI_IMG_RAW16)
-                    camera.capture(filename=save_path+filename)
-                    print('Saved to %s' % filename)
-                    print("----------------------------------------------")
-                    
-                for path in Dir_Read('s', path=save_path):
+                    print('Capturing image')
+                    if i < 10:
+                        filename = '00'+ str(i)+'_image_lab.png'
+                        camera.set_image_type(asi.ASI_IMG_RAW16)
+                        camera.capture(filename=save_path+filename)
+                        print('Saved to %s' % filename)
+                        print("----------------------------------------------")
+                    else:
+                        filename = '0'+ str(i)+'_image_lab.png'
+                        camera.set_image_type(asi.ASI_IMG_RAW16)
+                        camera.capture(filename=save_path+filename)
+                        print('Saved to %s' % filename)
+                        print("----------------------------------------------")
+                        
+                    for path in Dir_Read('s', path=save_path):
 
-                    disX = Draw_Contour(path)
-                            
-                    PID_Out = PID(Decimal(32) , Decimal(0.5), Decimal(0.5) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
-                    print("Error : " + str(PID_Out))
+                        disX = Draw_Contour(path)
+                                
+                        PID_Out = PID(Decimal(32) , Decimal(0.5), Decimal(0.5) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
+                        print("Error : " + str(PID_Out))
 
-                    if new_position <= Decimal(50.55 ) and new_position >= Decimal(50.5) :
-                        print("New_position : " + str(new_position)    )
-                        kcube.MoveTo(new_position, 7000)
-                        return
-                    elif PID_Out < reference: 
-                        new_position = pos+PID_Out
-                        print("New_position : " + str(new_position)    )
-                        kcube.MoveTo(new_position, 7000)
-                    elif  PID_Out > reference: 
-                        new_position = pos-PID_Out
-                        print("New_position : " + str(new_position)   )
-                        kcube.MoveTo(new_position, 7000)
-                time.sleep(0.1)
-                i+=1
+                        if new_position <= Decimal(50.55 ) and new_position >= Decimal(50.5) :
+                            print("New_position : " + str(new_position)    )
+                            kcube.MoveTo(new_position, 7000)
+                            return
+                        elif PID_Out < reference: 
+                            new_position = pos+PID_Out
+                            print("New_position : " + str(new_position)    )
+                            kcube.MoveTo(new_position, 7000)
+                        elif  PID_Out > reference: 
+                            new_position = pos-PID_Out
+                            print("New_position : " + str(new_position)   )
+                            kcube.MoveTo(new_position, 7000)
                     
+                        error.append(PID_Out)
+                        new_pos.append(new_position)
+                        with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', newline='') as csvfile:
+                            fieldnames = ["PID Output", "New position"]
+                            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                            writer.writeheader()
+
+                            for err_value, new_position in zip(error, new_pos):
+                                writer.writerow({"PID Output": err_value, "New position": new_position})
+                                
+                        time.sleep(0.1)
+                i+=1    
         def default_app():
             r = threading.Thread(target=Default)
             r.start()

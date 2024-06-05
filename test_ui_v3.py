@@ -115,20 +115,6 @@ def Draw_Contour(path) :
         print('disY = ' , disY_nor)
         print("-------------------------------------------------")
                 
-        '''
-        #comment when using linear stage
-        # Show images
-        plt.figure(figsize=(10,6))
-        plt.subplot(3, 3, 1), plt.imshow(dot1, cmap='gray'), plt.xlabel('dot1')
-        plt.subplot(3, 3, 2), plt.imshow(dot2, cmap='gray'), plt.xlabel('dot2')
-        plt.subplot(3, 3, 3), plt.imshow(dot1+dot2, cmap='gray'), plt.xlabel('dot1+dot2')
-        plt.subplot(3, 3, 4), plt.imshow(mask1, cmap='gray'), plt.xlabel('mask1')
-        plt.subplot(3, 3, 5), plt.imshow(mask2, cmap='gray'), plt.xlabel('mask2')
-        plt.subplot(3, 3, 6), plt.imshow(mask_and, cmap='gray'), plt.xlabel('mask_and')
-        plt.subplot(3, 3, 7), plt.imshow(mask1_excl, cmap='gray'), plt.xlabel('mask1_excl')
-        plt.subplot(3, 3, 8), plt.imshow(mask2_ex, cmap='gray'), plt.xlabel('mask2_excl')
-        plt.show()
-        '''
         return disX_nor
     else:
          print("No contours found.")  
@@ -239,7 +225,7 @@ def main() :
                         PID_Out = PID(KP , KI, KD , reference , disX) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
                         print("Error : " + str(PID_Out))
                     
-                        if new_position <= 50.55  and new_position >= 50.5 :
+                        if PID_Out <= 5.55  and PID_Out >= 0.5 :
                             print("New_position : " + str(new_position)    )
                             return
                         elif PID_Out < reference: 
@@ -249,7 +235,17 @@ def main() :
                             new_position = pos-PID_Out
                             print("New_position : " + str(new_position)   )
                     time.sleep(0.1)
-            
+                    
+                    error.append(PID_Out)
+                    new_pos.append(new_position)
+                    with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', newline='') as csvfile:
+                        fieldnames = ["PID Output", "New position"]
+                        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                        writer.writeheader()
+
+                        for err_value, new_position in zip(error, new_pos):
+                             writer.writerow({"PID Output": err_value, "New position": new_position})
+
         def start_app() :
             t = threading.Thread(target=start)
             t.start()
