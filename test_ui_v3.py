@@ -244,7 +244,7 @@ def main() :
                         writer.writeheader()
 
                         for err_value, new_position in zip(error, new_pos):
-                             writer.writerow({"PID Output": err_value, "New position": new_position})
+                            writer.writerow({"PID Output": err_value, "New position": new_position})
 
         def start_app() :
             t = threading.Thread(target=start)
