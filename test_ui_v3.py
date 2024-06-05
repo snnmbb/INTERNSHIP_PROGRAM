@@ -230,22 +230,24 @@ def main() :
             new_position = POS
             while(status == False) :
                 for path in Dir_Read('s', path=save_path):
-
-                    time.sleep(0.5)
-                    disX = Draw_Contour(path)
-                        
-                    PID_Out = PID(KP , KI, KD , reference , disX) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
-                    print("Error : " + str(PID_Out))
-
-                    if new_position <= 50.55  and new_position >= 50.5 :
-                        print("New_position : " + str(new_position)    )
-                        return
-                    elif PID_Out < reference: 
-                        new_position = pos+PID_Out
-                        print("New_position : " + str(new_position)    )
-                    elif  PID_Out > reference: 
-                        new_position = pos-PID_Out
-                        print("New_position : " + str(new_position)   )
+                    if status:
+                        break  # Exit if status is True
+                    else :
+                        time.sleep(0.1)
+                        disX = Draw_Contour(path)
+                            
+                        PID_Out = PID(KP , KI, KD , reference , disX) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
+                        print("Error : " + str(PID_Out))
+                    
+                        if new_position <= 50.55  and new_position >= 50.5 :
+                            print("New_position : " + str(new_position)    )
+                            return
+                        elif PID_Out < reference: 
+                            new_position = pos+PID_Out
+                            print("New_position : " + str(new_position)    )
+                        elif  PID_Out > reference: 
+                            new_position = pos-PID_Out
+                            print("New_position : " + str(new_position)   )
                     time.sleep(0.1)
             
         def start_app() :

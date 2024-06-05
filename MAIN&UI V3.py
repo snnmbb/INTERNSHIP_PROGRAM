@@ -312,46 +312,48 @@ def main():
                 pos = Decimal(POS)
                 new_position = Decimal(POS)
 
-                
-                kcube.MoveTo(Decimal(POS), 7000)    
-                  
+                if stop_event.is_set() :
+                    break
+                else :
+                    kcube.MoveTo(Decimal(POS), 7000)    
+                    
 
-                print("----------------------------------------------")
-                print('Capturing image')
-                if i < 10:
-                    filename = '00'+ str(i)+'_image_lab.png'
-                    camera.set_image_type(asi.ASI_IMG_RAW16)
-                    camera.capture(filename=save_path+filename)
-                    print('Saved to %s' % filename)
                     print("----------------------------------------------")
-                else:
-                    filename = '0'+ str(i)+'_image_lab.png'
-                    camera.set_image_type(asi.ASI_IMG_RAW16)
-                    camera.capture(filename=save_path+filename)
-                    print('Saved to %s' % filename)
-                    print("----------------------------------------------")
-                   
-                for path in Dir_Read('s', path=save_path):
+                    print('Capturing image')
+                    if i < 10:
+                        filename = '00'+ str(i)+'_image_lab.png'
+                        camera.set_image_type(asi.ASI_IMG_RAW16)
+                        camera.capture(filename=save_path+filename)
+                        print('Saved to %s' % filename)
+                        print("----------------------------------------------")
+                    else:
+                        filename = '0'+ str(i)+'_image_lab.png'
+                        camera.set_image_type(asi.ASI_IMG_RAW16)
+                        camera.capture(filename=save_path+filename)
+                        print('Saved to %s' % filename)
+                        print("----------------------------------------------")
+                    
+                    for path in Dir_Read('s', path=save_path):
 
-                    time.sleep(0.5)
-                    disX = Draw_Contour(path)
-                        
-                    PID_Out = PID(Decimal(KP) , Decimal(KI), Decimal(KD) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
-                    print("Error : " + str(PID_Out))
+                        time.sleep(0.5)
+                        disX = Draw_Contour(path)
+                            
+                        PID_Out = PID(Decimal(KP) , Decimal(KI), Decimal(KD) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
+                        print("Error : " + str(PID_Out))
 
-                    if new_position <= Decimal(50.55 ) and new_position >= Decimal(50.5) :
-                        print("New_position : " + str(new_position)    )
-                        kcube.MoveTo(new_position, 7000)
-                        return
-                    elif PID_Out < reference: 
-                        new_position = pos+PID_Out
-                        print("New_position : " + str(new_position)    )
-                        kcube.MoveTo(new_position, 7000)
-                    elif  PID_Out > reference: 
-                        new_position = pos-PID_Out
-                        print("New_position : " + str(new_position)   )
-                        kcube.MoveTo(new_position, 7000)
-                    time.sleep(0.1)
+                        if new_position <= Decimal(50.55 ) and new_position >= Decimal(50.5) :
+                            print("New_position : " + str(new_position)    )
+                            kcube.MoveTo(new_position, 7000)
+                            return
+                        elif PID_Out < reference: 
+                            new_position = pos+PID_Out
+                            print("New_position : " + str(new_position)    )
+                            kcube.MoveTo(new_position, 7000)
+                        elif  PID_Out > reference: 
+                            new_position = pos-PID_Out
+                            print("New_position : " + str(new_position)   )
+                            kcube.MoveTo(new_position, 7000)
+                        time.sleep(0.1)
                 i+=1
                     
         def start_app() :
