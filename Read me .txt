@@ -1,3 +1,8 @@
+This application use for control translation stage (DDS100/M) developed based on Python language.
+
+Main file to use : MAIN&UI V3.py 
+    main program with UI for user.
+
 How to tuning PID parameters ?
     1. Tuning 'PROPORTIONAL' or 'Kp' First . Tuning it until translation stage move nearly closet to the reference image.
     2. Then tuning 'INTEGRAL' or 'Ki' for reduce error from 'PROPORTIONAL' or 'Kp'.
