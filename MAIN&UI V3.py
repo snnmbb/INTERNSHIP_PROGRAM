@@ -466,9 +466,9 @@ def main():
                         overrelief="raised",
                         padx=10,
                         pady=5,
-                        width=15,
+                        width=10,
                         wraplength=100 )
-        button.place(x = 400 , y = 90)
+        button.place(x = 460 , y = 90)
         
         button = tk.Button(master=window, text="DEFAULT", 
                         command=default_app,
@@ -489,9 +489,9 @@ def main():
                         overrelief="raised",
                         padx=10,
                         pady=5,
-                        width=15,
+                        width=10,
                         wraplength=100 )
-        button.place(x = 400 , y = 140)
+        button.place(x = 460 , y = 140)
 
         button = tk.Button(master=window, text="ENTER", 
                         command=Enter,
@@ -512,9 +512,9 @@ def main():
                         overrelief="raised",
                         padx=10,
                         pady=5,
-                        width=15,
+                        width=10,
                         wraplength=100 )
-        button.place(x = 400 , y = 190)
+        button.place(x = 460 , y = 190)
 
         button = tk.Button(master=window, text="START", 
                         command=start_app,
@@ -535,9 +535,9 @@ def main():
                         overrelief="raised",
                         padx=10,
                         pady=5,
-                        width=15,
+                        width=10,
                         wraplength=100 )
-        button.place(x = 400 , y = 240)
+        button.place(x = 460 , y = 240)
         
         button = tk.Button(master=window, text="STOP", 
                         command=Stop,
@@ -558,9 +558,9 @@ def main():
                         overrelief="raised",
                         padx=10,
                         pady=5,
-                        width=15,
+                        width=10,
                         wraplength=100 )
-        button.place(x = 400 , y = 290)
+        button.place(x = 460 , y = 290)
 
         window.mainloop()
                     
