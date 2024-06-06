@@ -306,8 +306,6 @@ def main():
             i = 0
             stop_event.clear()
             while not stop_event.is_set():    
-                
-                
 
                 pos = Decimal(POS)
                 new_position = Decimal(POS)
@@ -335,33 +333,35 @@ def main():
                     
                     for path in Dir_Read('s', path=save_path):
 
-                        time.sleep(0.5)
-                        disX = Draw_Contour(path)
+                        if stop_event.is_set() :
+                            break
+                        else :
+                            disX = Draw_Contour(path)
+                                
+                            PID_Out = PID(Decimal(KP) , Decimal(KI), Decimal(KD) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
+                            print("Error : " + str(PID_Out))
+
+                            if new_position <= Decimal(50.55 ) and new_position >= Decimal(50.5) :
+                                print("New_position : " + str(new_position)    )
+                                kcube.MoveTo(new_position, 7000)
+                                return
+                            elif PID_Out < reference: 
+                                new_position = pos+PID_Out
+                                print("New_position : " + str(new_position)    )
+                                kcube.MoveTo(new_position, 7000)
+                            elif  PID_Out > reference: 
+                                new_position = pos-PID_Out
+                                print("New_position : " + str(new_position)   )
+                                kcube.MoveTo(new_position, 7000)
                             
-                        PID_Out = PID(Decimal(KP) , Decimal(KI), Decimal(KD) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
-                        print("Error : " + str(PID_Out))
+                            with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', newline='') as csvfile:
+                                fieldnames = ["PID Output", "New position"]
+                                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                                writer.writeheader()
 
-                        if new_position <= Decimal(50.55 ) and new_position >= Decimal(50.5) :
-                            print("New_position : " + str(new_position)    )
-                            kcube.MoveTo(new_position, 7000)
-                            return
-                        elif PID_Out < reference: 
-                            new_position = pos+PID_Out
-                            print("New_position : " + str(new_position)    )
-                            kcube.MoveTo(new_position, 7000)
-                        elif  PID_Out > reference: 
-                            new_position = pos-PID_Out
-                            print("New_position : " + str(new_position)   )
-                            kcube.MoveTo(new_position, 7000)
-                        
-                        with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', newline='') as csvfile:
-                            fieldnames = ["PID Output", "New position"]
-                            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-                            writer.writeheader()
-
-                            for err_value, new_position in zip(error, new_pos):
-                                writer.writerow({"PID Output": err_value, "New position": new_position})                        
-                        time.sleep(0.1)
+                                for err_value, new_position in zip(error, new_pos):
+                                    writer.writerow({"PID Output": err_value, "New position": new_position})                        
+                            time.sleep(0.1)
                     i+=1
                     
         def start_app() :
@@ -396,36 +396,38 @@ def main():
                         print("----------------------------------------------")
                         
                     for path in Dir_Read('s', path=save_path):
+                        if stop_event.is_set() :
+                            break
+                        else :
+                            disX = Draw_Contour(path)
+                                    
+                            PID_Out = PID(Decimal(32) , Decimal(0.5), Decimal(0.5) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
+                            print("Error : " + str(PID_Out))
 
-                        disX = Draw_Contour(path)
-                                
-                        PID_Out = PID(Decimal(32) , Decimal(0.5), Decimal(0.5) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
-                        print("Error : " + str(PID_Out))
+                            if new_position <= Decimal(50.55 ) and new_position >= Decimal(50.5) :
+                                print("New_position : " + str(new_position)    )
+                                kcube.MoveTo(new_position, 7000)
+                                return
+                            elif PID_Out < reference: 
+                                new_position = pos+PID_Out
+                                print("New_position : " + str(new_position)    )
+                                kcube.MoveTo(new_position, 7000)
+                            elif  PID_Out > reference: 
+                                new_position = pos-PID_Out
+                                print("New_position : " + str(new_position)   )
+                                kcube.MoveTo(new_position, 7000)
+                        
+                            error.append(PID_Out)
+                            new_pos.append(new_position)
+                            with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', newline='') as csvfile:
+                                fieldnames = ["PID Output", "New position"]
+                                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                                writer.writeheader()
 
-                        if new_position <= Decimal(50.55 ) and new_position >= Decimal(50.5) :
-                            print("New_position : " + str(new_position)    )
-                            kcube.MoveTo(new_position, 7000)
-                            return
-                        elif PID_Out < reference: 
-                            new_position = pos+PID_Out
-                            print("New_position : " + str(new_position)    )
-                            kcube.MoveTo(new_position, 7000)
-                        elif  PID_Out > reference: 
-                            new_position = pos-PID_Out
-                            print("New_position : " + str(new_position)   )
-                            kcube.MoveTo(new_position, 7000)
-                    
-                        error.append(PID_Out)
-                        new_pos.append(new_position)
-                        with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', newline='') as csvfile:
-                            fieldnames = ["PID Output", "New position"]
-                            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-                            writer.writeheader()
-
-                            for err_value, new_position in zip(error, new_pos):
-                                writer.writerow({"PID Output": err_value, "New position": new_position})
-                                
-                        time.sleep(0.1)
+                                for err_value, new_position in zip(error, new_pos):
+                                    writer.writerow({"PID Output": err_value, "New position": new_position})
+                                    
+                            time.sleep(0.1)
                 i+=1    
         def default_app():
             r = threading.Thread(target=Default)

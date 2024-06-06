@@ -168,7 +168,7 @@ def main() :
         def stop() :
             global status
             status = True
-            print("stop")
+            print("***stop***")
             
         def default() :
             global status 
@@ -217,9 +217,10 @@ def main() :
             while(status == False) :
                 for path in Dir_Read('s', path=save_path):
                     if status:
-                        break  # Exit if status is True
+                        print("----------------LOOP BREAK----------------")
+                        break  
                     else :
-                        time.sleep(0.1)
+                        
                         disX = Draw_Contour(path)
                             
                         PID_Out = PID(KP , KI, KD , reference , disX) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
@@ -234,7 +235,7 @@ def main() :
                         elif  PID_Out > reference: 
                             new_position = pos-PID_Out
                             print("New_position : " + str(new_position)   )
-                    time.sleep(0.1)
+                    
                     
                     error.append(PID_Out)
                     new_pos.append(new_position)
