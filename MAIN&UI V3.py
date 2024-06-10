@@ -109,8 +109,6 @@ def Draw_Contour(path) :
     wid = dot1.shape[1] 
     hgt = dot1.shape[0] 
     
-    print('image pixels size = ' , str(wid) + " x " + str(hgt))
-    
     # Convert color to grayscale
     gray_dot1 = cv2.cvtColor(dot1, cv2.COLOR_BGR2GRAY)
     gray_dot2 = cv2.cvtColor(dot2, cv2.COLOR_BGR2GRAY)
@@ -164,9 +162,9 @@ def Draw_Contour(path) :
             #print('sum', len(np.argwhere(mask_or == np.amax(mask_or))))
             
         print("-------------------------------------------------")
-        print('center of ref - x : ' + str(cx_ref) + ' , y : '+ str(cy_ref))
-        print('center of object - x : ' + str(center_x) + ' , y : '+ str(center_y))
-        print("Distance between objects - x : " + str(distance_x) + " , y : " + str(distance_y))
+        print('center of ref - x : ' + str(cx_ref)  )
+        print('center of object - x : ' + str(center_x))
+        print("Distance between objects - x : " + str(distance_x))
 
         # Normalized
         CX_ref_nor = cx_ref/4656
@@ -178,11 +176,8 @@ def Draw_Contour(path) :
             
         print("--------------------Normalize--------------------")
         print('CX_ref = ' , CX_ref_nor)
-        print('CY_ref = ' , CY_ref_nor)
         print('center_x = ' , center_x_nor)
-        print('center_Y = ' , center_y_nor)
-        print('disX = ' , disX_nor)
-        print('disY = ' , disY_nor)
+        print('distance_X = ' , disX_nor)
         print("-------------------------------------------------")
                 
         return disX_nor
