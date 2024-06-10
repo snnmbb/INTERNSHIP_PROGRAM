@@ -71,6 +71,7 @@ from System import Decimal
 e_prev = Decimal(0)
 error = []
 new_pos = []
+distanceX = []
 i = 0
 pos = Decimal(55.0) # ตำแหน่งเริ่มต้นที่มอเตอร์ขยับไปให้แสงตกในกล้อง
 new_position = pos
@@ -351,15 +352,16 @@ def main():
                             print("New_position : " + str(new_position)   )
                             kcube.MoveTo(new_position, 7000)
                             
+                        distanceX.append(disX)
                         error.append(PID_Out)
                         new_pos.append(new_position)
                         with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', newline='') as csvfile:
-                            fieldnames = ["PID Output", "New position"]
+                            fieldnames = ["PID Output","distanceX", "New position"]
                             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
                             writer.writeheader()
 
-                            for err_value, new_position in zip(error, new_pos):
-                                writer.writerow({"PID Output": err_value, "New position": new_position})                   
+                            for err_value, new_position in zip(error, distanceX , new_pos):
+                                writer.writerow({"PID Output": err_value, "Distance X": distanceX , "New position": new_position})                
 
                 i+=1
                     
@@ -418,15 +420,16 @@ def main():
                                 print("New_position : " + str(new_position)   )
                                 kcube.MoveTo(new_position, 7000)
                         
+                            distanceX.append(disX)
                             error.append(PID_Out)
                             new_pos.append(new_position)
                             with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', newline='') as csvfile:
-                                fieldnames = ["PID Output", "New position"]
+                                fieldnames = ["PID Output","distanceX", "New position"]
                                 writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
                                 writer.writeheader()
 
-                                for err_value, new_position in zip(error, new_pos):
-                                    writer.writerow({"PID Output": err_value, "New position": new_position})
+                                for err_value, new_position in zip(error, distanceX , new_pos):
+                                    writer.writerow({"PID Output": err_value, "Distance X": distanceX , "New position": new_position})
                                     
 
                 i+=1    
