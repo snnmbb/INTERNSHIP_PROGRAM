@@ -47,7 +47,7 @@ camera.set_control_value(asi.ASI_BANDWIDTHOVERLOAD, camera.get_controls()['BandW
 camera.disable_dark_subtract()
 
 camera.set_control_value(asi.ASI_GAIN, 95) #ปรับค่าความละเอียด
-camera.set_control_value(asi.ASI_EXPOSURE, 1000) #microseconds #ปรับค่าการรับแสง
+camera.set_control_value(asi.ASI_EXPOSURE, 1330) #microseconds #ปรับค่าการรับแสง
 camera.set_control_value(asi.ASI_WB_B, 0)  #ปรับค่าblue component of white balance
 camera.set_control_value(asi.ASI_WB_R, 0) #ปรับค่าred component of white balance
 camera.set_control_value(asi.ASI_GAMMA, 0) #ปรับค่าการเปลี่ยนสีจากสีดำเป็นสีขาว gamma with range 1 to 100 (nomnally 50)
@@ -77,7 +77,7 @@ new_position = pos
 reference = Decimal(0)
 
 image_ref = r"C:\Users\Asus\Desktop\LAB_TEST\REF\REF2.png"
-save_path = r"C:\\Users\\Asus\\Desktop\LAB_TEST\DATA3\\"
+save_path = r"C:\\Users\\Asus\\Desktop\LAB_TEST\REAL_DATA\\"
 asi.init('C:\\Users\\Asus\\AppData\\Local\\Programs\\Python\\Python310\\Lib\\ASI SDK\\lib\\x64\ASICamera2.lib')
 pattern = re.compile(r'(\d+)\.png')
 os.chdir(save_path)
@@ -191,7 +191,7 @@ def Draw_Contour(path) :
 #-----------------------------------------------MAIN FUNCTION--------------------------------------------------------------------
 def main():
 
-    stop_event = threading.Event()
+    status = False
     
     try:
         
@@ -282,7 +282,7 @@ def main():
             KD = float(Kd)
             POS = float(Pos)
             
-            if POS > 70 or POS < 40 or KP > 35 or KP < 25 or KI > 1 or KI < 0 or KD > 0.5 or KD < 0  :
+            if POS > 70 or POS < 40 or KP > 50 or KP < 0 or KI > 1 or KI < 0 or KD > 0.5 or KD < 0  :
                 top= Toplevel(window)
                 top.geometry("400x150")
                 top.title("Warning Window")
@@ -304,65 +304,64 @@ def main():
         def Start() :
             
             i = 0
-            stop_event.clear()
-            while not stop_event.is_set():    
+            global status 
+            status = False
+            new_position = POS
+            pos = Decimal(POS)
+            new_position = Decimal(POS)
+            kcube.MoveTo(Decimal(POS), 7000)
+           
+            while(status == False) :             
 
-                pos = Decimal(POS)
-                new_position = Decimal(POS)
-
-                if stop_event.is_set() :
-                    break
-                else :
-                    kcube.MoveTo(Decimal(POS), 7000)    
-                    
-
+                print("----------------------------------------------")
+                print('Capturing image')
+                if i < 10:
+                    filename = '00'+ str(i)+'_image_lab.png'
+                    camera.set_image_type(asi.ASI_IMG_RAW16)
+                    camera.capture(filename=save_path+filename)
+                    print('Saved to %s' % filename)
                     print("----------------------------------------------")
-                    print('Capturing image')
-                    if i < 10:
-                        filename = '00'+ str(i)+'_image_lab.png'
-                        camera.set_image_type(asi.ASI_IMG_RAW16)
-                        camera.capture(filename=save_path+filename)
-                        print('Saved to %s' % filename)
-                        print("----------------------------------------------")
-                    else:
-                        filename = '0'+ str(i)+'_image_lab.png'
-                        camera.set_image_type(asi.ASI_IMG_RAW16)
-                        camera.capture(filename=save_path+filename)
-                        print('Saved to %s' % filename)
-                        print("----------------------------------------------")
+                else:
+                    filename = '0'+ str(i)+'_image_lab.png'
+                    camera.set_image_type(asi.ASI_IMG_RAW16)
+                    camera.capture(filename=save_path+filename)
+                    print('Saved to %s' % filename)
+                    print("----------------------------------------------")
                     
-                    for path in Dir_Read('s', path=save_path):
+                for path in Dir_Read('s', path=save_path):
 
-                        if stop_event.is_set() :
-                            break
-                        else :
-                            disX = Draw_Contour(path)
+                    if status :
+                        break
+                    else :
+                        disX = Draw_Contour(path)
                                 
-                            PID_Out = PID(Decimal(KP) , Decimal(KI), Decimal(KD) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
-                            print("Error : " + str(PID_Out))
+                        PID_Out = PID(Decimal(KP) , Decimal(KI), Decimal(KD) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
+                        print("Error : " + str(PID_Out))
 
-                            if new_position <= Decimal(50.55 ) and new_position >= Decimal(50.5) :
-                                print("New_position : " + str(new_position)    )
-                                kcube.MoveTo(new_position, 7000)
-                                return
-                            elif PID_Out < reference: 
-                                new_position = pos+PID_Out
-                                print("New_position : " + str(new_position)    )
-                                kcube.MoveTo(new_position, 7000)
-                            elif  PID_Out > reference: 
-                                new_position = pos-PID_Out
-                                print("New_position : " + str(new_position)   )
-                                kcube.MoveTo(new_position, 7000)
+                        if new_position <= Decimal(50.6 ) and new_position >= Decimal(50.5) :
+                            print("New_position : " + str(new_position)    )
+                            kcube.MoveTo(new_position, 7000)
+                            return
+                        elif PID_Out < reference: 
+                            new_position = pos+PID_Out
+                            print("New_position : " + str(new_position)    )
+                            kcube.MoveTo(new_position, 7000)
+                        elif  PID_Out > reference: 
+                            new_position = pos-PID_Out
+                            print("New_position : " + str(new_position)   )
+                            kcube.MoveTo(new_position, 7000)
                             
-                            with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', newline='') as csvfile:
-                                fieldnames = ["PID Output", "New position"]
-                                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-                                writer.writeheader()
+                        error.append(PID_Out)
+                        new_pos.append(new_position)
+                        with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', newline='') as csvfile:
+                            fieldnames = ["PID Output", "New position"]
+                            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                            writer.writeheader()
 
-                                for err_value, new_position in zip(error, new_pos):
-                                    writer.writerow({"PID Output": err_value, "New position": new_position})                        
-                            time.sleep(0.1)
-                    i+=1
+                            for err_value, new_position in zip(error, new_pos):
+                                writer.writerow({"PID Output": err_value, "New position": new_position})                   
+
+                i+=1
                     
         def start_app() :
             t = threading.Thread(target=Start)
@@ -371,11 +370,13 @@ def main():
         def Default() :
             
             i = 0
-            stop_event.clear()
-            while not stop_event.is_set():
-                kcube.MoveTo(Decimal(60), 7000)
+            global status 
+            status = False
+            kcube.MoveTo(Decimal(60), 7000)
+            while(status == False) :
+                
 
-                if stop_event.is_set() :
+                if status :
                     break
                 else :
                     new_position = Decimal(55)
@@ -396,15 +397,15 @@ def main():
                         print("----------------------------------------------")
                         
                     for path in Dir_Read('s', path=save_path):
-                        if stop_event.is_set() :
+                        if status :
                             break
                         else :
                             disX = Draw_Contour(path)
                                     
-                            PID_Out = PID(Decimal(32) , Decimal(0.5), Decimal(0.5) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
+                            PID_Out = PID(Decimal(12) , Decimal(0.5), Decimal(0.5) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
                             print("Error : " + str(PID_Out))
 
-                            if new_position <= Decimal(50.55 ) and new_position >= Decimal(50.5) :
+                            if new_position <= Decimal(50.6 ) and new_position >= Decimal(50.5) :
                                 print("New_position : " + str(new_position)    )
                                 kcube.MoveTo(new_position, 7000)
                                 return
@@ -427,15 +428,16 @@ def main():
                                 for err_value, new_position in zip(error, new_pos):
                                     writer.writerow({"PID Output": err_value, "New position": new_position})
                                     
-                            time.sleep(0.1)
+
                 i+=1    
         def default_app():
             r = threading.Thread(target=Default)
             r.start()
                     
         def home():
-            stop_event.clear()
-            while not stop_event.is_set():
+            global status 
+            status = False            
+            while not status:
                 kcube.Home(6000)
                 
         def home_app() :
@@ -443,8 +445,9 @@ def main():
             h.start()
             
         def Stop():
-            stop_event.set()
-            print("Stop signal sent")
+            global status
+            status = True
+            print("***stop***")
             
         # Button
         button = tk.Button(master=window, text="HOME", 
