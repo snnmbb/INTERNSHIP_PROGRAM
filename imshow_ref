@@ -1,0 +1,27 @@
+import cv2
+from PIL import Image 
+from matplotlib import pyplot as plt
+from matplotlib import pyplot as mpimg
+import numpy as np
+
+image_ref = r"C:\Users\Asus\Desktop\LAB_TEST\REF\REF3.png"
+
+
+dot1 = cv2.imread(image_ref)
+gray_dot1 = cv2.cvtColor(dot1, cv2.COLOR_BGR2GRAY)
+ret, thresh1 = cv2.threshold(gray_dot1, 100, 700, cv2.THRESH_BINARY)
+contours1, _ = cv2.findContours(thresh1, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+if len(contours1) > 0 :  
+    cnt1 = contours1[0]
+
+    x_ref,y_ref,w_ref,h_ref = cv2.boundingRect(cnt1)
+    
+    print('w_ref = ',w_ref)
+    print('h_ref = ',h_ref)
+    print('x_ref = ',x_ref)
+    print('y_ref = ',y_ref)
+        
+    # Create a mask
+    mask1 = cv2.drawContours(gray_dot1, [cnt1], -1, 255, thickness=-1)
+    plt.imshow(mask1)
+    plt.show()

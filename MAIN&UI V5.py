@@ -89,7 +89,7 @@ ki = []
 kd = []       
 j = 0    
 
-image_ref = r"C:\Users\Asus\Desktop\LAB_TEST\REF\REF3.png"
+image_ref = r"C:\Users\Asus\Desktop\LAB_TEST\REF\REF1.png"
 save_path = r"C:\\Users\\Asus\\Desktop\LAB_TEST\REAL_DATA\\"
 asi.init('C:\\Users\\Asus\\AppData\\Local\\Programs\\Python\\Python310\\Lib\\ASI SDK\\lib\\x64\ASICamera2.lib')
 pattern = re.compile(r'(\d+)\.png')
@@ -109,6 +109,12 @@ def PID(Kp , Ki , Kd , setpoint , measurement ): # measurement เป็นต�
     # update stored data for next iteration
     e_prev = e
     time_prev = time
+    if new_pos > reference :
+        new_pos = -new_pos
+    elif new_pos < reference :
+        new_pos = new_pos
+    else :
+        new_pos = reference
     return new_pos , P , I , D
 
 #-----------------------------------------------DRAW CONTOUR FUNCTION--------------------------------------------------------------------
@@ -129,9 +135,11 @@ def Draw_Contour(image) :
     # Find contour
     ret, thresh1 = cv2.threshold(gray_dot1, 100, 500, cv2.THRESH_BINARY)
     ret, thresh2 = cv2.threshold(gray_dot2, 100, 500, cv2.THRESH_BINARY)
-
+    
     contours1, _ = cv2.findContours(thresh1, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     contours2, _ = cv2.findContours(thresh2, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    
+
 
     if len(contours1) > 0 and len(contours2) > 0:   
         cnt1 = contours1[0]
@@ -152,6 +160,7 @@ def Draw_Contour(image) :
 
         # Create a mask
         mask1 = cv2.drawContours(gray_dot1, [cnt1], -1, 255, thickness=-1)
+        plt.imshow(mask1)
         mask2 = cv2.drawContours(gray_dot2, [cnt2], -1, 255, thickness=-1)
             
         # Bitwise AND operation
@@ -166,6 +175,7 @@ def Draw_Contour(image) :
         #Find center coordinates and distance
         cx_ref = ((x_ref+w_ref)+x_ref)/2   
         center_x = ((x+w_ref)+x)/2
+        print('*************\n', cx_ref, center_x)
         distance_x = cx_ref-center_x
             
         print("-------------------------------------------------")
@@ -227,7 +237,7 @@ def main():
         kcube.MaxVelocity = Decimal(20)
         
         print("Homing Device...")
-        kcube.Home(5000) 
+        #kcube.Home(60000) 
         print("Device Homed")
         
         print('Enabling stills mode')
@@ -323,7 +333,8 @@ def main():
             kcube.MoveTo(Decimal(POS), 7000)
 
             while(status == False) :             
-
+                
+                time.sleep(1)
                 print("----------------------------------------------")
                 print('Capturing image')
                 if j < 10:
@@ -350,22 +361,12 @@ def main():
                         p = all_PID_Output[1]
                         i = all_PID_Output[2]
                         d = all_PID_Output[3]
-                        dis_X = Decimal(disX)
                         print("Error: " + str(PID_Out))
 
-                        if PID_Out >=  Decimal(0) and PID_Out <= Decimal(0.5):
-                            print("New_position : " + str(new_position))
-                            kcube.MoveTo(new_position, 7000)
-                            return
-                        elif PID_Out < reference:
-                            new_position = pos + PID_Out
-                            print("New_position : " + str(new_position))
-                            kcube.MoveTo(new_position, 7000)
-                        elif PID_Out > reference:
-                            new_position = pos - PID_Out
-                            print("New_position : " + str(new_position))
-                            kcube.MoveTo(new_position, 7000)
-
+                        new_position = PID_Out+kcube.Position #pos
+                        print("New_position : " + str(new_position))
+                        kcube.MoveTo(new_position, 7000)
+                        
                         if isinstance(error, list):
                             error.append(PID_Out) 
 
