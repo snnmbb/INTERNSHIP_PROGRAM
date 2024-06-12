@@ -46,7 +46,7 @@ camera.set_control_value(asi.ASI_BANDWIDTHOVERLOAD, camera.get_controls()['BandW
 camera.disable_dark_subtract()
 
 camera.set_control_value(asi.ASI_GAIN, 95) #ปรับค่าความละเอียด
-camera.set_control_value(asi.ASI_EXPOSURE, 1095) #microseconds #ปรับค่าการรับแสง
+camera.set_control_value(asi.ASI_EXPOSURE, 1000) #microseconds #ปรับค่าการรับแสง
 camera.set_control_value(asi.ASI_WB_B, 0)  #ปรับค่าblue component of white balance
 camera.set_control_value(asi.ASI_WB_R, 0) #ปรับค่าred component of white balance
 camera.set_control_value(asi.ASI_GAMMA, 0) #ปรับค่าการเปลี่ยนสีจากสีดำเป็นสีขาว gamma with range 1 to 100 (nomnally 50)
@@ -88,7 +88,7 @@ ki = []
 kd = []       
 j = 0    
 
-image_ref = r"C:\Users\Asus\Desktop\LAB_TEST\REF\REF2.png"
+image_ref = r"C:\Users\Asus\Desktop\LAB_TEST\REF\REF1.png"
 save_path = r"C:\\Users\\Asus\\Desktop\LAB_TEST\REAL_DATA\\"
 asi.init('C:\\Users\\Asus\\AppData\\Local\\Programs\\Python\\Python310\\Lib\\ASI SDK\\lib\\x64\ASICamera2.lib')
 pattern = re.compile(r'(\d+)\.png')
@@ -99,7 +99,6 @@ os.chdir(save_path)
 def PID(Kp , Ki , Kd , setpoint , measurement ): # measurement เป็นตำแหน่งที่จุด offset จากจุดศูนย์กลาง รับค่าจากกล้อง/เซนเซอร์....
     global time, e_prev# Value of offset - when the error is equal zero
     # PID calculations
-    print(Kp , Ki , Kd)
     e = setpoint - measurement
     P = Kp*e
     I = Ki*(e+e_prev)
@@ -159,7 +158,6 @@ def Draw_Contour(image) :
 
         # Create a mask
         mask1 = cv2.drawContours(gray_dot1, [cnt1], -1, 255, thickness=-1)
-        plt.imshow(mask1)
         mask2 = cv2.drawContours(gray_dot2, [cnt2], -1, 255, thickness=-1)
             
         # Bitwise AND operation
@@ -174,7 +172,6 @@ def Draw_Contour(image) :
         #Find center coordinates and distance
         cx_ref = ((x_ref+w_ref)+x_ref)/2   
         center_x = ((x+w_ref)+x)/2
-        print('*************\n', cx_ref, center_x)
         distance_x = cx_ref-center_x
             
         print("-------------------------------------------------")
@@ -236,7 +233,7 @@ def main():
         kcube.MaxVelocity = Decimal(20)
         
         print("Homing Device...")
-        #kcube.Home(60000) 
+        kcube.Home(40000) 
         print("Device Homed")
         
         print('Enabling stills mode')
@@ -333,7 +330,7 @@ def main():
 
             while(status == False) :             
                 
-                time.sleep(1)
+                time.sleep(0.5)
                 print("----------------------------------------------")
                 print('Capturing image')
                 if j < 10:
@@ -361,15 +358,9 @@ def main():
                         i = all_PID_Output[2]
                         d = all_PID_Output[3]
                         print("Error: " + str(PID_Out))
-
-                        if PID_Out >= Decimal(0) :
-                            return
-                        else :
-                            new_position = PID_Out+kcube.Position #pos
-                            print("New_position : " + str(new_position))
-                            kcube.MoveTo(new_position, 7000)
-                        
-                        
+                        '''
+                        if PID_Out >= Decimal(-0.1) and PID_Out <= Decimal(0.1) :
+                            
                             if isinstance(error, list):
                                 error.append(PID_Out) 
 
@@ -392,7 +383,40 @@ def main():
 
                                 for err_value, distX, newPos,K_P,K_I,K_D in zip(error, distance_X, new_pos,kp,ki,kd):  # Corrected variable names
                                     writer.writerow({"PID Output": err_value, "distanceX": distX, "New position": newPos
-                                    ,"KP":K_P ,"KI" :K_I ,"KD" : K_D})              
+                                    ,"KP":K_P ,"KI" :K_I ,"KD" : K_D})    
+                                    
+                            print("--------------------------FINISHED-------------------------------")
+                            return
+                        '''
+                        #else :
+                        new_position = PID_Out+kcube.Position #pos
+                        print("New_position : " + str(new_position))
+                        kcube.MoveTo(new_position, 7000)
+                    
+                    
+                        if isinstance(error, list):
+                            error.append(PID_Out) 
+
+                        if isinstance(new_pos, list):
+                            new_pos.append(new_position)
+                            
+                        if isinstance(kp, list):
+                            kp.append(p)  
+
+                        if isinstance(ki, list):
+                            ki.append(i)  
+                            
+                        if isinstance(kd, list):
+                            kd.append(d)   
+                                                                            
+                        with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', newline='') as csvfile:
+                            fieldnames = ["PID Output", "distanceX", "New position" , "KP" , "KI" , "KD"]
+                            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                            writer.writeheader()
+
+                            for err_value, distX, newPos,K_P,K_I,K_D in zip(error, distance_X, new_pos,kp,ki,kd):  # Corrected variable names
+                                writer.writerow({"PID Output": err_value, "distanceX": distX, "New position": newPos
+                                ,"KP":K_P ,"KI" :K_I ,"KD" : K_D})              
 
 
                     
@@ -437,7 +461,8 @@ def main():
                 print("----------------------------------------------")
 
                 j+=1
-                                    
+                
+                time.sleep(0.5)               
                 if status:
                     break
                 else:
@@ -453,14 +478,9 @@ def main():
                         i = all_PID_Output[2]
                         d = all_PID_Output[3]
                         print("Error : " + str(PID_Out))
-
-                        if PID_Out == Decimal(0) :
-                            return
-                        else :
-                            new_position = PID_Out+kcube.Position #pos
-                            print("New_position : " + str(new_position))
-                            kcube.MoveTo(new_position, 7000)
-
+                        '''                 
+                        if PID_Out >= Decimal(-0.01) and PID_Out <= Decimal(0.01) :
+                            
                             if isinstance(error, list):
                                 error.append(PID_Out) 
 
@@ -483,7 +503,39 @@ def main():
 
                                 for err_value, distX, newPos,K_P,K_I,K_D in zip(error, distance_X, new_pos,kp,ki,kd):  # Corrected variable names
                                     writer.writerow({"PID Output": err_value, "distanceX": distX, "New position": newPos
-                                    ,"KP":K_P ,"KI" :K_I ,"KD" : K_D}) 
+                                    ,"KP":K_P ,"KI" :K_I ,"KD" : K_D})    
+                                    
+                            print("--------------------------FINISHED-------------------------------")
+                            return
+                        '''
+                        #else :
+                        new_position = PID_Out+kcube.Position #pos
+                        print("New_position : " + str(new_position))
+                        kcube.MoveTo(new_position, 7000)
+
+                        if isinstance(error, list):
+                            error.append(PID_Out) 
+
+                        if isinstance(new_pos, list):
+                            new_pos.append(new_position)
+                            
+                        if isinstance(kp, list):
+                            kp.append(p)  
+
+                        if isinstance(ki, list):
+                            ki.append(i)  
+                            
+                        if isinstance(kd, list):
+                            kd.append(d)   
+                                                                            
+                        with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', newline='') as csvfile:
+                            fieldnames = ["PID Output", "distanceX", "New position" , "KP" , "KI" , "KD"]
+                            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                            writer.writeheader()
+
+                            for err_value, distX, newPos,K_P,K_I,K_D in zip(error, distance_X, new_pos,kp,ki,kd):  # Corrected variable names
+                                writer.writerow({"PID Output": err_value, "distanceX": distX, "New position": newPos
+                                ,"KP":K_P ,"KI" :K_I ,"KD" : K_D}) 
                                     
         def default_app():
             r = threading.Thread(target=Default)
