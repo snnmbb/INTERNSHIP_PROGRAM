@@ -47,7 +47,7 @@ camera.set_control_value(asi.ASI_BANDWIDTHOVERLOAD, camera.get_controls()['BandW
 camera.disable_dark_subtract()
 
 camera.set_control_value(asi.ASI_GAIN, 95) #ปรับค่าความละเอียด
-camera.set_control_value(asi.ASI_EXPOSURE, 1330) #microseconds #ปรับค่าการรับแสง
+camera.set_control_value(asi.ASI_EXPOSURE, 2840) #microseconds #ปรับค่าการรับแสง
 camera.set_control_value(asi.ASI_WB_B, 0)  #ปรับค่าblue component of white balance
 camera.set_control_value(asi.ASI_WB_R, 0) #ปรับค่าred component of white balance
 camera.set_control_value(asi.ASI_GAMMA, 0) #ปรับค่าการเปลี่ยนสีจากสีดำเป็นสีขาว gamma with range 1 to 100 (nomnally 50)
@@ -69,9 +69,7 @@ from System import Decimal
 
 #-----------------------------------------------INITIALIZE--------------------------------------------------------------------
 e_prev = Decimal(0)
-error = []
-new_pos = []
-distanceX = []
+
 i = 0
 pos = Decimal(55.0) # ตำแหน่งเริ่มต้นที่มอเตอร์ขยับไปให้แสงตกในกล้อง
 new_position = pos
@@ -96,7 +94,7 @@ def PID(Kp , Ki , Kd , setpoint , measurement ): # measurement เป็นต�
     # update stored data for next iteration
     e_prev = e
     time_prev = time
-    return new_pos
+    return new_pos , P , I , D
 
 #-----------------------------------------------DRAW CONTOUR FUNCTION--------------------------------------------------------------------
 def Draw_Contour(path) :
@@ -236,7 +234,9 @@ def main():
         except (KeyboardInterrupt, SystemExit):
             raise
         
-        
+        error = []
+        new_pos = []
+        distance_X = []
         #-------------------------------WINDOW VERSION----------------------------------------------
         # Window setting
         #window setup
@@ -306,7 +306,11 @@ def main():
             pos = Decimal(POS)
             new_position = Decimal(POS)
             kcube.MoveTo(Decimal(POS), 7000)
-           
+
+            distance_X = []  
+            error = []      
+            new_pos = []       
+                  
             while(status == False) :             
 
                 print("----------------------------------------------")
@@ -325,38 +329,45 @@ def main():
                     print("----------------------------------------------")
                     
                 for path in Dir_Read('s', path=save_path):
-
-                    if status :
+                    if status:
                         break
-                    else :
+                    else:
                         disX = Draw_Contour(path)
-                                
-                        PID_Out = PID(Decimal(KP) , Decimal(KI), Decimal(KD) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
-                        print("Error : " + str(PID_Out))
+                        
+                        if disX is not None:  # Ensure disX has a value
+                            if isinstance(distance_X, list):
+                                distance_X.append(disX)  # Append to distanceX list
+                        
+                            PID_Out = PID(Decimal(25), Decimal(0.6), Decimal(0.5), reference, Decimal(disX))
+                            print("Error: " + str(PID_Out))
 
-                        if new_position <= Decimal(50.6 ) and new_position >= Decimal(50.5) :
-                            print("New_position : " + str(new_position)    )
-                            kcube.MoveTo(new_position, 7000)
-                            return
-                        elif PID_Out < reference: 
-                            new_position = pos+PID_Out
-                            print("New_position : " + str(new_position)    )
-                            kcube.MoveTo(new_position, 7000)
-                        elif  PID_Out > reference: 
-                            new_position = pos-PID_Out
-                            print("New_position : " + str(new_position)   )
-                            kcube.MoveTo(new_position, 7000)
-                            
-                        distanceX.append(disX)
-                        error.append(PID_Out)
-                        new_pos.append(new_position)
-                        with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', newline='') as csvfile:
-                            fieldnames = ["PID Output","distanceX", "New position"]
-                            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-                            writer.writeheader()
+                            if Decimal(50.5) <= new_position <= Decimal(50.6):
+                                print("New_position: " + str(new_position))
+                                kcube.MoveTo(new_position, 7000)
+                                return
+                            elif PID_Out < reference:
+                                new_position = pos + PID_Out
+                                print("New_position: " + str(new_position))
+                                kcube.MoveTo(new_position, 7000)
+                            elif PID_Out > reference:
+                                new_position = pos - PID_Out
+                                print("New_position: " + str(new_position))
+                                kcube.MoveTo(new_position, 7000)
 
-                            for err_value, new_position in zip(error, distanceX , new_pos):
-                                writer.writerow({"PID Output": err_value, "Distance X": distanceX , "New position": new_position})                
+                            if isinstance(error, list):
+                                error.append(PID_Out)  # Append to error list
+
+
+                            if isinstance(new_pos, list):
+                                new_pos.append(new_position)  # Append to new_pos list
+                           
+                            with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', newline='') as csvfile:
+                                fieldnames = ["PID Output", "distanceX", "New position"]
+                                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                                writer.writeheader()
+
+                                for err_value, distX, n_pos in zip(error, distance_X, new_pos):  # Corrected variable names
+                                    writer.writerow({"PID Output": err_value, "distanceX": distX, "New position": n_pos})              
 
                 i+=1
                     
@@ -368,63 +379,72 @@ def main():
             
             i = 0
             global status 
+            global distanceX  # Ensure we're using the global variable
+            global error      # Ensure we're using the global variable
+            global new_pos 
             status = False
+            new_position = Decimal(50)
             kcube.MoveTo(Decimal(60), 7000)
-            while(status == False) :
-                
+        
+            distanceX = []  
+            error = []      
+            new_pos = []    
+            
+            while not status:
+                print("----------------------------------------------")
+                print('Capturing image')
+                if i < 10:
+                    filename = '00' + str(i) + '_image_lab.png'
+                else:
+                    filename = '0' + str(i) + '_image_lab.png'
+                    
+                camera.set_image_type(asi.ASI_IMG_RAW16)
+                camera.capture(filename=save_path + filename)
+                print('Saved to %s' % filename)
+                print("----------------------------------------------")
 
-                if status :
-                    break
-                else :
-                    new_position = Decimal(55)
-                      
-                    print("----------------------------------------------")
-                    print('Capturing image')
-                    if i < 10:
-                        filename = '00'+ str(i)+'_image_lab.png'
-                        camera.set_image_type(asi.ASI_IMG_RAW16)
-                        camera.capture(filename=save_path+filename)
-                        print('Saved to %s' % filename)
-                        print("----------------------------------------------")
+                for path in Dir_Read('s', path=save_path):
+                    if status:
+                        break
                     else:
-                        filename = '0'+ str(i)+'_image_lab.png'
-                        camera.set_image_type(asi.ASI_IMG_RAW16)
-                        camera.capture(filename=save_path+filename)
-                        print('Saved to %s' % filename)
-                        print("----------------------------------------------")
+                        disX = Draw_Contour(path)
                         
-                    for path in Dir_Read('s', path=save_path):
-                        if status :
-                            break
-                        else :
-                            disX = Draw_Contour(path)
-                                    
-                            PID_Out = PID(Decimal(12) , Decimal(0.5), Decimal(0.5) , reference , Decimal(disX)) # KP , KI , KD , จุดที่แสงอยู่จุดศูนย์กลาง (reference 0) , ระยะห่างจากจุดศูนย์กลางที่รับค่าจากกล้อง/เซนเซอร์
-                            print("Error : " + str(PID_Out))
+                        print(f'disX: {disX}, type: {type(disX)}')  # Debug print
 
-                            if new_position <= Decimal(50.6 ) and new_position >= Decimal(50.5) :
-                                print("New_position : " + str(new_position)    )
+                        if disX is not None:  # Ensure disX has a value
+                            if isinstance(distanceX, list):
+                                distanceX.append(disX)  # Append to distanceX list
+                        
+                            PID_Out = PID(Decimal(25), Decimal(0.6), Decimal(0.5), reference, Decimal(disX))
+                            print("Error: " + str(PID_Out))
+
+                            if Decimal(50.5) <= new_position <= Decimal(50.6):
+                                print("New_position: " + str(new_position))
                                 kcube.MoveTo(new_position, 7000)
                                 return
-                            elif PID_Out < reference: 
-                                new_position = pos+PID_Out
-                                print("New_position : " + str(new_position)    )
+                            elif PID_Out < reference:
+                                new_position = pos + PID_Out
+                                print("New_position: " + str(new_position))
                                 kcube.MoveTo(new_position, 7000)
-                            elif  PID_Out > reference: 
-                                new_position = pos-PID_Out
-                                print("New_position : " + str(new_position)   )
+                            elif PID_Out > reference:
+                                new_position = pos - PID_Out
+                                print("New_position: " + str(new_position))
                                 kcube.MoveTo(new_position, 7000)
-                        
-                            distanceX.append(disX)
-                            error.append(PID_Out)
-                            new_pos.append(new_position)
+
+                            if isinstance(error, list):
+                                error.append(PID_Out)  # Append to error list
+
+
+                            if isinstance(new_pos, list):
+                                new_pos.append(new_position)  # Append to new_pos list
+                           
                             with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', newline='') as csvfile:
-                                fieldnames = ["PID Output","distanceX", "New position"]
+                                fieldnames = ["PID Output", "distanceX", "New position"]
                                 writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
                                 writer.writeheader()
 
-                                for err_value, new_position in zip(error, distanceX , new_pos):
-                                    writer.writerow({"PID Output": err_value, "Distance X": distanceX , "New position": new_position})
+                                for err_value, distX, n_pos in zip(error, distanceX, new_pos):  # Corrected variable names
+                                    writer.writerow({"PID Output": err_value, "distanceX": distX, "New position": n_pos})
                                     
 
                 i+=1    
@@ -551,7 +571,7 @@ def main():
                         disabledforeground="lightsteelblue1",
                         fg="black",
                         font=("CenturyGothic", 12),
-                        height=1,
+                        height=1,         
                         highlightbackground="white",
                         highlightcolor="lightgray",
                         highlightthickness=2,
