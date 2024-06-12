@@ -47,7 +47,7 @@ camera.set_control_value(asi.ASI_BANDWIDTHOVERLOAD, camera.get_controls()['BandW
 camera.disable_dark_subtract()
 
 camera.set_control_value(asi.ASI_GAIN, 95) #ปรับค่าความละเอียด
-camera.set_control_value(asi.ASI_EXPOSURE, 2840) #microseconds #ปรับค่าการรับแสง
+camera.set_control_value(asi.ASI_EXPOSURE, 1095) #microseconds #ปรับค่าการรับแสง
 camera.set_control_value(asi.ASI_WB_B, 0)  #ปรับค่าblue component of white balance
 camera.set_control_value(asi.ASI_WB_R, 0) #ปรับค่าred component of white balance
 camera.set_control_value(asi.ASI_GAMMA, 0) #ปรับค่าการเปลี่ยนสีจากสีดำเป็นสีขาว gamma with range 1 to 100 (nomnally 50)
@@ -70,12 +70,26 @@ from System import Decimal
 #-----------------------------------------------INITIALIZE--------------------------------------------------------------------
 e_prev = Decimal(0)
 
-i = 0
 pos = Decimal(55.0) # ตำแหน่งเริ่มต้นที่มอเตอร์ขยับไปให้แสงตกในกล้อง
 new_position = pos
 reference = Decimal(0)
 
-image_ref = r"C:\Users\Asus\Desktop\LAB_TEST\REF\REF2.png"
+global distance_X  
+global error      
+global new_pos 
+global kp
+global ki
+global kd
+global j
+distance_X = []  
+error = []      
+new_pos = []
+kp = []
+ki = []
+kd = []       
+j = 0    
+
+image_ref = r"C:\Users\Asus\Desktop\LAB_TEST\REF\REF3.png"
 save_path = r"C:\\Users\\Asus\\Desktop\LAB_TEST\REAL_DATA\\"
 asi.init('C:\\Users\\Asus\\AppData\\Local\\Programs\\Python\\Python310\\Lib\\ASI SDK\\lib\\x64\ASICamera2.lib')
 pattern = re.compile(r'(\d+)\.png')
@@ -151,13 +165,8 @@ def Draw_Contour(image) :
 
         #Find center coordinates and distance
         cx_ref = ((x_ref+w_ref)+x_ref)/2   
-        cy_ref = ((y_ref+h_ref)+y_ref)/2      
         center_x = ((x+w_ref)+x)/2
-        center_y = ((y+h_ref)+y)/2
         distance_x = cx_ref-center_x
-        distance_y = cy_ref-center_y
-            
-            #print('sum', len(np.argwhere(mask_or == np.amax(mask_or))))
             
         print("-------------------------------------------------")
         print('center of ref - x : ' + str(cx_ref)  )
@@ -166,12 +175,8 @@ def Draw_Contour(image) :
 
         # Normalized
         CX_ref_nor = cx_ref/4656
-        CY_ref_nor = cy_ref/3520
         center_x_nor = center_x/4656
-        center_y_nor = center_y/3520
-        disX_nor = distance_x/4656
-        disY_nor = distance_y/3520
-            
+        disX_nor = distance_x/4656            
         print("--------------------Normalize--------------------")
         print('CX_ref = ' , CX_ref_nor)
         print('center_x = ' , center_x_nor)
@@ -222,7 +227,7 @@ def main():
         kcube.MaxVelocity = Decimal(20)
         
         print("Homing Device...")
-        #kcube.Home(60000)  # 60 second timeout
+        kcube.Home(5000) 
         print("Device Homed")
         
         print('Enabling stills mode')
@@ -233,16 +238,13 @@ def main():
             camera.stop_exposure()
         except (KeyboardInterrupt, SystemExit):
             raise
-        
-        error = []
-        new_pos = []
-        distance_X = []
+
         #-------------------------------WINDOW VERSION----------------------------------------------
         # Window setting
         #window setup
         window = tk.Tk()
         window.geometry("600x400") 
-        window.title("Translation stage control 2024 V.0.3")
+        window.title("Translation stage control 2024 V.0.4")
         
         bg = PhotoImage(file = 'C://Users//Asus//Desktop//INTERNSHIP_PROGRAM//UI_v3.png')
         canvas1 = Canvas( window, width = 600, height = 400)  
@@ -299,37 +301,39 @@ def main():
             
         def Start() :
             
-            i = 0
             global status 
             status = False
-            new_position = POS
-            pos = Decimal(POS)
-            new_position = Decimal(POS)
-            kcube.MoveTo(Decimal(POS), 7000)
-
+            global distance_X  
+            global error      
+            global new_pos 
+            global kp
+            global ki
+            global kd
+            global j
             distance_X = []  
             error = []      
             new_pos = []
             kp = []
             ki = []
-            kd = []       
-            j = 0     
+            kd = []    
+            j = 0
+            new_position = POS
+            pos = Decimal(POS)
+            new_position = Decimal(POS)
+            kcube.MoveTo(Decimal(POS), 7000)
+
             while(status == False) :             
 
                 print("----------------------------------------------")
                 print('Capturing image')
                 if j < 10:
                     filename = '00'+ str(j)+'_image_lab.png'
-                    camera.set_image_type(asi.ASI_IMG_RAW8)
-                    img=camera.capture(filename=save_path+filename)
-                    print('Saved to %s' % filename)
-                    print("----------------------------------------------")
                 else:
                     filename = '0'+ str(j)+'_image_lab.png'
-                    camera.set_image_type(asi.ASI_IMG_RAW8)
-                    img = camera.capture(filename=save_path+filename)
-                    print('Saved to %s' % filename)
-                    print("----------------------------------------------")
+                camera.set_image_type(asi.ASI_IMG_RAW8)
+                img = camera.capture(filename=save_path+filename)
+                print('Saved to %s' % filename)
+                print("----------------------------------------------")
                 j+=1
                                     
                 if status:
@@ -346,43 +350,44 @@ def main():
                         p = all_PID_Output[1]
                         i = all_PID_Output[2]
                         d = all_PID_Output[3]
+                        dis_X = Decimal(disX)
                         print("Error: " + str(PID_Out))
 
-                        if Decimal(50.5) <= new_position and new_position <= Decimal(50.6):
-                            print("New_position: " + str(new_position))
+                        if PID_Out >=  Decimal(0) and PID_Out <= Decimal(0.5):
+                            print("New_position : " + str(new_position))
                             kcube.MoveTo(new_position, 7000)
                             return
                         elif PID_Out < reference:
                             new_position = pos + PID_Out
-                            print("New_position: " + str(new_position))
+                            print("New_position : " + str(new_position))
                             kcube.MoveTo(new_position, 7000)
                         elif PID_Out > reference:
                             new_position = pos - PID_Out
-                            print("New_position: " + str(new_position))
+                            print("New_position : " + str(new_position))
                             kcube.MoveTo(new_position, 7000)
 
                         if isinstance(error, list):
-                            error.append(PID_Out)  # Append to error list
-
+                            error.append(PID_Out) 
 
                         if isinstance(new_pos, list):
-                            new_pos.append(new_position)  # Append to new_pos list
+                            new_pos.append(new_position)
                             
                         if isinstance(kp, list):
-                            kp.append(p)  # Append to error list
+                            kp.append(p)  
 
                         if isinstance(ki, list):
-                            ki.append(i)  # Append to error list
+                            ki.append(i)  
                             
                         if isinstance(kd, list):
-                            kd.append(d)  # Append to error list                                                    
+                            kd.append(d)   
+                                                                              
                         with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', newline='') as csvfile:
                             fieldnames = ["PID Output", "distanceX", "New position" , "KP" , "KI" , "KD"]
                             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
                             writer.writeheader()
 
-                            for err_value, distX, n_pos,K_P,K_I,K_D in zip(error, distance_X, new_pos,kp,ki,kd):  # Corrected variable names
-                                writer.writerow({"PID Output": err_value, "distanceX": distX, "New position": n_pos
+                            for err_value, distX, newPos,K_P,K_I,K_D in zip(error, distance_X, new_pos,kp,ki,kd):  # Corrected variable names
+                                writer.writerow({"PID Output": err_value, "distanceX": distX, "New position": newPos
                                 ,"KP":K_P ,"KI" :K_I ,"KD" : K_D})              
 
 
@@ -393,77 +398,95 @@ def main():
                         
         def Default() :
             
-            i = 0
             global status 
-            global distanceX  # Ensure we're using the global variable
-            global error      # Ensure we're using the global variable
-            global new_pos 
             status = False
-            new_position = Decimal(50)
-            kcube.MoveTo(Decimal(60), 7000)
-        
-            distanceX = []  
+            
+            global distance_X  
+            global error      
+            global new_pos 
+            global kp
+            global ki
+            global kd
+            global j
+            distance_X = []  
             error = []      
-            new_pos = []    
+            new_pos = []
+            kp = []
+            ki = []
+            kd = []  
+            j = 0  
+
+            new_position = Decimal(50)
+            kcube.MoveTo(Decimal(60), 7000) 
             
             while not status:
                 print("----------------------------------------------")
                 print('Capturing image')
-                if i < 10:
-                    filename = '00' + str(i) + '_image_lab.png'
+                if j < 10:
+                    filename = '00' + str(j) + '_image_lab.png'
                 else:
-                    filename = '0' + str(i) + '_image_lab.png'
+                    filename = '0' + str(j) + '_image_lab.png'
                     
-                camera.set_image_type(asi.ASI_IMG_RAW16)
-                camera.capture(filename=save_path + filename)
+                camera.set_image_type(asi.ASI_IMG_RAW8)
+                img = camera.capture(filename=save_path+filename)
                 print('Saved to %s' % filename)
                 print("----------------------------------------------")
 
-                for path in Dir_Read('s', path=save_path):
-                    if status:
-                        break
-                    else:
-                        disX = Draw_Contour(path)
-                        
-                        print(f'disX: {disX}, type: {type(disX)}')  # Debug print
-
-                        if disX is not None:  # Ensure disX has a value
-                            if isinstance(distanceX, list):
-                                distanceX.append(disX)  # Append to distanceX list
-                        
-                            PID_Out = PID(Decimal(25), Decimal(0.6), Decimal(0.5), reference, Decimal(disX))
-                            print("Error: " + str(PID_Out))
-
-                            if Decimal(50.5) <= new_position <= Decimal(50.6):
-                                print("New_position: " + str(new_position))
-                                kcube.MoveTo(new_position, 7000)
-                                return
-                            elif PID_Out < reference:
-                                new_position = pos + PID_Out
-                                print("New_position: " + str(new_position))
-                                kcube.MoveTo(new_position, 7000)
-                            elif PID_Out > reference:
-                                new_position = pos - PID_Out
-                                print("New_position: " + str(new_position))
-                                kcube.MoveTo(new_position, 7000)
-
-                            if isinstance(error, list):
-                                error.append(PID_Out)  # Append to error list
-
-
-                            if isinstance(new_pos, list):
-                                new_pos.append(new_position)  # Append to new_pos list
-                           
-                            with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', newline='') as csvfile:
-                                fieldnames = ["PID Output", "distanceX", "New position"]
-                                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-                                writer.writeheader()
-
-                                for err_value, distX, n_pos in zip(error, distanceX, new_pos):  # Corrected variable names
-                                    writer.writerow({"PID Output": err_value, "distanceX": distX, "New position": n_pos})
+                j+=1
                                     
+                if status:
+                    break
+                else:
+                    disX = Draw_Contour(img)
+                    
+                    if disX is not None:  # Ensure disX has a value
+                        if isinstance(distance_X, list):
+                            distance_X.append(disX)  # Append to distanceX list
+                    
+                        all_PID_Output = PID(Decimal(KP), Decimal(KI), Decimal(KD), reference, Decimal(disX))
+                        PID_Out = all_PID_Output[0]
+                        p = all_PID_Output[1]
+                        i = all_PID_Output[2]
+                        d = all_PID_Output[3]
+                        print("Error : " + str(PID_Out))
 
-                i+=1    
+                        if PID_Out >=  Decimal(0) and PID_Out <= Decimal(0.5):
+                            print("New_position : " + str(new_position))
+                            kcube.MoveTo(new_position, 7000)
+                            return
+                        elif PID_Out < reference:
+                            new_position = pos + PID_Out
+                            print("New_position : " + str(new_position))
+                            kcube.MoveTo(new_position, 7000)
+                        elif PID_Out > reference:
+                            new_position = pos - PID_Out
+                            print("New_position : " + str(new_position))
+                            kcube.MoveTo(new_position, 7000)
+
+                        if isinstance(error, list):
+                            error.append(PID_Out) 
+
+                        if isinstance(new_pos, list):
+                            new_pos.append(new_position)
+                            
+                        if isinstance(kp, list):
+                            kp.append(p)  
+
+                        if isinstance(ki, list):
+                            ki.append(i)  
+                            
+                        if isinstance(kd, list):
+                            kd.append(d)   
+                                                                              
+                        with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', newline='') as csvfile:
+                            fieldnames = ["PID Output", "distanceX", "New position" , "KP" , "KI" , "KD"]
+                            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                            writer.writeheader()
+
+                            for err_value, distX, newPos,K_P,K_I,K_D in zip(error, distance_X, new_pos,kp,ki,kd):  # Corrected variable names
+                                writer.writerow({"PID Output": err_value, "distanceX": distX, "New position": newPos
+                                ,"KP":K_P ,"KI" :K_I ,"KD" : K_D}) 
+                                    
         def default_app():
             r = threading.Thread(target=Default)
             r.start()
