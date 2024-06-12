@@ -358,35 +358,68 @@ def main():
                         i = all_PID_Output[2]
                         d = all_PID_Output[3]
                         print("Error: " + str(PID_Out))
+                        
+                        if PID_Out == 0 :
+                            new_position = PID_Out+kcube.Position #pos
+                            print("New_position : " + str(new_position))
+                            kcube.MoveTo(new_position, 7000)
+                        
+                            if isinstance(error, list):
+                                error.append(PID_Out) 
 
-                        new_position = PID_Out+kcube.Position #pos
-                        print("New_position : " + str(new_position))
-                        kcube.MoveTo(new_position, 7000)
-                    
-                    
-                        if isinstance(error, list):
-                            error.append(PID_Out) 
+                            if isinstance(new_pos, list):
+                                new_pos.append(new_position)
+                                
+                            if isinstance(kp, list):
+                                kp.append(p)  
 
-                        if isinstance(new_pos, list):
-                            new_pos.append(new_position)
-                            
-                        if isinstance(kp, list):
-                            kp.append(p)  
+                            if isinstance(ki, list):
+                                ki.append(i)  
+                                
+                            if isinstance(kd, list):
+                                kd.append(d)   
+                                                                                
+                            with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', newline='') as csvfile:
+                                fieldnames = ["PID Output", "distanceX", "New position" , "KP" , "KI" , "KD"]
+                                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                                writer.writeheader()
 
-                        if isinstance(ki, list):
-                            ki.append(i)  
-                            
-                        if isinstance(kd, list):
-                            kd.append(d)   
-                                                                            
-                        with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', newline='') as csvfile:
-                            fieldnames = ["PID Output", "distanceX", "New position" , "KP" , "KI" , "KD"]
-                            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-                            writer.writeheader()
+                                for err_value, distX, newPos,K_P,K_I,K_D in zip(error, distance_X, new_pos,kp,ki,kd):  # Corrected variable names
+                                    writer.writerow({"PID Output": err_value, "distanceX": distX, "New position": newPos
+                                    ,"KP":K_P ,"KI" :K_I ,"KD" : K_D})
+                                    
+                            print("----------------------------FINISHED"+strnew_position+("-----------------------------"))     
+                            return        
 
-                            for err_value, distX, newPos,K_P,K_I,K_D in zip(error, distance_X, new_pos,kp,ki,kd):  # Corrected variable names
-                                writer.writerow({"PID Output": err_value, "distanceX": distX, "New position": newPos
-                                ,"KP":K_P ,"KI" :K_I ,"KD" : K_D})              
+                        else :
+                            new_position = PID_Out+kcube.Position #pos
+                            print("New_position : " + str(new_position))
+                            kcube.MoveTo(new_position, 7000)
+                        
+                        
+                            if isinstance(error, list):
+                                error.append(PID_Out) 
+
+                            if isinstance(new_pos, list):
+                                new_pos.append(new_position)
+                                
+                            if isinstance(kp, list):
+                                kp.append(p)  
+
+                            if isinstance(ki, list):
+                                ki.append(i)  
+                                
+                            if isinstance(kd, list):
+                                kd.append(d)   
+                                                                                
+                            with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', newline='') as csvfile:
+                                fieldnames = ["PID Output", "distanceX", "New position" , "KP" , "KI" , "KD"]
+                                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                                writer.writeheader()
+
+                                for err_value, distX, newPos,K_P,K_I,K_D in zip(error, distance_X, new_pos,kp,ki,kd):  # Corrected variable names
+                                    writer.writerow({"PID Output": err_value, "distanceX": distX, "New position": newPos
+                                    ,"KP":K_P ,"KI" :K_I ,"KD" : K_D})              
 
 
                     
@@ -442,40 +475,75 @@ def main():
                         if isinstance(distance_X, list):
                             distance_X.append(disX)  # Append to distanceX list
                     
-                        all_PID_Output = PID(Decimal(10), Decimal(0.1), Decimal(0.2), reference, Decimal(disX))
+                        all_PID_Output = PID(Decimal(KP), Decimal(KI), Decimal(KD), reference, Decimal(disX))
                         PID_Out = all_PID_Output[0]
                         p = all_PID_Output[1]
                         i = all_PID_Output[2]
                         d = all_PID_Output[3]
-                        print("Error : " + str(PID_Out))
-                        #else :
-                        new_position = PID_Out+kcube.Position #pos
-                        print("New_position : " + str(new_position))
-                        kcube.MoveTo(new_position, 7000)
+                        print("Error: " + str(PID_Out))
+                        
+                        if PID_Out == 0 :
+                            new_position = PID_Out+kcube.Position #pos
+                            print("New_position : " + str(new_position))
+                            kcube.MoveTo(new_position, 7000)
+                        
+                            if isinstance(error, list):
+                                error.append(PID_Out) 
 
-                        if isinstance(error, list):
-                            error.append(PID_Out) 
+                            if isinstance(new_pos, list):
+                                new_pos.append(new_position)
+                                
+                            if isinstance(kp, list):
+                                kp.append(p)  
 
-                        if isinstance(new_pos, list):
-                            new_pos.append(new_position)
-                            
-                        if isinstance(kp, list):
-                            kp.append(p)  
+                            if isinstance(ki, list):
+                                ki.append(i)  
+                                
+                            if isinstance(kd, list):
+                                kd.append(d)   
+                                                                                
+                            with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', newline='') as csvfile:
+                                fieldnames = ["PID Output", "distanceX", "New position" , "KP" , "KI" , "KD"]
+                                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                                writer.writeheader()
 
-                        if isinstance(ki, list):
-                            ki.append(i)  
-                            
-                        if isinstance(kd, list):
-                            kd.append(d)   
-                                                                            
-                        with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', newline='') as csvfile:
-                            fieldnames = ["PID Output", "distanceX", "New position" , "KP" , "KI" , "KD"]
-                            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-                            writer.writeheader()
+                                for err_value, distX, newPos,K_P,K_I,K_D in zip(error, distance_X, new_pos,kp,ki,kd):  # Corrected variable names
+                                    writer.writerow({"PID Output": err_value, "distanceX": distX, "New position": newPos
+                                    ,"KP":K_P ,"KI" :K_I ,"KD" : K_D})
+                                    
+                            print("----------------------------FINISHED"+strnew_position+("-----------------------------"))     
+                            return        
 
-                            for err_value, distX, newPos,K_P,K_I,K_D in zip(error, distance_X, new_pos,kp,ki,kd):  # Corrected variable names
-                                writer.writerow({"PID Output": err_value, "distanceX": distX, "New position": newPos
-                                ,"KP":K_P ,"KI" :K_I ,"KD" : K_D}) 
+                        else :
+                            new_position = PID_Out+kcube.Position #pos
+                            print("New_position : " + str(new_position))
+                            kcube.MoveTo(new_position, 7000)
+                        
+                        
+                            if isinstance(error, list):
+                                error.append(PID_Out) 
+
+                            if isinstance(new_pos, list):
+                                new_pos.append(new_position)
+                                
+                            if isinstance(kp, list):
+                                kp.append(p)  
+
+                            if isinstance(ki, list):
+                                ki.append(i)  
+                                
+                            if isinstance(kd, list):
+                                kd.append(d)   
+                                                                                
+                            with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', newline='') as csvfile:
+                                fieldnames = ["PID Output", "distanceX", "New position" , "KP" , "KI" , "KD"]
+                                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                                writer.writeheader()
+
+                                for err_value, distX, newPos,K_P,K_I,K_D in zip(error, distance_X, new_pos,kp,ki,kd):  # Corrected variable names
+                                    writer.writerow({"PID Output": err_value, "distanceX": distX, "New position": newPos
+                                    ,"KP":K_P ,"KI" :K_I ,"KD" : K_D})              
+ 
                                     
         def default_app():
             r = threading.Thread(target=Default)
