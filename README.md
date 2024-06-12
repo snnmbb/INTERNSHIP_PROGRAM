@@ -6,9 +6,9 @@ Main file for user : MAIN Application for USER.py
 Main file for developer : MAIN Application for DEVELOPER.py
     main program fordeveloper.
 
-How to use application
+How to use application for users
 1.Open VScode
-2.Open MAIN&UI V3.py
+2.Open MAIN Application for USER.py 
 3.Click play button on the right top of VScode program.
 4.Wait untill apllication pop up UI window
 5.Enter values in each parameter.
