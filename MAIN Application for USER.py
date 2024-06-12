@@ -511,7 +511,7 @@ def main():
                                     writer.writerow({"PID Output": err_value, "distanceX": distX, "New position": newPos
                                     ,"KP":K_P ,"KI" :K_I ,"KD" : K_D})
                                     
-                            print("----------------------------FINISHED"+strnew_position+("-----------------------------"))     
+                            print("----------------------------FINISHED"+str(new_position)+"-----------------------------")   
                             return        
 
                         else :
