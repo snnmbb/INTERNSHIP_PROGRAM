@@ -259,15 +259,15 @@ def main():
 
         # Input field
         entry_kp = ttk.Entry(master=window , background = "lightsteelblue4", foreground ="dodgerblue4" , justify= "center")
-        entry_kp.insert(0,"32")
+        entry_kp.insert(0,"10")
         entry_kp.place(x = 305 , y = 120, width= 120, height=30)      
         
         entry_ki = ttk.Entry(master=window, background = "lightsteelblue4", foreground ="dodgerblue4" , justify= "center" )
-        entry_ki.insert(0,"0.5")
+        entry_ki.insert(0,"0.1")
         entry_ki.place(x = 305 , y = 175, width= 120, height=30)
         
         entry_kd = ttk.Entry(master=window, background = "lightsteelblue4", foreground ="dodgerblue4" , justify= "center")
-        entry_kd.insert(0,"0.5")
+        entry_kd.insert(0,"0.2")
         entry_kd.place(x = 305 , y = 230 , width= 120, height=30)
         
         entry_pos = ttk.Entry(master=window, background = "lightsteelblue4", foreground ="dodgerblue4" , justify= "center" )
@@ -358,37 +358,7 @@ def main():
                         i = all_PID_Output[2]
                         d = all_PID_Output[3]
                         print("Error: " + str(PID_Out))
-                        '''
-                        if PID_Out >= Decimal(-0.1) and PID_Out <= Decimal(0.1) :
-                            
-                            if isinstance(error, list):
-                                error.append(PID_Out) 
 
-                            if isinstance(new_pos, list):
-                                new_pos.append(new_position)
-                                
-                            if isinstance(kp, list):
-                                kp.append(p)  
-
-                            if isinstance(ki, list):
-                                ki.append(i)  
-                                
-                            if isinstance(kd, list):
-                                kd.append(d)   
-                                                                                
-                            with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', newline='') as csvfile:
-                                fieldnames = ["PID Output", "distanceX", "New position" , "KP" , "KI" , "KD"]
-                                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-                                writer.writeheader()
-
-                                for err_value, distX, newPos,K_P,K_I,K_D in zip(error, distance_X, new_pos,kp,ki,kd):  # Corrected variable names
-                                    writer.writerow({"PID Output": err_value, "distanceX": distX, "New position": newPos
-                                    ,"KP":K_P ,"KI" :K_I ,"KD" : K_D})    
-                                    
-                            print("--------------------------FINISHED-------------------------------")
-                            return
-                        '''
-                        #else :
                         new_position = PID_Out+kcube.Position #pos
                         print("New_position : " + str(new_position))
                         kcube.MoveTo(new_position, 7000)
@@ -472,42 +442,12 @@ def main():
                         if isinstance(distance_X, list):
                             distance_X.append(disX)  # Append to distanceX list
                     
-                        all_PID_Output = PID(Decimal(KP), Decimal(KI), Decimal(KD), reference, Decimal(disX))
+                        all_PID_Output = PID(Decimal(10), Decimal(0.1), Decimal(0.2), reference, Decimal(disX))
                         PID_Out = all_PID_Output[0]
                         p = all_PID_Output[1]
                         i = all_PID_Output[2]
                         d = all_PID_Output[3]
                         print("Error : " + str(PID_Out))
-                        '''                 
-                        if PID_Out >= Decimal(-0.01) and PID_Out <= Decimal(0.01) :
-                            
-                            if isinstance(error, list):
-                                error.append(PID_Out) 
-
-                            if isinstance(new_pos, list):
-                                new_pos.append(new_position)
-                                
-                            if isinstance(kp, list):
-                                kp.append(p)  
-
-                            if isinstance(ki, list):
-                                ki.append(i)  
-                                
-                            if isinstance(kd, list):
-                                kd.append(d)   
-                                                                                
-                            with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', newline='') as csvfile:
-                                fieldnames = ["PID Output", "distanceX", "New position" , "KP" , "KI" , "KD"]
-                                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-                                writer.writeheader()
-
-                                for err_value, distX, newPos,K_P,K_I,K_D in zip(error, distance_X, new_pos,kp,ki,kd):  # Corrected variable names
-                                    writer.writerow({"PID Output": err_value, "distanceX": distX, "New position": newPos
-                                    ,"KP":K_P ,"KI" :K_I ,"KD" : K_D})    
-                                    
-                            print("--------------------------FINISHED-------------------------------")
-                            return
-                        '''
                         #else :
                         new_position = PID_Out+kcube.Position #pos
                         print("New_position : " + str(new_position))
