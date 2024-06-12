@@ -1,9 +1,10 @@
-Before using application please read Read me.txt first.
-
 This application use for control translation stage (DDS100/M) developed based on Python language.
 
-Main file to use : MAIN&UI V3.py 
+Main file for user : MAIN Application for USER.py 
     main program with UI for users.
+
+Main file for developer : MAIN Application for DEVELOPER.py
+    main program fordeveloper.
 
 How to use application
 1.Open VScode
