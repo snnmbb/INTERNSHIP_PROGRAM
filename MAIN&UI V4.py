@@ -98,12 +98,9 @@ def PID(Kp , Ki , Kd , setpoint , measurement ): # measurement เป็นต�
     return new_pos , P , I , D
 
 #-----------------------------------------------DRAW CONTOUR FUNCTION--------------------------------------------------------------------
-def Draw_Contour(path) :
+def Draw_Contour(image) :
     dot1 = cv2.imread(image_ref)
-    dot2 = path
-    # print('/n/nTest', path, 'Test/n/n')
-    # if dot2 is None:
-    #     print(f"Error: Unable to load image at {path}")
+    dot2 = image
         
     wid = dot1.shape[1] 
     hgt = dot1.shape[0] 
