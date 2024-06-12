@@ -4,7 +4,7 @@ Main file for user : MAIN Application for USER.py
     main program with UI for users.
 
 Main file for developer : MAIN Application for DEVELOPER.py
-    main program fordeveloper.
+    main program for developer.
 
 How to use application for users
 1.Open VScode
