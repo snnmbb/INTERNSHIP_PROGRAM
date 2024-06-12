@@ -7,7 +7,6 @@ from matplotlib import pyplot as plt
 import zwoasi as asi
 import time
 import sys
-from SolExDataCube import Dir_Read
 import clr
 import sys
 import tkinter as tk
@@ -89,7 +88,7 @@ ki = []
 kd = []       
 j = 0    
 
-image_ref = r"C:\Users\Asus\Desktop\LAB_TEST\REF\REF1.png"
+image_ref = r"C:\Users\Asus\Desktop\LAB_TEST\REF\REF2.png"
 save_path = r"C:\\Users\\Asus\\Desktop\LAB_TEST\REAL_DATA\\"
 asi.init('C:\\Users\\Asus\\AppData\\Local\\Programs\\Python\\Python310\\Lib\\ASI SDK\\lib\\x64\ASICamera2.lib')
 pattern = re.compile(r'(\d+)\.png')
@@ -363,33 +362,37 @@ def main():
                         d = all_PID_Output[3]
                         print("Error: " + str(PID_Out))
 
-                        new_position = PID_Out+kcube.Position #pos
-                        print("New_position : " + str(new_position))
-                        kcube.MoveTo(new_position, 7000)
+                        if PID_Out >= Decimal(0) :
+                            return
+                        else :
+                            new_position = PID_Out+kcube.Position #pos
+                            print("New_position : " + str(new_position))
+                            kcube.MoveTo(new_position, 7000)
                         
-                        if isinstance(error, list):
-                            error.append(PID_Out) 
+                        
+                            if isinstance(error, list):
+                                error.append(PID_Out) 
 
-                        if isinstance(new_pos, list):
-                            new_pos.append(new_position)
-                            
-                        if isinstance(kp, list):
-                            kp.append(p)  
+                            if isinstance(new_pos, list):
+                                new_pos.append(new_position)
+                                
+                            if isinstance(kp, list):
+                                kp.append(p)  
 
-                        if isinstance(ki, list):
-                            ki.append(i)  
-                            
-                        if isinstance(kd, list):
-                            kd.append(d)   
-                                                                              
-                        with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', newline='') as csvfile:
-                            fieldnames = ["PID Output", "distanceX", "New position" , "KP" , "KI" , "KD"]
-                            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-                            writer.writeheader()
+                            if isinstance(ki, list):
+                                ki.append(i)  
+                                
+                            if isinstance(kd, list):
+                                kd.append(d)   
+                                                                                
+                            with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', newline='') as csvfile:
+                                fieldnames = ["PID Output", "distanceX", "New position" , "KP" , "KI" , "KD"]
+                                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                                writer.writeheader()
 
-                            for err_value, distX, newPos,K_P,K_I,K_D in zip(error, distance_X, new_pos,kp,ki,kd):  # Corrected variable names
-                                writer.writerow({"PID Output": err_value, "distanceX": distX, "New position": newPos
-                                ,"KP":K_P ,"KI" :K_I ,"KD" : K_D})              
+                                for err_value, distX, newPos,K_P,K_I,K_D in zip(error, distance_X, new_pos,kp,ki,kd):  # Corrected variable names
+                                    writer.writerow({"PID Output": err_value, "distanceX": distX, "New position": newPos
+                                    ,"KP":K_P ,"KI" :K_I ,"KD" : K_D})              
 
 
                     
@@ -451,42 +454,36 @@ def main():
                         d = all_PID_Output[3]
                         print("Error : " + str(PID_Out))
 
-                        if PID_Out >=  Decimal(0) and PID_Out <= Decimal(0.5):
-                            print("New_position : " + str(new_position))
-                            kcube.MoveTo(new_position, 7000)
+                        if PID_Out == Decimal(0) :
                             return
-                        elif PID_Out < reference:
-                            new_position = pos + PID_Out
-                            print("New_position : " + str(new_position))
-                            kcube.MoveTo(new_position, 7000)
-                        elif PID_Out > reference:
-                            new_position = pos - PID_Out
+                        else :
+                            new_position = PID_Out+kcube.Position #pos
                             print("New_position : " + str(new_position))
                             kcube.MoveTo(new_position, 7000)
 
-                        if isinstance(error, list):
-                            error.append(PID_Out) 
+                            if isinstance(error, list):
+                                error.append(PID_Out) 
 
-                        if isinstance(new_pos, list):
-                            new_pos.append(new_position)
-                            
-                        if isinstance(kp, list):
-                            kp.append(p)  
+                            if isinstance(new_pos, list):
+                                new_pos.append(new_position)
+                                
+                            if isinstance(kp, list):
+                                kp.append(p)  
 
-                        if isinstance(ki, list):
-                            ki.append(i)  
-                            
-                        if isinstance(kd, list):
-                            kd.append(d)   
-                                                                              
-                        with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', newline='') as csvfile:
-                            fieldnames = ["PID Output", "distanceX", "New position" , "KP" , "KI" , "KD"]
-                            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-                            writer.writeheader()
+                            if isinstance(ki, list):
+                                ki.append(i)  
+                                
+                            if isinstance(kd, list):
+                                kd.append(d)   
+                                                                                
+                            with open('C://Users/Asus/Desktop/LAB_TEST/result.csv', 'w', newline='') as csvfile:
+                                fieldnames = ["PID Output", "distanceX", "New position" , "KP" , "KI" , "KD"]
+                                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                                writer.writeheader()
 
-                            for err_value, distX, newPos,K_P,K_I,K_D in zip(error, distance_X, new_pos,kp,ki,kd):  # Corrected variable names
-                                writer.writerow({"PID Output": err_value, "distanceX": distX, "New position": newPos
-                                ,"KP":K_P ,"KI" :K_I ,"KD" : K_D}) 
+                                for err_value, distX, newPos,K_P,K_I,K_D in zip(error, distance_X, new_pos,kp,ki,kd):  # Corrected variable names
+                                    writer.writerow({"PID Output": err_value, "distanceX": distX, "New position": newPos
+                                    ,"KP":K_P ,"KI" :K_I ,"KD" : K_D}) 
                                     
         def default_app():
             r = threading.Thread(target=Default)
