@@ -136,11 +136,9 @@ def Draw_Contour(image) :
     
     contours1, _ = cv2.findContours(thresh1, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     contours2, _ = cv2.findContours(thresh2, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    
-
 
     if len(contours1) > 0 and len(contours2) > 0:   
-        cnt1 = contours1[0]
+        cnt1 = max(contours1, key=cv2.contourArea)
         cnt2 = contours2[0]
 
         x_ref,y_ref,w_ref,h_ref = cv2.boundingRect(cnt1)
