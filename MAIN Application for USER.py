@@ -117,7 +117,7 @@ def PID(Kp , Ki , Kd , setpoint , measurement ): # measurement เป็นต�
 
 #-----------------------------------------------DRAW CONTOUR FUNCTION--------------------------------------------------------------------
 def Draw_Contour(image) :
-    dot1 = cv2.imread(image_ref)
+    dot1 = cv2.imread(image_ref,1)
     dot2 = image
         
     wid = dot1.shape[1] 
