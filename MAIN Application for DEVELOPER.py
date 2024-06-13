@@ -131,16 +131,14 @@ def Draw_Contour(image) :
     combine_dot = cv2.bitwise_or(gray_dot1, gray_dot2)
         
     # Find contour
-    ret, thresh1 = cv2.threshold(gray_dot1, 100, 500, cv2.THRESH_BINARY)
+    ret, thresh1 = cv2.threshold(gray_dot1, 150, 200, cv2.THRESH_BINARY)
     ret, thresh2 = cv2.threshold(gray_dot2, 100, 500, cv2.THRESH_BINARY)
     
     contours1, _ = cv2.findContours(thresh1, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     contours2, _ = cv2.findContours(thresh2, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    
-
 
     if len(contours1) > 0 and len(contours2) > 0:   
-        cnt1 = contours1[0]
+        cnt1 = max(contours1, key=cv2.contourArea)
         cnt2 = contours2[0]
 
         x_ref,y_ref,w_ref,h_ref = cv2.boundingRect(cnt1)
