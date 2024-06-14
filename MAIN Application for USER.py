@@ -365,7 +365,7 @@ def main():
                         print("New_position : " + str(new_position))
                         kcube.MoveTo(new_position, 7000)
                         
-                        if PID_Out == 0 :
+                        if PID_Out == Decimal(0) :
                             new_position = PID_Out+kcube.Position #pos
                             print("New_position : " + str(new_position))
                             kcube.MoveTo(new_position, 7000)
@@ -486,7 +486,7 @@ def main():
                         print("New_position : " + str(new_position))
                         kcube.MoveTo(new_position, 7000)
                         
-                        if PID_Out == 0 :
+                        if PID_Out == Decimal(0) :
                             new_position = PID_Out+kcube.Position #pos
                             print("New_position : " + str(new_position))
                             kcube.MoveTo(new_position, 7000)
