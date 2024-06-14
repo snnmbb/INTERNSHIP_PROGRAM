@@ -286,7 +286,7 @@ def main():
             KD = float(Kd)
             POS = float(Pos)
             
-            if POS > 70 or POS < 40 or KP > 70 or KP < 0 or KI > 5 or KI < 0 or KD > 5 or KD < 0  :
+            if POS > 70 or POS < 40 or KP > 35 or KP < 0 or KI > 5 or KI < 0 or KD > 5 or KD < 0  :
                 top= Toplevel(window)
                 top.geometry("400x150")
                 top.title("Warning Window")
