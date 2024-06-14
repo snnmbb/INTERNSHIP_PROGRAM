@@ -249,7 +249,7 @@ def main():
         #window setup
         window = tk.Tk()
         window.geometry("600x400") 
-        window.title("Translation stage control 2024 DEVELOPOER Edition")
+        window.title("Translation stage control 2024 User Edition")
         
         bg = PhotoImage(file = 'C://Users//Asus//Desktop//INTERNSHIP_PROGRAM//UI_v3.png')
         canvas1 = Canvas( window, width = 600, height = 400)  
