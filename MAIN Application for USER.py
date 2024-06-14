@@ -98,6 +98,7 @@ os.chdir(save_path)
 
 #-----------------------------------------------PID FUNCTION--------------------------------------------------------------------
 def PID(Kp , Ki , Kd , setpoint , measurement ): # measurement เป็นตำแหน่งที่จุด offset จากจุดศูนย์กลาง รับค่าจากกล้อง/เซนเซอร์....
+    #print(Kp , Ki , Kd)
     global time, e_prev# Value of offset - when the error is equal zero
     # PID calculations
     e = setpoint - measurement
@@ -285,7 +286,7 @@ def main():
             KD = float(Kd)
             POS = float(Pos)
             
-            if POS > 70 or POS < 40 or KP > 35 or KP < 0 or KI > 5 or KI < 0 or KD > 5 or KD < 0  :
+            if POS > 70 or POS < 40 or KP > 70 or KP < 0 or KI > 5 or KI < 0 or KD > 5 or KD < 0  :
                 top= Toplevel(window)
                 top.geometry("400x150")
                 top.title("Warning Window")
@@ -354,7 +355,7 @@ def main():
                             distance_X.append(disX)  # Append to distanceX list
                     
                     
-                        all_PID_Output = PID(Decimal(10), Decimal(0.1), Decimal(0.2), reference, Decimal(disX))
+                        all_PID_Output = PID(Decimal(KP), Decimal(KI), Decimal(KD), reference, Decimal(disX))
                         PID_Out = all_PID_Output[0]
                         p = all_PID_Output[1]
                         i = all_PID_Output[2]
