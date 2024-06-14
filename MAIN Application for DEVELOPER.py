@@ -89,7 +89,7 @@ ki = []
 kd = []       
 j = 0    
 
-image_ref = r"C:\Users\Asus\Desktop\LAB_TEST\REF\REF1.png"
+image_ref = r"C:\Users\Asus\Desktop\LAB_TEST\REF\REF3.png"
 save_path = r"C:\\Users\\Asus\\Desktop\LAB_TEST\REAL_DATA\\"
 asi.init('C:\\Users\\Asus\\AppData\\Local\\Programs\\Python\\Python310\\Lib\\ASI SDK\\lib\\x64\ASICamera2.lib')
 pattern = re.compile(r'(\d+)\.png')
@@ -394,9 +394,9 @@ def main():
         def start_app() :
             t = threading.Thread(target=Start)
             t.start()
-                        
+                         
         def Default() :
-            print ("************************************* START POSITIONING ***************************************")
+            print ("************************************* START APPLICATION ***************************************")
             global status 
             status = False
             
