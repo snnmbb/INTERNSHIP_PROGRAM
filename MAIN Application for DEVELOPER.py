@@ -17,7 +17,7 @@ import threading
 import csv
 
 #-----------------------------------------------SETUP CAMERA--------------------------------------------------------------------
-            
+print ("---------------------------------SETTING CAMERA--------------------------------------")           
 num_cameras = asi.get_num_cameras()
 if num_cameras == 0:
     raise ValueError('No cameras found')
@@ -52,6 +52,7 @@ camera.set_control_value(asi.ASI_WB_R, 0) #ปรับค่าred component of
 camera.set_control_value(asi.ASI_GAMMA, 0) #ปรับค่าการเปลี่ยนสีจากสีดำเป็นสีขาว gamma with range 1 to 100 (nomnally 50)
 camera.set_control_value(asi.ASI_BRIGHTNESS, 10)
 camera.set_control_value(asi.ASI_FLIP, 0) #ปรับการหมุนรูป
+print ("---------------------------------FINISHED SETTING CAMERA--------------------------------------")           
 
 #-----------------------------------------------SETUP LINEAR STAGE--------------------------------------------------------------------  
 clr.AddReference("C:\\Program Files\\Thorlabs\\Kinesis\\Thorlabs.MotionControl.DeviceManagerCLI.dll.")
@@ -197,7 +198,8 @@ def main():
     status = False
     
     try:
-        
+        print ("---------------------------------HOMING DEVIEC--------------------------------------")           
+
         #SETUP
         DeviceManagerCLI.BuildDeviceList()
         
@@ -233,8 +235,7 @@ def main():
         print("Homing Device...")
         kcube.Home(40000) 
         print("Device Homed")
-        
-        print('Enabling stills mode')
+        print ("---------------------------------FINISHED HOMING DEVIEC--------------------------------------")           
         
         try:
             # Force any single exposure to be halted
@@ -242,7 +243,7 @@ def main():
             camera.stop_exposure()
         except (KeyboardInterrupt, SystemExit):
             raise
-
+        
         #-------------------------------WINDOW VERSION----------------------------------------------
         # Window setting
         #window setup
@@ -304,6 +305,8 @@ def main():
                 print("First Position : " + entry_pos.get()) 
             
         def Start() :
+            
+            print ("************************************* START POSITIONING ***************************************")           
             
             global status 
             status = False
@@ -393,7 +396,7 @@ def main():
             t.start()
                         
         def Default() :
-            
+            print ("************************************* START POSITIONING ***************************************")
             global status 
             status = False
             

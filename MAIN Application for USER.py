@@ -17,7 +17,7 @@ import threading
 import csv
 
 #-----------------------------------------------SETUP CAMERA--------------------------------------------------------------------
-            
+print ("---------------------------------SETTING CAMERA--------------------------------------")           
 num_cameras = asi.get_num_cameras()
 if num_cameras == 0:
     raise ValueError('No cameras found')
@@ -52,6 +52,7 @@ camera.set_control_value(asi.ASI_WB_R, 0) #ปรับค่าred component of
 camera.set_control_value(asi.ASI_GAMMA, 0) #ปรับค่าการเปลี่ยนสีจากสีดำเป็นสีขาว gamma with range 1 to 100 (nomnally 50)
 camera.set_control_value(asi.ASI_BRIGHTNESS, 10)
 camera.set_control_value(asi.ASI_FLIP, 0) #ปรับการหมุนรูป
+print ("---------------------------------FINISHED SETTING CAMERA--------------------------------------")           
 
 #-----------------------------------------------SETUP LINEAR STAGE--------------------------------------------------------------------  
 clr.AddReference("C:\\Program Files\\Thorlabs\\Kinesis\\Thorlabs.MotionControl.DeviceManagerCLI.dll.")
@@ -197,7 +198,8 @@ def main():
     status = False
     
     try:
-        
+        print ("---------------------------------HOMING DEVIEC--------------------------------------")           
+
         #SETUP
         DeviceManagerCLI.BuildDeviceList()
         
@@ -233,8 +235,7 @@ def main():
         print("Homing Device...")
         kcube.Home(40000) 
         print("Device Homed")
-        
-        print('Enabling stills mode')
+        print ("---------------------------------FINISHED HOMING DEVIEC--------------------------------------")           
         
         try:
             # Force any single exposure to be halted
@@ -242,13 +243,13 @@ def main():
             camera.stop_exposure()
         except (KeyboardInterrupt, SystemExit):
             raise
-
+        
         #-------------------------------WINDOW VERSION----------------------------------------------
         # Window setting
         #window setup
         window = tk.Tk()
         window.geometry("600x400") 
-        window.title("Translation stage control 2024 USER Edition")
+        window.title("Translation stage control 2024 DEVELOPOER Edition")
         
         bg = PhotoImage(file = 'C://Users//Asus//Desktop//INTERNSHIP_PROGRAM//UI_v3.png')
         canvas1 = Canvas( window, width = 600, height = 400)  
@@ -305,6 +306,8 @@ def main():
             
         def Start() :
             
+            print ("************************************* START POSITIONING ***************************************")           
+            
             global status 
             status = False
             global distance_X  
@@ -350,12 +353,17 @@ def main():
                         if isinstance(distance_X, list):
                             distance_X.append(disX)  # Append to distanceX list
                     
-                        all_PID_Output = PID(Decimal(KP), Decimal(KI), Decimal(KD), reference, Decimal(disX))
+                    
+                        all_PID_Output = PID(Decimal(10), Decimal(0.1), Decimal(0.2), reference, Decimal(disX))
                         PID_Out = all_PID_Output[0]
                         p = all_PID_Output[1]
                         i = all_PID_Output[2]
                         d = all_PID_Output[3]
-                        print("Error: " + str(PID_Out))
+                        print("Error : " + str(PID_Out))
+                        
+                        new_position = PID_Out+kcube.Position #pos
+                        print("New_position : " + str(new_position))
+                        kcube.MoveTo(new_position, 7000)
                         
                         if PID_Out == 0 :
                             new_position = PID_Out+kcube.Position #pos
@@ -386,15 +394,9 @@ def main():
                                     writer.writerow({"PID Output": err_value, "distanceX": distX, "New position": newPos
                                     ,"KP":K_P ,"KI" :K_I ,"KD" : K_D})
                                     
-                            print("----------------------------FINISHED"+strnew_position+("-----------------------------"))     
-                            return        
-
+                            print("*****************************FINISHED POSITIONG AT "+str(new_position)+"*********************************")   
+                            return  
                         else :
-                            new_position = PID_Out+kcube.Position #pos
-                            print("New_position : " + str(new_position))
-                            kcube.MoveTo(new_position, 7000)
-                        
-                        
                             if isinstance(error, list):
                                 error.append(PID_Out) 
 
@@ -417,8 +419,7 @@ def main():
 
                                 for err_value, distX, newPos,K_P,K_I,K_D in zip(error, distance_X, new_pos,kp,ki,kd):  # Corrected variable names
                                     writer.writerow({"PID Output": err_value, "distanceX": distX, "New position": newPos
-                                    ,"KP":K_P ,"KI" :K_I ,"KD" : K_D})              
-
+                                    ,"KP":K_P ,"KI" :K_I ,"KD" : K_D}) 
 
                     
         def start_app() :
@@ -426,7 +427,7 @@ def main():
             t.start()
                         
         def Default() :
-            
+            print ("************************************* START POSITIONING ***************************************")
             global status 
             status = False
             
@@ -473,12 +474,17 @@ def main():
                         if isinstance(distance_X, list):
                             distance_X.append(disX)  # Append to distanceX list
                     
-                        all_PID_Output = PID(Decimal(KP), Decimal(KI), Decimal(KD), reference, Decimal(disX))
+                    
+                        all_PID_Output = PID(Decimal(10), Decimal(0.1), Decimal(0.2), reference, Decimal(disX))
                         PID_Out = all_PID_Output[0]
                         p = all_PID_Output[1]
                         i = all_PID_Output[2]
                         d = all_PID_Output[3]
-                        print("Error: " + str(PID_Out))
+                        print("Error : " + str(PID_Out))
+                        
+                        new_position = PID_Out+kcube.Position #pos
+                        print("New_position : " + str(new_position))
+                        kcube.MoveTo(new_position, 7000)
                         
                         if PID_Out == 0 :
                             new_position = PID_Out+kcube.Position #pos
@@ -509,15 +515,9 @@ def main():
                                     writer.writerow({"PID Output": err_value, "distanceX": distX, "New position": newPos
                                     ,"KP":K_P ,"KI" :K_I ,"KD" : K_D})
                                     
-                            print("----------------------------FINISHED"+str(new_position)+"-----------------------------")   
-                            return        
-
+                            print("*****************************FINISHED POSITIONG AT "+str(new_position)+"*********************************")   
+                            return  
                         else :
-                            new_position = PID_Out+kcube.Position #pos
-                            print("New_position : " + str(new_position))
-                            kcube.MoveTo(new_position, 7000)
-                        
-                        
                             if isinstance(error, list):
                                 error.append(PID_Out) 
 
@@ -540,8 +540,7 @@ def main():
 
                                 for err_value, distX, newPos,K_P,K_I,K_D in zip(error, distance_X, new_pos,kp,ki,kd):  # Corrected variable names
                                     writer.writerow({"PID Output": err_value, "distanceX": distX, "New position": newPos
-                                    ,"KP":K_P ,"KI" :K_I ,"KD" : K_D})              
- 
+                                    ,"KP":K_P ,"KI" :K_I ,"KD" : K_D}) 
                                     
         def default_app():
             r = threading.Thread(target=Default)
